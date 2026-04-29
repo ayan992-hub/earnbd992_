@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: earnbd992_bot
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
