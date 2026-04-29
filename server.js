@@ -1,8 +1,5 @@
 // ========================================
-// EarnBD Telegram Bot - server.js
-// ========================================
-// প্রয়োজনীয় প্যাকেজ ইনস্টল করুন:
-// npm install node-telegram-bot-api express cors dotenv
+// EarnBD Telegram Bot - Updated server.js
 // ========================================
 
 require('dotenv').config();
@@ -13,12 +10,12 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // index.html এখানে রাখুন
+app.use(express.static('public'));
 
 // ---- CONFIG ----
 const BOT_TOKEN = process.env.BOT_TOKEN || 'আপনার_BOT_TOKEN_এখানে';
-const MINI_APP_URL = process.env.MINI_APP_URL || 'https://আপনার-ডোমেইন.com';
-const ADMIN_ID = process.env.ADMIN_ID || ''; // আপনার Telegram User ID
+const MINI_APP_URL = 'https://earnbd-bot.onrender.com'; // আপনার অ্যাপ লিঙ্ক সেট করা হয়েছে
+const ADMIN_ID = process.env.ADMIN_ID || ''; 
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
@@ -36,8 +33,8 @@ bot.onText(/\/start(.*)/, (msg, match) => {
           web_app: { url: MINI_APP_URL + (referParam ? `?ref=${referParam}` : '') }
         }],
         [
-          { text: '📢 চ্যানেল', url: 'https://t.me/earnbd_channel' },
-          { text: '💬 সাপোর্ট', url: 'https://t.me/earnbd_support' }
+          { text: '📢 চ্যানেল', url: 'https://t.me/ayan2446' }, // আপনার চ্যানেল লিঙ্ক
+          { text: '💬 সাপোর্ট', url: 'https://t.me/Ownerearnbd' } // আপনার সাপোর্ট ইউজারনেম
         ]
       ]
     }
@@ -45,13 +42,13 @@ bot.onText(/\/start(.*)/, (msg, match) => {
 
   bot.sendMessage(chatId,
     `👋 স্বাগতম ${firstName}!\n\n` +
-    `💰 *EarnBD* তে আপনাকে স্বাগত জানাই!\n\n` +
-    `✅ টাস্ক করুন\n` +
-    `💸 টাকা আয় করুন\n` +
-    `🏆 লিডারবোর্ডে উঠুন\n` +
-    `🎁 বন্ধুদের রেফার করুন\n\n` +
+    `<b>EarnBD</b> ফ্যামিলিতে আপনাকে স্বাগতম! আপনার অবসর সময়কে আয়ে রূপান্তর করুন 🚀\n\n` +
+    `💰 সহজ কিছু টাস্ক পূরণ করে টাকা আয় করুন।\n` +
+    `✅ ধৈর্য সহকারে কাজ করুন, ইনশাআল্লাহ ভালো কিছু করতে পারবেন।\n` +
+    `🏆 লিডারবোর্ডে নিজের নাম লেখান এবং বোনাস বুঝে নিন।\n` +
+    `🎁 বন্ধুদের রেফার করে বোনাস নিন।\n\n` +
     `নিচের বাটন চাপুন এবং শুরু করুন! 👇`,
-    { parse_mode: 'Markdown', ...keyboard }
+    { parse_mode: 'HTML', ...keyboard } // সুন্দর দেখানোর জন্য HTML মোড ব্যবহার করা হয়েছে
   );
 });
 
@@ -59,23 +56,20 @@ bot.onText(/\/start(.*)/, (msg, match) => {
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId,
-    `🆘 *সাহায্য মেনু*\n\n` +
+    `🆘 <b>সাহায্য মেনু</b>\n\n` +
     `/start - অ্যাপ শুরু করুন\n` +
-    `/balance - ব্যালেন্স দেখুন\n` +
-    `/refer - রেফার কোড পান\n` +
-    `/support - সাপোর্টে যোগাযোগ করুন\n\n` +
-    `আরো সাহায্যের জন্য: @earnbd_support`,
-    { parse_mode: 'Markdown' }
+    `/help - সাহায্য নিন\n\n` +
+    `সরাসরি সাপোর্টের জন্য: @Ownerearnbd`,
+    { parse_mode: 'HTML' }
   );
 });
 
-// ---- ADMIN COMMANDS ----
+// ---- ADMIN COMMANDS (আপনার আগের কোড অনুযায়ী রাখা হয়েছে) ----
 bot.onText(/\/admin/, (msg) => {
   if (msg.from.id.toString() !== ADMIN_ID) {
     bot.sendMessage(msg.chat.id, '❌ আপনার অ্যাডমিন অ্যাক্সেস নেই।');
     return;
   }
-
   const keyboard = {
     reply_markup: {
       inline_keyboard: [
@@ -85,66 +79,47 @@ bot.onText(/\/admin/, (msg) => {
       ]
     }
   };
-
-  bot.sendMessage(msg.chat.id, '🔐 *অ্যাডমিন প্যানেল*', { parse_mode: 'Markdown', ...keyboard });
+  bot.sendMessage(msg.chat.id, '🔐 <b>অ্যাডমিন প্যানেল</b>', { parse_mode: 'HTML', ...keyboard });
 });
 
 // ---- CALLBACK QUERIES ----
 bot.on('callback_query', (query) => {
   const chatId = query.message.chat.id;
-  const data = query.data;
-
-  if (data === 'admin_users') {
+  if (query.data === 'admin_users') {
     bot.answerCallbackQuery(query.id);
     bot.sendMessage(chatId, '👥 ব্যবহারকারী তথ্য: ফিচারটি ডেটাবেসের সাথে সংযুক্ত করুন।');
   }
-
-  if (data === 'admin_withdraws') {
+  if (query.data === 'admin_withdraws') {
     bot.answerCallbackQuery(query.id);
     bot.sendMessage(chatId, '💸 উইথড্র তালিকা: ফিচারটি ডেটাবেসের সাথে সংযুক্ত করুন।');
   }
 });
 
-// ---- API ROUTES (Mini App থেকে ডেটা পাঠাতে) ----
-
-// উইথড্র নোটিফিকেশন অ্যাডমিনকে পাঠান
+// ---- API ROUTES ----
 app.post('/api/notify-withdraw', (req, res) => {
   const { userName, amount, method, number } = req.body;
-
   if (ADMIN_ID) {
     bot.sendMessage(ADMIN_ID,
-      `💸 *নতুন উইথড্র অনুরোধ!*\n\n` +
-      `👤 নাম: ${userName}\n` +
-      `💰 পরিমাণ: ৳${amount}\n` +
-      `📱 পদ্ধতি: ${method}\n` +
-      `📞 নম্বর: ${number}\n\n` +
-      `✅ অনুমোদন দিতে অ্যাডমিন প্যানেল ব্যবহার করুন।`,
-      { parse_mode: 'Markdown' }
+      `💸 <b>নতুন উইথড্র অনুরোধ!</b>\n\n👤 নাম: ${userName}\n💰 পরিমাণ: ৳${amount}\n📱 পদ্ধতি: ${method}\n📞 নম্বর: ${number}`,
+      { parse_mode: 'HTML' }
     );
   }
-
   res.json({ success: true });
 });
 
-// নতুন ব্যবহারকারী নোটিফিকেশন
 app.post('/api/notify-register', (req, res) => {
   const { userName, referredBy } = req.body;
-
   if (ADMIN_ID) {
     bot.sendMessage(ADMIN_ID,
-      `🆕 *নতুন ব্যবহারকারী যোগ দিয়েছেন!*\n\n` +
-      `👤 নাম: ${userName}\n` +
-      (referredBy ? `🎁 রেফার: ${referredBy}` : ''),
-      { parse_mode: 'Markdown' }
+      `🆕 <b>নতুন ব্যবহারকারী!</b>\n\n👤 নাম: ${userName}\n` + (referredBy ? `🎁 রেফার: ${referredBy}` : ''),
+      { parse_mode: 'HTML' }
     );
   }
-
   res.json({ success: true });
 });
 
 // ---- SERVER START ----
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ EarnBD সার্ভার চালু হয়েছে: http://localhost:${PORT}`);
-  console.log(`🤖 টেলিগ্রাম বট চালু আছে...`);
+  console.log(`✅ EarnBD সার্ভার চালু হয়েছে।`);
 });
