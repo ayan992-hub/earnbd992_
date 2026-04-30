@@ -34,9 +34,11 @@ body {
   overflow-x: hidden;
 }
 
+/* SCREENS */
 .screen { display: none; min-height: 100vh; flex-direction: column; }
 .screen.active { display: flex; }
 
+/* ===== AUTH ===== */
 #authScreen {
   background: radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.08) 0%, transparent 60%),
               radial-gradient(ellipse at 80% 80%, rgba(123,47,255,0.1) 0%, transparent 60%),
@@ -48,12 +50,35 @@ body {
   overflow: hidden;
 }
 
-.stars { position: absolute; inset: 0; pointer-events: none; }
-.star { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.4); border-radius: 50%; animation: twinkle 3s infinite; }
-@keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 
-.auth-logo { text-align: center; margin-bottom: 28px; animation: fadeDown 0.6s ease; }
-@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+.star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeDown 0.6s ease;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .logo-wrap {
   width: 80px; height: 80px;
@@ -87,7 +112,13 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.auth-logo p { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: var(--font-en); letter-spacing: 1px; }
+.auth-logo p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: var(--font-en);
+  letter-spacing: 1px;
+}
 
 .auth-card {
   background: var(--card);
@@ -100,159 +131,689 @@ body {
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-.lang-switch { display: flex; justify-content: flex-end; margin-bottom: 16px; gap: 6px; }
-.lang-btn { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--font-en); }
-.lang-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; }
+/* Lang Switch */
+.lang-switch {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  gap: 6px;
+}
 
-.tab-switcher { display: flex; background: var(--bg2); border-radius: 12px; padding: 4px; margin-bottom: 22px; }
-.tab-btn { flex: 1; padding: 10px; border: none; border-radius: 9px; background: transparent; color: var(--muted); font-family: var(--font-bn); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.25s; }
-.tab-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; box-shadow: 0 4px 15px rgba(0,212,255,0.2); }
+.lang-btn {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-en);
+}
+
+.lang-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+  color: white;
+}
+
+.tab-switcher {
+  display: flex;
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-bn);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,212,255,0.2);
+}
 
 .form-group { margin-bottom: 14px; }
-.form-group label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; font-family: var(--font-en); }
-.form-group input { width: 100%; background: var(--bg2); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 15px; color: var(--text); font-family: var(--font-bn); font-size: 15px; transition: all 0.2s; outline: none; }
-.form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.08); }
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: var(--font-en);
+}
+
+.form-group input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 15px;
+  color: var(--text);
+  font-family: var(--font-bn);
+  font-size: 15px;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+}
+
 .form-group input::placeholder { color: var(--muted); font-size: 14px; }
 
-.btn-primary { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 14px; color: white; font-family: var(--font-bn); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.25s; margin-top: 6px; box-shadow: 0 6px 20px rgba(0,212,255,0.2); position: relative; overflow: hidden; }
-.btn-primary::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.2s; }
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-family: var(--font-bn);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 6px;
+  box-shadow: 0 6px 20px rgba(0,212,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.2s;
+}
+
 .btn-primary:active::after { background: rgba(255,255,255,0.1); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,212,255,0.3); }
 
-.error-msg { color: var(--red); font-size: 12px; margin-top: 8px; display: none; font-weight: 500; }
+.error-msg {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 8px;
+  display: none;
+  font-weight: 500;
+}
 
+/* ===== APP ===== */
 #appScreen { padding-bottom: 70px; }
 
-.app-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+.app-header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
 .header-left { display: flex; align-items: center; gap: 10px; }
-.avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; color: white; flex-shrink: 0; }
+
+.avatar {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 17px; color: white;
+  flex-shrink: 0;
+}
+
 .header-name { font-size: 15px; font-weight: 700; }
 .header-sub { font-size: 11px; color: var(--green); font-family: var(--font-en); }
 
-.balance-pill { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,47,255,0.1)); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; gap: 6px; }
+.balance-pill {
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,47,255,0.1));
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 12px;
+  padding: 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .balance-pill .bal-icon { font-size: 16px; }
-.balance-pill .bal-amount { font-family: var(--font-en); font-size: 18px; font-weight: 800; color: var(--accent); line-height: 1; }
+.balance-pill .bal-amount {
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
 .balance-pill .bal-unit { font-size: 10px; color: var(--muted); font-family: var(--font-en); }
 
+/* Pages */
 .page { display: none; padding: 14px 14px 0; }
 .page.active { display: block; }
 
-.welcome-card { background: linear-gradient(135deg, rgba(0,212,255,0.07), rgba(123,47,255,0.1)); border: 1px solid rgba(0,212,255,0.12); border-radius: 18px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; }
-.welcome-card::before { content: ''; position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(0,212,255,0.08), transparent); border-radius: 50%; }
+/* Welcome Banner */
+.welcome-card {
+  background: linear-gradient(135deg, rgba(0,212,255,0.07), rgba(123,47,255,0.1));
+  border: 1px solid rgba(0,212,255,0.12);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(0,212,255,0.08), transparent);
+  border-radius: 50%;
+}
+
 .wc-icon { font-size: 36px; }
 .wc-title { font-size: 16px; font-weight: 700; }
 .wc-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
-.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 8px; text-align: center; transition: transform 0.2s; }
+/* Stats */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 13px 8px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
 .stat-card:active { transform: scale(0.97); }
 .stat-card .s-icon { font-size: 20px; margin-bottom: 5px; }
-.stat-card .s-val { font-family: var(--font-en); font-size: 18px; font-weight: 800; color: var(--accent); line-height: 1; }
+.stat-card .s-val {
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
 .stat-card .s-lab { font-size: 10px; color: var(--muted); margin-top: 3px; font-weight: 600; }
 
-.sec-title { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-family: var(--font-en); }
-.sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+/* Section Title */
+.sec-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-en);
+}
 
+.sec-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Task Cards */
 .task-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.task-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 13px; transition: all 0.2s; position: relative; overflow: hidden; }
+
+.task-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
 .task-card.completed { opacity: 0.7; }
-.task-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2)); border-radius: 0 3px 3px 0; opacity: 0; transition: opacity 0.2s; }
+
+.task-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
 .task-card:not(.completed):hover::before { opacity: 1; }
-.task-icon-wrap { width: 50px; height: 50px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+
+.task-icon-wrap {
+  width: 50px; height: 50px;
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
 .task-info { flex: 1; }
 .task-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
 .task-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
-.task-right { text-align: right; flex-shrink: 0; }
-.task-reward-val { font-family: var(--font-en); font-size: 17px; font-weight: 800; color: var(--green); line-height: 1; }
-.task-reward-label { font-size: 10px; color: var(--muted); margin-bottom: 6px; font-family: var(--font-en); }
-.task-btn { padding: 6px 14px; border-radius: 8px; border: none; font-family: var(--font-bn); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: block; }
-.task-btn.start { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; box-shadow: 0 3px 10px rgba(0,212,255,0.2); }
-.task-btn.done { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.25); cursor: default; }
 
+.task-right { text-align: right; flex-shrink: 0; }
+.task-reward-val {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+}
+.task-reward-label { font-size: 10px; color: var(--muted); margin-bottom: 6px; font-family: var(--font-en); }
+
+.task-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  font-family: var(--font-bn);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: block;
+}
+
+.task-btn.start {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  box-shadow: 0 3px 10px rgba(0,212,255,0.2);
+}
+
+.task-btn.done {
+  background: rgba(0,230,118,0.1);
+  color: var(--green);
+  border: 1px solid rgba(0,230,118,0.25);
+  cursor: default;
+}
+
+/* Leaderboard */
 .lb-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.lb-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; }
+
+.lb-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
 .lb-item.top-1 { border-color: rgba(255,215,0,0.3); background: linear-gradient(135deg, rgba(255,215,0,0.05), var(--card)); }
 .lb-item.top-2 { border-color: rgba(192,192,192,0.2); }
 .lb-item.top-3 { border-color: rgba(205,127,50,0.2); }
+
 .lb-rank { font-family: var(--font-en); font-size: 22px; width: 32px; text-align: center; font-weight: 800; }
 .lb-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
 .lb-name { flex: 1; font-size: 15px; font-weight: 600; }
 .lb-amount { font-family: var(--font-en); font-size: 17px; font-weight: 800; color: var(--green); }
 
-.refer-hero { background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(123,47,255,0.09)); border: 1px solid rgba(0,212,255,0.12); border-radius: 20px; padding: 22px; text-align: center; margin-bottom: 14px; }
+/* Refer */
+.refer-hero {
+  background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(123,47,255,0.09));
+  border: 1px solid rgba(0,212,255,0.12);
+  border-radius: 20px;
+  padding: 22px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
 .refer-hero .rh-icon { font-size: 44px; margin-bottom: 10px; }
 .refer-hero h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
 .refer-hero p { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
-.refer-code-box { background: var(--bg2); border: 1.5px dashed var(--accent); border-radius: 12px; padding: 13px; font-family: var(--font-en); font-size: 22px; font-weight: 800; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px; }
-.btn-copy { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 12px; padding: 11px 28px; color: white; font-family: var(--font-bn); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.refer-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.refer-stat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; text-align: center; }
+
+.refer-code-box {
+  background: var(--bg2);
+  border: 1.5px dashed var(--accent);
+  border-radius: 12px;
+  padding: 13px;
+  font-family: var(--font-en);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.btn-copy {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 12px;
+  padding: 11px 28px;
+  color: white;
+  font-family: var(--font-bn);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refer-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.refer-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+}
+
 .refer-stat .rv { font-family: var(--font-en); font-size: 24px; font-weight: 800; color: var(--accent); }
 .refer-stat .rl { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 600; }
 
-.balance-display { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 18px; padding: 22px; text-align: center; margin-bottom: 14px; position: relative; overflow: hidden; }
-.balance-display::before { content: ''; position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+/* Withdraw */
+.balance-display {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-display::before {
+  content: '';
+  position: absolute;
+  right: -30px; top: -30px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+
 .bd-label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; font-family: var(--font-en); letter-spacing: 1px; }
 .bd-amount { font-family: var(--font-en); font-size: 46px; font-weight: 800; line-height: 1; }
 .bd-unit { font-size: 14px; opacity: 0.8; font-family: var(--font-en); margin-top: 2px; }
 .bd-taka { font-size: 13px; opacity: 0.7; margin-top: 4px; }
 
-.withdraw-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-bottom: 12px; }
-.withdraw-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-.method-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.method-btn { flex: 1; padding: 10px 6px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg2); color: var(--muted); font-family: var(--font-en); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.method-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.07); }
-.info-box { background: var(--bg2); border-radius: 12px; padding: 12px 14px; font-size: 12px; color: var(--muted); line-height: 2; border: 1px solid var(--border); }
+.withdraw-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
 
-.support-link { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 15px 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: var(--text); }
+.withdraw-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+.method-row { display: flex; gap: 8px; margin-bottom: 14px; }
+
+.method-btn {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg2);
+  color: var(--muted);
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.method-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0,212,255,0.07);
+}
+
+.info-box {
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 2;
+  border: 1px solid var(--border);
+}
+
+/* Support */
+.support-link {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 15px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--text);
+}
+
 .support-link:hover { border-color: var(--accent); transform: translateX(3px); }
+
 .sl-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .sl-title { font-size: 15px; font-weight: 700; }
 .sl-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .sl-arrow { margin-left: auto; color: var(--muted); font-size: 18px; }
 
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); backdrop-filter: blur(10px); }
-.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 4px 8px; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s; position: relative; }
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+  backdrop-filter: blur(10px);
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px 8px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.2s;
+  position: relative;
+}
+
 .nav-btn.active { color: var(--accent); }
-.nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: var(--accent); border-radius: 2px 2px 0 0; }
+
+.nav-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+
 .nav-btn .ni { font-size: 22px; transition: transform 0.2s; }
 .nav-btn.active .ni { transform: translateY(-2px); }
 .nav-btn .nl { font-size: 10px; font-weight: 700; margin-top: 2px; font-family: var(--font-en); }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: flex-end; backdrop-filter: blur(6px); }
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  backdrop-filter: blur(6px);
+}
+
 .modal-overlay.open { display: flex; }
-.modal { background: var(--card); border-radius: 24px 24px 0 0; padding: 24px 20px 40px; width: 100%; animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); border-top: 1px solid var(--border); }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.modal {
+  background: var(--card);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 40px;
+  width: 100%;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-top: 1px solid var(--border);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 .modal-handle { width: 40px; height: 4px; background: var(--muted); border-radius: 2px; margin: 0 auto 20px; opacity: 0.4; }
 .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
 .modal-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+
 .timer-wrap { margin: 16px 0; }
 .timer-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
 .timer-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 1s linear; }
 .timer-text { text-align: center; color: var(--muted); font-size: 14px; font-family: var(--font-en); font-weight: 600; }
 
-.btn-claim { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--green), #00c853); border: none; border-radius: 14px; color: white; font-family: var(--font-bn); font-size: 16px; font-weight: 700; cursor: pointer; display: none; margin-bottom: 8px; box-shadow: 0 6px 20px rgba(0,230,118,0.25); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { box-shadow: 0 6px 20px rgba(0,230,118,0.25); } 50% { box-shadow: 0 6px 30px rgba(0,230,118,0.4); } }
-.btn-claim.show { display: block; }
-.btn-cancel { width: 100%; padding: 13px; background: transparent; border: 1px solid var(--border); border-radius: 14px; color: var(--muted); font-family: var(--font-bn); font-size: 14px; cursor: pointer; }
+.btn-claim {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--green), #00c853);
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-family: var(--font-bn);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 20px rgba(0,230,118,0.25);
+  animation: pulse 1.5s infinite;
+}
 
-.story-timer-info { background: var(--bg2); border-radius: 12px; padding: 14px; margin: 12px 0; font-size: 13px; line-height: 2; color: var(--muted); border: 1px solid var(--border); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 6px 20px rgba(0,230,118,0.25); }
+  50% { box-shadow: 0 6px 30px rgba(0,230,118,0.4); }
+}
+
+.btn-claim.show { display: block; }
+
+.btn-cancel {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+  font-family: var(--font-bn);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Story Modal */
+.story-timer-info {
+  background: var(--bg2);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 2;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
 .story-progress { margin: 12px 0; }
 .story-milestones { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px; font-family: var(--font-en); }
 
-.toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 11px 22px; font-size: 14px; z-index: 999; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 85px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 22px;
+  font-size: 14px;
+  z-index: 999;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 15px 16px; margin-bottom: 8px; }
+/* FAQ */
+.faq-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 15px 16px;
+  margin-bottom: 8px;
+}
+
 .faq-q { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
 .faq-a { font-size: 13px; color: var(--muted); line-height: 1.7; }
-.conversion-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; font-family: var(--font-en); }
+
+/* Dollar conversion note */
+.conversion-note {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 4px;
+  font-family: var(--font-en);
+}
 </style>
 </head>
 <body>
 
+<!-- Stars -->
 <div class="stars" id="stars"></div>
 
 <!-- AUTH -->
@@ -402,7 +963,7 @@ body {
       <div class="method-row">
         <button class="method-btn active" onclick="selMethod(this,'bkash')">📱 bKash</button>
         <button class="method-btn" onclick="selMethod(this,'nagad')">🟠 Nagad</button>
-        <button class="method-btn" onclick="selMethod(this,'rocket')">🔴 Rocket</button>
+        <button class="method-btn" onclick="selMethod(this,'binance')">🟡 Binance</button>
       </div>
       <div class="form-group">
         <label id="mLabel">bKash নম্বর</label>
@@ -509,28 +1070,47 @@ body {
   </div>
 </div>
 
-<!-- Story Task Modal -->
-<div class="modal-overlay" id="storyModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📖 গল্প পড়ুন</div>
-    <div class="modal-desc">যত বেশি পড়বেন, তত বেশি আয় করবেন!</div>
-    <div class="story-timer-info">
-      ⏱️ ১০ মিনিট পড়লে → <strong style="color:var(--green)">$0.05</strong><br>
-      ⏱️ ২০ মিনিট পড়লে → <strong style="color:var(--green)">$0.10</strong><br>
-      📌 যেকোনো সময় ক্লেইম করতে পারবেন
-    </div>
-    <div class="story-progress">
-      <div class="timer-bar"><div class="timer-fill" id="storyFill" style="width:0%"></div></div>
-      <div class="story-milestones">
-        <span>0</span><span>5m</span><span>10m ✓</span><span>15m</span><span>20m ✓</span>
+<!-- Story Task Modal - Full Screen In-App Reader -->
+<div class="modal-overlay" id="storyModal" style="align-items:stretch;padding:0;">
+  <div class="modal" style="border-radius:0;padding:0;display:flex;flex-direction:column;height:100vh;max-height:100vh;width:100%;max-width:100%;">
+    <!-- Header -->
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--card);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📖</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);" id="storyTitleDisplay">গল্প পড়ুন</div>
+          <div style="font-size:10px;color:var(--muted);">স্ক্রল করুন → সময় কাউন্ট হবে</div>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--font-en);font-size:18px;font-weight:800;color:var(--accent);" id="storySec">0.0</div>
+        <div style="font-size:10px;color:var(--muted);">মিনিট</div>
       </div>
     </div>
-    <div class="timer-text" id="storyTimerText">⏳ <span id="storySec">0</span> minutes read</div>
-    <button class="btn-claim show" id="storyClaimBtn" onclick="claimStory()" style="margin-top:12px;">
-      📖 এখন ক্লেইম করুন — <span id="storyRewardText">$0.00</span>
-    </button>
-    <button class="btn-cancel" onclick="cancelStory()">পড়া বন্ধ করুন</button>
+    <!-- Progress Bar -->
+    <div style="height:3px;background:var(--border);flex-shrink:0;">
+      <div style="height:100%;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 1s linear;width:0%;" id="storyFill"></div>
+    </div>
+    <!-- Reward Strip -->
+    <div style="padding:7px 16px;background:rgba(0,230,118,0.05);border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-shrink:0;flex-wrap:wrap;">
+      <span style="font-size:10px;color:var(--muted);">5মিনিট→<strong style="color:var(--green)">$0.02</strong></span>
+      <span style="font-size:10px;color:var(--muted);">10মিনিট→<strong style="color:var(--green)">$0.05</strong></span>
+      <span style="font-size:10px;color:var(--muted);">20মিনিট→<strong style="color:var(--green)">$0.10</strong></span>
+      <span style="font-size:11px;color:var(--accent);margin-left:auto;font-weight:700;" id="storyRewardText">$0.00</span>
+    </div>
+    <!-- Scrollable Story Content -->
+    <div id="storyContent" style="flex:1;overflow-y:auto;padding:20px 18px;line-height:2;font-size:15px;color:var(--text);-webkit-overflow-scrolling:touch;"></div>
+    <!-- Next Story Bar -->
+    <div id="nextStoryBar" style="display:none;padding:10px 16px;background:rgba(0,212,255,0.08);border-top:1px solid rgba(0,212,255,0.15);flex-shrink:0;">
+      <button onclick="loadNextStory()" style="width:100%;padding:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer;">➡️ পরের গল্প পড়ুন</button>
+    </div>
+    <!-- Actions -->
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--card);">
+      <button class="btn-claim show" id="storyClaimBtn" onclick="claimStory()" style="flex:2;margin:0;padding:12px;">
+        ✅ ক্লেইম — <span id="storyClaimReward">$0.00</span>
+      </button>
+      <button class="btn-cancel" onclick="cancelStory()" style="flex:1;padding:12px;">বন্ধ</button>
+    </div>
   </div>
 </div>
 
@@ -542,6 +1122,22 @@ body {
 const RATE = 110;
 const SESSION_DAYS = 5;
 
+// ===== STORIES =====
+const STORIES = [
+  { title: "নির্বাচিত বলি", content: `আমার বোন তার চতুর্থ গর্ভধারণের খবরটা দিল, আর ডাইনিং টেবিলের ওপার থেকে আমার দিকে তাকিয়ে হালকা করে হাসল।\n\nতারপর খুব স্বাভাবিক গলায় বলল,\n"বাচ্চাগুলো কয়েক মাস তোমার কাছে থাকবে, আমি বাচ্চা জন্ম দেওয়া পর্যন্ত।"\n\nপ্রথমে আমি ভেবেছিলাম, আমি ভুল শুনেছি।\nসত্যি বলছি, আমার মাথাই কাজ করছিল না।\n\nকারণ এমন তো হতে পারে না… একদমই না…\nসে নিজের মনে ঠিক করে ফেলেছে—আমি তার তিনটা বাচ্চার ফুল-টাইম দেখাশোনা করব!\n\nমাসের পর মাস।\n\nআমাকে না জিজ্ঞেস করে।\nআমার কোনো মতামত না নিয়ে।\nআমি রাজি কি না—সেটাও না ভেবে।\n\nআমি তার মুখের দিকে তাকালাম।\nআর তখনই বুঝলাম—সে একদম সিরিয়াস।\n\nতার মাথায় সব ঠিক হয়ে গেছে।\nআমার জীবনটা যেন আগে থেকেই তার কাছে বুক করা ছিল।\n\nতার বলার ভঙ্গিটা এখনো মনে আছে—\nএতটাই স্বাভাবিক, যেন সে একটা জামা ধার চাইছে।\n\n"বাচ্চাগুলো তোমার কাছে থাকবে…"\n\nনা "তুমি পারবে?"\nনা "তুমি রাজি?"\nনা "জানি এটা অনেক বড় দায়িত্ব…"\n\nকিছুই না।\n\nসরাসরি সিদ্ধান্ত।\n\nআমি চুপ করে বসে রইলাম।\nআমার মা পাশে বসে ছিলেন, কিন্তু অদ্ভুতভাবে চুপ।\n\nআমার বোন এক হাত পেটের ওপর রেখে সেই নরম মুখভঙ্গি করছিল—যেটা দিয়ে মানুষ আগে থেকেই সহানুভূতি আদায় করে নেয়।\n\nসে বলল তার প্রেগন্যান্সিতে সমস্যা আছে।\nতার প্রেসার বেড়েছে।\nডাক্তার তাকে বিশ্রামে থাকতে বলেছেন।\n\nআর তারপর এক নিমেষে সব দায়িত্ব আমার ওপর ঠেলে দিল।\n\nরিদা আর জিসানের স্কুলে নেওয়া-আনা।\nছোট তুহিনের ডে-কেয়ার।\nখাওয়ানো, গোসল, ঘুম পাড়ানো, কান্না থামানো, ডাক্তার দেখানো…\n\nসব।\n\nকারণ?\nআমার তিন বেডরুমের বাসা আছে।\nআর আমি বাসা থেকে কাজ করি।\n\nতাই আমার জীবন নাকি "অটোমেটিকালি" ফাঁকা।\n\nআমি আস্তে করে চামচটা নামালাম।\n\nতারপর বললাম,\n"তুমি চাও আমি তোমার তিনটা বাচ্চাকে কয়েক মাস রাখি?"\n\nসে হাসল।\nযেন আমি অবশেষে বুঝেছি।\n\n"যতদিন লাগে।"\n\nএই কথাটা শুনে আমার ভেতরটা হঠাৎ ঠান্ডা হয়ে গেল।\n\nকারণ তার কাছে এটা বলা এত সহজ ছিল…\nআমার শান্তি, সময়, কাজ—সবকিছু যেন তার চোখে কোনো মূল্যই নেই।\n\nআমি স্পষ্ট করে না বললাম।\n\nবললাম, আমি সপ্তাহে ৬০ ঘণ্টা কাজ করি।\nআমার ডেডলাইন আছে।\nআমি একসাথে তিনটা বাচ্চার মা হতে পারব না।\n\nআমি বললাম, সে অন্য কাউকে খুঁজুক।\nহেল্পার রাখুক।\nতার স্বামীকে বলুক।\n\nআর সে আমাকে কী বলল জানো?\n\n"স্বার্থপর।"\n\nহ্যাঁ, আমাদের পরিবারে "স্বার্থপর" মানে—\nযখন আমি মনে করি, আমারও একটা জীবন আছে।\n\nআমি উঠে দাঁড়ালাম।\nআর এক মুহূর্তও সেখানে থাকিনি।\n\nকারণ জানতাম, থাকলে তারা আবার চাপ দেবে।\nগিল্ট দেবে।\nআমার না-কে মুছে ফেলবে।\n\nসেই রাতে বাসায় ফেরার পথে আমার হাত কাঁপছিল।\n\nঅপরাধবোধে না।\nবরং এই অনুভূতিতে—আমি যেন কারো চোখে অস্তিত্বই রাখি না।\n\nএক সপ্তাহ পর বুঝলাম, তারা কতটা নিশ্চিত ছিল যে আমি শেষমেশ রাজি হব।\n\nশনিবার সকাল।\nআমি বাসায় বসে কাজ করছি।\n\nহঠাৎ দরজায় জোরে বেল বাজল।\n\nআমি জানালা দিয়ে তাকিয়ে দেখি—\nআমার বোনের গাড়ি।\n\nআর দরজার সামনে দাঁড়িয়ে আছে—\nরিদা, জিসান, তুহিন।\n\nসুটকেস, ব্যাগ, কাপড় ভর্তি থলে…\n\nআমি দরজা খুললাম।\n\nরিদা চুপচাপ।\nজিসান কাঁদছে।\nতুহিন একটা ব্যাগের ওপর বসে আছে।\n\nআমি দৌড়ে গিয়ে চিৎকার করলাম,\n"তুমি কী করছো?"\n\nসে গাড়ির ভেতর থেকে শান্ত গলায় বলল,\n"বলেছিলাম তো। ওরা তোমার কাছে থাকবে।"\n\nআমি চিৎকার করলাম।\nবললাম এটা পাগলামি।\nবললাম এটা অন্যায়।\n\nসে শুধু বলল,\nতার ডাক্তার অ্যাপয়েন্টমেন্ট আছে।\n\nতারপর… চলে গেল।\n\nআমার সামনে তার বাচ্চাগুলো রেখে।\n\nআমি ফোন করলাম—ধরা হল না।\nতার স্বামী—ধরা হল না।\nমাকে ফোন করলাম।\n\nতিনি বললেন,\n"ভালো হয়েছে, রেখে গেছে।"\n\nআমার মাথা ঘুরে গেল।\n\nআমি পুলিশ ডাকলাম।\n\nঅফিসার এলেন।\nসব শুনলেন।\n\nকিন্তু সমস্যাটা রয়ে গেল—\nবাচ্চাগুলো তখনো আমার বাসায়।\n\nআমি তাদের বের করে দিতে পারিনি।\n\nকারণ তারা দোষী না।\n\nসেই রাতটা আমি কাঁদতে কাঁদতে কাটালাম।\nতারপর উঠে পিজ্জা অর্ডার করলাম।\n\nতাদের খাওয়ালাম।\nবিছানা তৈরি করলাম।\nজিসানকে শান্ত করলাম।\nতুহিনকে কোলে নিলাম।\n\nসেই রাতেই আমি একটা জিনিস বুঝলাম—\n\nআমার বোন আমাকে সাহায্য চাইনি।\nসে আমাকে বলি হিসেবে বেছে নিয়েছে।\n\nপরদিন থেকে ফোন আসতে লাগল।\n\n"পরিবার তো সাহায্য করে।"\n\nএই কথাটা বারবার শুনলাম।\n\nকিন্তু কেউ জিজ্ঞেস করল না—\nএটা ন্যায্য কি না।\n\nসোমবার সকালে আমি ক্লান্ত।\nভাঙা।\n\nআর তখন বুঝলাম—\nএটা কোনো ভুল না।\n\nএটা একটা পরিকল্পনা ছিল।\n\nআমি ল্যাপটপ খুললাম।\nসব প্রমাণ জমা করলাম।\n\nতারপর ফোন তুলে…\nএকজন আইনজীবীকে কল করলাম।` },
+  { title: "নীরব সত্য", content: `আমার মেয়েটা ২১ বছর বয়সে এক কোরিয়ান লোককে বিয়ে করেছিল। তারপর থেকে টানা ১২ বছর সে আর বাড়ি ফেরেনি। তবে প্রতি বছর ঠিকই ৮ মিলিয়ন টাকা পাঠায়। গত বড়দিনে হঠাৎ করে সিদ্ধান্ত নিলাম—ওকে না জানিয়ে আমি নিজেই ওর কাছে চলে যাব।\n\nসেই সকালটা আমি কোনোদিন ভুলব না। হাতে প্লেনের টিকিট, বুকের ভেতর ধুকপুকানি—পুরো ১২ বছর পর আমি আমার মেয়ের কাছে যাচ্ছি। আমার নাম তৃষা, বয়স ৬৩। অনেক আগেই স্বামীকে হারিয়েছি, একমাত্র মেয়ে মীরাকে একাই বড় করেছি।\n\nমীরা ছোটবেলা থেকেই ভীষণ মেধাবী, শান্ত আর সুন্দর ছিল। সবাই বলত, ওর ভবিষ্যৎ খুব উজ্জ্বল হবে। সত্যিই হয়েছে… তবে সেটা শুধু বাইরের মানুষের চোখে।\n\n২১ বছর বয়সে ওর সঙ্গে পরিচয় হয় কাং জুন নামের এক কোরিয়ান লোকের। লোকটা ওর থেকে প্রায় ২০ বছর বড়। আমি প্রথম থেকেই আপত্তি করেছিলাম। বয়সের এত পার্থক্য, বিদেশে চলে যাওয়া—সব মিলিয়ে ভয় লাগছিল। কিন্তু মীরা জেদ ধরেছিল—\n"মা, আমি জানি আমি কী করছি।"\n\nশেষ পর্যন্ত মেয়ের জেদের কাছে হার মেনে বিয়েটা মেনে নিয়েছিলাম।\n\nবিয়ের এক মাসের মধ্যেই ও কোরিয়ায় চলে গেল। সেদিন বিমানবন্দরে ও আমাকে জড়িয়ে ধরে কাঁদছিল… আমিও কাঁদছিলাম, কিন্তু লুকিয়ে রেখেছিলাম।\n\nভাবছিলাম, কয়েক বছর পর ঠিকই ফিরে আসবে।\n\nকিন্তু না… বছর যায়, আরেক বছর যায়… পাঁচ বছর পর আমি প্রশ্ন করাও বন্ধ করে দিই।\n\nশুধু প্রতি বছর ঠিক সময়ে ৮ মিলিয়ন পেসো এসে পৌঁছাত। সঙ্গে একটা ছোট্ট বার্তা—\n"মা, নিজের খেয়াল রেখো। আমি ভালো আছি।"\n\nএই "ভালো আছি" কথাটাই আমার সবচেয়ে বেশি ভয়ের ছিল।\n\nকোরিয়ায় পৌঁছে ঠিকানাটা ধরে একটা ট্যাক্সি নিলাম।\n\nদু'তলা একটা বাড়ি। বাইরে থেকে সব ঠিকঠাক, কিন্তু অদ্ভুত নিস্তব্ধতা।\n\nডোরবেল চাপলাম—কেউ দরজা খুলল না।\n\nবাইরের গেট খোলা ছিল। ধীরে ধীরে ভেতরে ঢুকলাম।\n\nসব কিছু এত পরিপাটি… কিন্তু কোথাও জীবনের কোনো ছাপ নেই।\n\nড্রয়িং রুমে ঢুকেই বুঝলাম কিছু একটা ঠিক নেই। সব কিছু এত গোছানো, যেন কেউ এখানে থাকে না। কোনো জুতো ছড়ানো নেই, কোনো কাপড় নেই, রান্নার গন্ধ নেই।\n\nআমি ধীরে ধীরে ডাকলাম—\n"মীরা…"\n\nকোনো উত্তর নেই।\n\nরান্নাঘরে গেলাম—অস্বাভাবিক পরিষ্কার। ফ্রিজ খুলে দেখি, প্রায় ফাঁকা।\n\nউপরে উঠলাম।\n\nপ্রথম ঘরে একটা বিছানা—একজন মানুষের থাকার মতো। আলমারিতে শুধু মেয়েদের কাপড়।\n\nকোনো পুরুষের অস্তিত্ব নেই।\n\nদ্বিতীয় ঘরটা অফিসের মতো, কিন্তু ব্যবহার হয় না মনে হলো।\n\nকাং জুন-এর কোনো চিহ্নই নেই।\n\nআমার বুক ধড়ফড় করতে লাগল।\n\nশেষ ঘরটা খুলতেই… আমার পা কেঁপে উঠল।\n\nঘর ভর্তি কার্টন। কিছু খোলা।\n\nভেতরে—গুচ্ছ গুচ্ছ টাকা।\n\nপেসো।\n\nআমার মাথা ঘুরে উঠল।\n\nপ্রতি বছর যে ৮ মিলিয়ন পায়… তাহলে এই এত টাকা কোথা থেকে এলো? আর কেন লুকিয়ে রাখা?\n\nহঠাৎ নিচে দরজা খোলার শব্দ।\n\nকারো পায়ের আওয়াজ।\n\nআমার শ্বাস বন্ধ হয়ে আসছে।\n\nতারপর…\n\nঠক ঠক।\n\nকেউ দরজায় কড়া নাড়ল।\n\nআমি স্থির হয়ে দাঁড়িয়ে রইলাম…` },
+  { title: "ভাঙা অহংকার", content: `আমার স্বামী আমার একমাত্র পরার মতো শাড়িটা আগুনে পুড়িয়ে দিয়েছিল—শুধু যেন আমি তার প্রোমোশনের পার্টিতে যেতে না পারি। সে বলেছিল, আমি নাকি "লজ্জার কারণ"।\n\nকিন্তু সেদিন রাতেই… সবকিছু বদলে গিয়েছিল।\n\nআমি ক্লারা—এখন নামটা আর আমার কাছে আগের মতো শোনায় না। সাত বছর ধরে আমি আদনানের স্ত্রী। এই সাত বছরে আমি নিজের সবকিছু উজাড় করে দিয়েছি—একটা না, একাধিক কাজ করেছি, নিজের জিনিসপত্র বিক্রি করেছি, শুধু যেন সে পড়াশোনা শেষ করতে পারে, একটা বড় কোম্পানিতে চাকরি পায়।\n\nসেই কোম্পানিটা… "ফাইনগার্ড গ্রুপ"।\n\nসেদিন তার জীবনের সবচেয়ে বড় রাত ছিল। সে পদোন্নতি পেয়ে অপারেশনসের ডেপুটি ডিরেক্টর হয়েছে। আর আমি? আমি মাসের পর মাস টাকা জমিয়ে একটা সাধারণ নীল শাড়ি কিনেছিলাম—তার পাশে দাঁড়াবো বলে, গর্ব নিয়ে।\n\nকিন্তু বের হওয়ার এক ঘণ্টা আগে… হঠাৎ পোড়া গন্ধ পেলাম।\n\nদৌড়ে বাইরে গিয়ে দেখি… আমার বুকটা যেন থেমে গেল।\n\nআদনান দাঁড়িয়ে আছে, হাতে পেট্রোলের বোতল। আর আমার শাড়িটা… আগুনে জ্বলছে।\n\n"আদনান! তুমি এটা কী করছো?!"\n\nআমি ছুটে যেতেই সে আমাকে ধাক্কা দিয়ে সরিয়ে দিল।\n\nঠান্ডা গলায় বলল, "ওটা আবর্জনা। ঠিক তোমার মতো।"\n\nকথাগুলো যেন আমার ভেতরটা ছিঁড়ে ফেলল।\n\nআমি কাঁপা গলায় বললাম, "আমি এখন কীভাবে যাবো তোমার সঙ্গে?"\n\nসে ঠোঁট বাঁকিয়ে তাকাল, "ঠিক সেটাই—তুমি যাবে না। নিজের চেহারা দেখেছো? তোমার হাত, তোমার পোশাক… আমি এখন বড় পদে আছি। আমার চারপাশের মানুষ বদলে গেছে। তুমি আর মানাও না।"\n\nআমার চোখ দিয়ে পানি পড়ছিল থামছিল না। "আমি তো তোমার পাশে ছিলাম… আমি তোমাকে এখানে পৌঁছাতে সাহায্য করেছি…"\n\nসে হেসে বলল, "তার দাম তো পাচ্ছো, তাই না? বাড়িতে থাকো। আমি ফারিহাকে ডেকেছি—বসের মেয়ে। সে আমার সঙ্গে মানায়। আর যদি আসার চেষ্টা করো… সিকিউরিটি তোমাকে বের করে দেবে।"\n\nসে চলে গেল। আমি দাঁড়িয়ে রইলাম… নিজের স্বপ্নগুলোকে আগুনে ছাই হয়ে যেতে দেখলাম।\n\nকিন্তু ঠিক সেই মুহূর্তে… আমার ভেতরে কিছু বদলে গেল।\n\nদুঃখটা মিলিয়ে গেল। তার জায়গায় এল এক অদ্ভুত শীতলতা।\n\nআদনান ভাবছে আমি কিছুই না। কিন্তু সে জানে না সত্যিটা।\n\nযে "ফাইনগার্ড গ্রুপ" নিয়ে সে এত গর্ব করে… ওটা আসলে আমার পরিবারের।\n\nআমি ক্লারা ফুয়াদ। এই কোম্পানির প্রকৃত উত্তরাধিকারী… আসল চেয়ারপারসন, যার পরিচয় কেউ জানে না।\n\nসাত বছর আগে আমি সব ছেড়ে দিয়েছিলাম… সত্যিকারের ভালোবাসার জন্য। দেখতে চেয়েছিলাম—সে আমাকে আমার জন্য ভালোবাসে, নাকি আমার পরিচয়ের জন্য।\n\nআজ উত্তরটা পেয়ে গেলাম।\n\nআমি ধীরে ধীরে চোখের পানি মুছে ফেললাম। মোবাইলটা হাতে নিলাম।\n\n"হ্যালো, হাসান সাহেব।"\n\nওপাশ থেকে সঙ্গে সঙ্গে উত্তর এল, "জী ম্যাডাম, সব প্রস্তুত।"\n\nআমি শান্ত, দৃঢ় গলায় বললাম, "টিম রেডি রাখুন। প্যারিসের সেই ড্রেসটা নিয়ে আসুন… আর পঞ্চাশ মিলিয়নের ডায়মন্ড সেট।"\n\nএকটু থেমে বললাম— "আজ রাতে… আমি প্রবেশ করব রানি হয়ে।"` },
+  { title: "হারানো পরিচয়", content: `২৮ বছর ধরে… আমার বাবা আমাকে সবার সামনে একটা নামেই ডাকত—"জারজ"… আর একদিন, একটা ডিএনএ রিপোর্ট সবকিছু ওলটপালট করে দিল।\n\nসেদিন ছিল শুক্রবার। আমাদের ঢাকার পুরোনো বাড়িতে বড় একটা পারিবারিক ভোজ বসেছিল। লম্বা টেবিল, দামি প্লেট, সাজানো খাবার—সবকিছু যেন বাহ্যিকভাবে নিখুঁত। কিন্তু সেই সাজের আড়ালে লুকিয়ে ছিল বছরের পর বছর জমে থাকা অপমান আর কষ্ট।\n\nহঠাৎ বাবা—সোলায়মান সাহেব—সবার সামনে দাঁড়িয়ে ঘোষণা করলেন, তিনি আমার বিয়ে দেবেন না। আমার হবু স্বামীকে অপমান করে বললেন, "এই মেয়েকে আমি কারও হাতে তুলে দেব না। কারণ এটা আমার মেয়ে না… এটা আমার বউয়ের বিশ্বাসঘাতকতার প্রমাণ।"\n\nমুহূর্তেই পুরো ঘর নিস্তব্ধ হয়ে গেল।\n\nআমি ছোটবেলার প্রতিটা মুহূর্ত মনে পড়তে লাগল। ৭ বছর বয়সে শুনেছিলাম বাবা বলছেন—"এত ফর্সা মেয়ে আমার হতে পারে না।" ১২ বছরে ক্লাবের সদস্যপদ দিতে রাজি হননি। ১৮ বছরে ভাইয়ের পড়াশোনার জন্য লাখ লাখ টাকা দিলেন, আর আমাকে বললেন—"তোমার আসল বাবাকে বলো।"\n\nআমি নিজের চেষ্টায় নার্সিং পড়েছি। রাত জেগে কাজ করেছি। কখনও বাবার কাছ থেকে ভালোবাসা পাইনি… শুধু অপমান।\n\nতিন সপ্তাহ পর রিপোর্ট এলো।\n\nআমি একা বসে ইমেইল খুললাম। হাত কাঁপছিল।\n\nপ্রথম লাইন—বাবার সঙ্গে মিল: ০%\n\nআমি অবাক হইনি।\n\nকিন্তু পরের লাইন দেখে নিঃশ্বাস বন্ধ হয়ে গেল—\n\nমায়ের সঙ্গে মিল: ০%\n\nআমার চারপাশ অন্ধকার হয়ে গেল।\n\nতাহলে…?\n\nবাবা ২৮ বছর ধরে মাকে দোষারোপ করেছেন—কিন্তু মা নির্দোষ। আর আমি… আমি তাদের কারও সন্তানই না।\n\nসেই মুহূর্তে বুঝলাম—এটা শেষ না, বরং শুরু।\n\nকারণ কোথাও একটা পরিবার আছে, যারা আমার জায়গায় অন্য কাউকে বড় করেছে… আর কোথাও একটা মেয়ে আছে, যে হয়তো আমার মায়ের কোলে বড় হওয়ার কথা ছিল।` },
+  { title: "ক্ষমতার আলো", content: `রিদয় মেহরা সেদিন সিইও গালা অনুষ্ঠানে মঞ্চে দাঁড়িয়ে ছিল, চারদিকে আলো, ক্যামেরার ঝলকানি আর অভিজাত মানুষের ভিড়। সবাই তার প্রশংসায় ব্যস্ত, তার নেতৃত্বের গল্প শুনে হাততালি দিচ্ছিল। "নক্ষত্র টেক ইন্ডিয়া"-র সাফল্যের কেন্দ্রবিন্দু যেন সে নিজেই।\n\nকিন্তু ভিড়ের আড়ালে, সাদা হাতির দাঁতের মতো রঙের সিল্ক শাড়ি পরে এক নারী চুপচাপ দাঁড়িয়ে ছিল। তার নাম ইশা আবরার।\n\nচার মাস আগে সে যমজ সন্তানের মা হয়েছে। শরীর এখনো পুরোপুরি সেরে ওঠেনি, পিঠে ব্যথা, চোখে ক্লান্তি, তবুও সে এসেছিল শুধু একবার তার স্বামীর পাশে দাঁড়াতে।\n\nরিদয় তার কানে ফিসফিস করে বলল, "তুমি আজ খুব ফুলে গেছো… খুব খারাপ লাগছো। এই গালায় তোমার চুপ থাকাই ভালো।"\n\nইশার বুকের ভেতরটা যেন ভেঙে গেল। কিন্তু মুখে কিছু বলল না। শুধু ঠান্ডা গ্লাসটা শক্ত করে ধরল, যেন নিজেকে সামলাতে চাইছে।\n\nরিদয় আবার হাসিমুখে মঞ্চে উঠে গেল। হাত তুলে টোস্ট দিচ্ছে, নেতৃত্বের গল্প বলছে, আর সবাই তাকে একজন সফল সিইও হিসেবে সম্মান দিচ্ছে।\n\nকেউ জানত না, এই পুরো কোম্পানির আসল মালিকানা লুকিয়ে আছে "আবরার গ্রুপ"-এর ভেতরে, যেটা ইশার পরিবার বহু বছর ধরে নিয়ন্ত্রণ করছে।\n\nঅনুষ্ঠানের মাঝে ইশা যখন ব্যথায় আর ক্লান্তিতে বের হতে চাইছিল, রিদয় তার হাত শক্ত করে ধরে সাইড করিডোরে টেনে নিয়ে গেল।\n\nতার চোখে বিরক্তি, কণ্ঠে তাচ্ছিল্য, "তুমি আমার জন্য লজ্জার কারণ। বুঝতে পারো না? আমি সিইও। তোমার কাজ আমাকে ভালোভাবে দেখানো।"\n\nইশা দেয়ালের ঠান্ডা স্পর্শ অনুভব করল। চোখের সামনে ভেসে উঠল নবজাতক দুই সন্তানের মুখ, নিদ্রাহীন রাত, আর বারবার অবহেলার সেই মুহূর্তগুলো।\n\nআজ আর তার চোখে পানি এল না।\n\nসে শুধু ধীরে ধীরে আঙুল থেকে বিয়ের আংটিটা খুলে নিজের ব্যাগে রেখে দিল।\n\nরাত গভীর হলে রিদয় বাড়িতে ফিরে এল। কিন্তু দরজার বায়োমেট্রিক লক তাকে ঢুকতে দিল না।\n\nতার প্রিমিয়াম কার্ড কাজ করল না। গাড়ি স্টার্ট নিল না।\n\nআর ভেতরে, এক নিরাপদ স্যুটে, ইশা তার ঘুমন্ত যমজ সন্তানদের পাশে বসে শুধু একটি ফোন করল।\n\n"মায়া, কাল সকাল আটটায় মিটিং ডাকো। রেড প্রোটোকল।"` },
+  { title: "হলুদ স্বপ্ন", content: `ছোট্ট একটা মেয়ে, হলুদ রঙের ফ্রক পরে ঢুকে পড়ল "ইন্টারন্যাশনাল" নামের এক বিশাল কোম্পানির অফিসে। সে এসে শান্ত গলায় বলল— "আমি আমার মায়ের হয়ে ইন্টারভিউ দিতে এসেছি।"\n\nশহরের মাঝখানে দাঁড়িয়ে থাকা বিশাল কাঁচের বিল্ডিংটা যেন অন্য জগতের মতো—ঝকঝকে মেঝে, চারপাশে ব্যস্ত মানুষের চলাফেরা, সবাই নিজ নিজ কাজে ডুবে।\n\nরিসেপশনে বসা মেয়েটা প্রথমে ভেবেছিল, বাচ্চাটা হয়তো পথ ভুলে এখানে চলে এসেছে। কিন্তু মেয়েটার চোখে কোনো ভয় নেই, বরং এক অদ্ভুত দৃঢ়তা।\n\nসে ধীরে ধীরে ডেস্কের সামনে এসে দাঁড়াল। ছোট্ট হাতটা ডেস্কে রেখে ভদ্রভাবে বলল—\n"সুপ্রভাত। আমি আমার মায়ের ইন্টারভিউ দিতে এসেছি। উনি আসতে পারেননি… তাই আমি এসেছি।"\n\nরিসেপশনিস্ট একটু থমকে গেল। "তোমার নাম কী?"\n\nমেয়েটা নির্ভয়ে বলল— "আমার নাম সোহা রহমান। আমার মা লাবণ্য রহমান। আজ সকাল ৯টায় উনার অ্যাকাউন্টসের ইন্টারভিউ ছিল।"\n\nমেয়েটার গলায় কোনো দ্বিধা নেই। রিসেপশনিস্ট ঘড়ির দিকে তাকাল—সময় ঠিক ৮টা ৫৮।\n\nসোহা তার ছোট্ট কাঁধে একটা ফাইল নিয়ে এসেছে। সেটাকে সে খুব যত্ন করে ধরে আছে, যেন ওটাই তার সবচেয়ে বড় দায়িত্ব।\n\n"তোমার মা ভালো আছেন?" প্রশ্নটা শুনে সোহা একটু চুপ করে রইল। তারপর ধীরে বলল—\n"হয়তো… কিন্তু একটা জরুরি ঘটনা ঘটেছে। উনি সবসময় বলেন, কখনো হাল ছাড়তে নেই। তাই আমি এসেছি।"\n\nঠিক তখনই পাশ দিয়ে যাওয়া এক ভদ্রলোক কথাগুলো শুনে থেমে গেলেন। তিনি ছিলেন কোম্পানির ফাইন্যান্স ম্যানেজার—রাশেদ স্যার।\n\nতিনি নিচু হয়ে সোহাকে জিজ্ঞেস করলেন— "আমি কি ফাইলটা দেখতে পারি?"\n\nসোহা মাথা নাড়ল। ফাইল খুলে দিল। ভেতরে সুন্দরভাবে সাজানো সিভি, সার্টিফিকেট, অভিজ্ঞতার কাগজ—সব কিছুই নিখুঁত।\n\nসবচেয়ে উপরে ছিল একটা হাতে লেখা চিঠি।\n\nরাশেদ স্যার চিঠিটা পড়তে শুরু করলেন। প্রথম কয়েক লাইন পড়ার পরই তার মুখের অভিব্যক্তি বদলে গেল।\n\nতিনি ধীরে জিজ্ঞেস করলেন— "তোমার মা এখন কোথায়?"\n\nসোহা নিচের দিকে তাকিয়ে বলল— "হাসপাতালে… কিন্তু উনি অসুস্থ না। অন্য একটা জরুরি কারণে সেখানে আছেন। আমি একাই বাসে করে এসেছি।"\n\nএই কথা শুনে অফিসের সবাই যেন স্তব্ধ হয়ে গেল।\n\nকিছুক্ষণ পর, তিনি অফিসের বোর্ডরুমে ঢুকে ঘোষণা দিলেন—\n"আজকের ইন্টারভিউ আমরা শেষ করেছি। লাবণ্য রহমান… এই কোম্পানির নতুন অ্যাকাউন্টেন্ট।"\n\nসবাই অবাক হয়ে তাকিয়ে রইল।\n\nতিনি আরও বললেন— "যে মানুষ নিজের জীবনের ঝুঁকি নিয়ে অন্যকে বাঁচাতে পারে, আর যার মেয়ে এত ছোট হয়েও তার স্বপ্নের জন্য লড়াই করে—সে এই জায়গার যোগ্য।"\n\nসোহা কিছু বুঝতে পারল না, কিন্তু সে শুধু হাসল। কারণ সে জানত—তার মা হাল ছাড়েননি। আর সেও না।` },
+  { title: "নীরব ঘুম", content: `প্রতি শনিবারই একই ঘটনা ঘটে। শ্বশুরবাড়ি থেকে ফিরে এলেই আমি যেন হঠাৎ অজ্ঞান হয়ে যাই—একদম ঠিক দুই ঘণ্টার জন্য। প্রথমে ভেবেছিলাম ক্লান্তি, তারপর ভেবেছিলাম কাকতালীয়… কিন্তু ধীরে ধীরে বুঝলাম, এর পেছনে কিছু একটা আছে।\n\nআমার নাম নওরীন। বিয়ে হয়েছে তিন বছর হলো রাহাতের সঙ্গে। আমরা আলাদা ফ্ল্যাটে থাকি, শান্তিতে, নিজের মতো করে। কিন্তু প্রতি শনিবার দুপুরে শ্বশুরবাড়িতে যাওয়া—এটা যেন অলিখিত নিয়ম।\n\nশুরুটা খুব সাধারণ ছিল। তিন মাস আগে থেকে অদ্ভুত একটা ব্যাপার শুরু হলো।\n\nপ্রথমবার যখন শ্বশুরবাড়ি থেকে ফিরে এলাম, শরীরটা কেমন জানি লাগছিল। মাথা ঘুরছিল, চোখ জুড়িয়ে আসছিল। ভাবলাম একটু শুয়ে নিই… তারপর আর কিছু মনে নেই। জেগে দেখি ঠিক দুই ঘণ্টা কেটে গেছে।\n\nদ্বিতীয়বারও একই ঘটনা। তৃতীয়বারে মনে হলো—এটা আর কাকতালীয় না।\n\nচতুর্থবারের দিনটা আমি কখনো ভুলব না।\n\nগাড়িতে বসে ছিলাম, রাস্তায় লাইটগুলো চোখের সামনে ঝাপসা হয়ে যাচ্ছিল। মাথা ভারী, বুক ধড়ফড় করছে।\n\n"রাহাত… আমার খুব খারাপ লাগছে," আমি আস্তে করে বললাম।\n\nরাহাত এক হাতে স্টিয়ারিং ধরে, অন্য হাতে আমার কপালে হাত রাখল। "জ্বর তো নেই। আবার শুরু হলো?"\n\nতার গলায় বিরক্তি স্পষ্ট।\n\nবাসায় ফিরেই আমি সোফায় লুটিয়ে পড়লাম। চোখ বন্ধ হয়ে আসছিল। ঘুম না—এটা যেন জোর করে অচেতন করে দেওয়া।\n\nজ্ঞান হারানোর আগ মুহূর্তে দেখলাম, রাহাত আমাকে একটা কম্বল দিয়ে ঢেকে দিচ্ছে। তার স্পর্শে মায়া ছিল, কিন্তু তার কথায় ছিল অবহেলা— "অতিরিক্ত আদুরে…"\n\nতারপর অন্ধকার।\n\nজ্ঞান ফিরল ঠিক দুই ঘণ্টা পর। ঘড়ির কাঁটা যেন আমার শরীরের সঙ্গে তাল মিলিয়ে চলছে।\n\nসেদিন সিদ্ধান্ত নিলাম—আমি সত্যিটা জানবই।\n\nপরদিন রাহাত আর তার বাবা মাছ ধরতে গেল। আমি একা বের হলাম। শহরের এক নামী হাসপাতালে গিয়ে সব পরীক্ষা করালাম—রক্ত, প্রস্রাব, ব্রেইন স্ক্যান।\n\nরিপোর্ট হাতে পাওয়ার পর—\n\nরক্তের রিপোর্টে স্পষ্ট লেখা— "Sedative compound detected."\n\nঅর্থাৎ—আমাকে ঘুমের ওষুধ দেওয়া হয়েছে। ইচ্ছাকৃতভাবে।\n\nআমার হাত কাঁপছিল। মাথার ভেতর শুধু একটাই প্রশ্ন ঘুরছিল—কে?\n\nরাহাত? নাকি… সোলায়মান সাহেব?\n\nমনে পড়ল—প্রতি শনিবার একই খাবার, একই পানীয়… আর আমি—প্রতিবার একইভাবে অজ্ঞান।\n\nসেই রাতে রাহাত বাসায় ফিরলে আমি কিছু বলিনি। চুপচাপ তার দিকে তাকিয়ে ছিলাম।\n\nআমি বুঝলাম—এটা শুধু একটা অসুখ না। এটা একটা পরিকল্পনা।\n\nসেই রাতেই আমি সিদ্ধান্ত নিলাম—পরের শনিবার আমি আবার যাবো। কিন্তু এবার… আমি প্রস্তুত হয়ে যাবো।\n\nকারণ এই গল্পের শেষটা আমি নিজেই লিখব।` },
+  { title: "শেষ হিসাব", content: `খুব কষ্ট করে দশ বছর শ্বশুরের সেবা করলাম, অথচ তার নিজের সন্তানরা একবারও খোঁজ নেয়নি। তিনি মারা যাওয়ার পর কোটি টাকার সম্পত্তি লিখে দিলেন নিজের ছেলেদের নামে, আর আমার আর আমার স্বামীর জন্য রেখে গেলেন মাত্র দুই লক্ষ টাকার একটি ব্যাংক কার্ড।\n\nআমি তখন উঠোনের এক কোণে বসে আছি, কান্নায় ভেঙে পড়েছি। পেছনের দেয়ালে ঠেস দিয়ে বসে আছি, আর অন্য পাশে আমার স্বামী রাশেদ আর তার ছোট ভাই নাঈম ফিসফিস করে কথা বলছে—চোখে তাদের অদ্ভুত এক লোভের ঝিলিক।\n\n"শোন, কালই তো উকিল আসবে উইল পড়তে," রাশেদ বলল নিচু গলায়।\nনাঈম হেসে বলল, "গুলশানের ফ্ল্যাটগুলো আর ধানমন্ডির বাড়িটা—সব আমাদেরই হবে।"\n\nদশ বছর! তিন হাজারেরও বেশি দিন-রাত আমি এই মানুষটার পাশে কাটিয়েছি। যখন তিনি স্ট্রোকে পড়ে বিছানায় পড়ে গেলেন, আমি তখন একজন দক্ষ নার্স ছিলাম। নিজের চাকরি ছেড়ে দিয়ে আমি তার সেবা শুরু করি।\n\nপরদিন সকাল। উকিল এলেন। ঘর ভরে গেছে আত্মীয়স্বজনদের ভিড়ে।\n\nউকিল কাগজ খুলে পড়তে শুরু করলেন—\n"প্রথমত: গুলশানের ছয়টি ফ্ল্যাট—ছোট ছেলে নাঈমের নামে।"\nনাঈম আর তার স্ত্রী খুশিতে ঝলমল করে উঠল।\n\n"দ্বিতীয়ত: ধানমন্ডির বাড়ি—নাতি জিসানের নামে।"\n\nএরপর উকিল একটু থামলেন, আমার দিকে তাকালেন, তারপর বললেন—\n"বড় ছেলে রাশেদ এবং তার স্ত্রী নীলার জন্য রাখা হয়েছে একটি ব্যাংক কার্ড, যার মোট অর্থ—দুই লক্ষ টাকা।"\n\nঘরটা এক মুহূর্তে নিস্তব্ধ হয়ে গেল।\n\nআমি কিছু বললাম না। কার্ডটা নিয়ে চুপচাপ বের হয়ে গেলাম।\n\nব্যাংকে গিয়ে কার্ডটা দিলাম। পাসওয়ার্ড দিলাম।\n\nহঠাৎ কর্মচারী স্ক্রিনের দিকে তাকিয়ে থমকে গেল। তারপর অবাক হয়ে আমার দিকে তাকিয়ে বলল—\n"ম্যাডাম… আপনি কি নিশ্চিত এটা ওই অ্যাকাউন্ট? এটা শুধু… দুই লক্ষ টাকার হিসাব না…"` },
+  { title: "ভাঙা বিশ্বাস", content: `বিয়ের আগে আমি কাজ করতাম, টাকা জমাতাম, সঞ্চয় করতাম, আর একটু একটু করে সোনার গয়না কিনে রেখে দিতাম ভবিষ্যতের জন্য। মা সব সময় বলতেন, "মেয়েদের নিজের কিছু থাকতেই হয়, দুঃসময়ে ওটাই ভরসা।"\n\nবিয়ের পর স্বামী রাহাতকে কখনো বলিনি এগুলোর কথা। কেন জানি না—হয়তো ভেবেছিলাম, নিজের একটু গোপন সঞ্চয় থাকুক।\n\nকিছুদিন পর মা বললেন, "তোর গয়নাগুলো নিয়ে যা মা।"\n\nআমি সেদিনই গিয়ে গয়নাগুলো নিয়ে এলাম। অনেক দোকান ঘুরে অবশেষে একটা মোটা সোনার ব্রেসলেট আর একটা বড় আংটি চোখে পড়ল। একদম মনে ধরল। আমি সেগুলো কিনে নিলাম।\n\nবাসায় ঢুকতেই রাহাত আমার হাতে তাকাল। তার চোখে অদ্ভুত এক দৃষ্টি—না অবাক, না খুশি… যেন কিছু হিসাব করছে।\n\nকয়েকদিন সবকিছু স্বাভাবিকই চলছিল। কিন্তু সেই স্বাভাবিকতার ভেতরেই লুকিয়ে ছিল ঝড়।\n\nএকদিন হঠাৎ ড্রয়ার খুলে দেখি—বাক্সটা ঠিক জায়গায় আছে। কিন্তু যখন ঢাকনা তুললাম… ভেতরটা ফাঁকা।\n\nআমার হাত কাঁপতে লাগল। বুকের ভেতরটা ধক করে উঠল।\n\nআমি পাগলের মতো খুঁজতে লাগলাম—আলমারি, বিছানার নিচে, কাপড়ের ভাঁজে… কিন্তু কোথাও কিছু নেই।\n\nঠিক তখনই রাহাত ঘরে ঢুকল।\n\nআমি কাঁদতে কাঁদতে বললাম, "গয়নাগুলো নেই! ব্রেসলেট আর আংটি—কোথাও নেই!"\n\nসে ভ্রু তুলে শান্ত গলায় বলল, "ভুলে কোথাও রেখেছো। খুঁজে দেখো, পেয়ে যাবে।"\n\nআমি মাথা নাড়লাম, "না! আমি ভুল করিনি।"\n\nসে জানালার দিকে তাকিয়ে ঠাণ্ডা গলায় বলল, "হয়তো কেউ ঢুকেছিল… যা গেছে, গেছে। আল্লাহ ভরসা।"\n\nকিছুদিন পর এক পারিবারিক অনুষ্ঠানে যেতে হলো।\n\nহঠাৎ রিমি—রাহাতের কাজিন—ঘরে ঢুকল।\n\nসে এমন একটা ভঙ্গিতে হাঁটছিল, যেন সবাইকে দেখানোর মতো কিছু আছে তার।\n\nসে আমার পাশে এসে বসল। তারপর ইচ্ছে করে হাত তুলে চুল ঠিক করল।\n\nঠিক তখনই আমার চোখ আটকে গেল।\n\nওই ব্রেসলেট… ওই আংটি…\n\nএগুলো তো আমার!\n\nরিমি ঠোঁটে হাসি টেনে বলল, "কেমন লাগছে? সুন্দর না?"\n\nতারপর একটু ঝুঁকে ফিসফিস করে বলল, "আজ সকালে রাহাত এনে দিয়েছে। বলল—'তোমার জন্য কিছুই দামী না।'"\n\nসে আবার বলল, "জানো, আমাদের এক সময় বিয়ের কথা ছিল… কিন্তু হয়নি।"\n\nআমি নিঃশব্দে বসে ছিলাম। মনে হচ্ছিল—আমি আর আমি নেই।\n\nদূরে দাঁড়িয়ে রাহাত আমাদের দেখছিল। তার চোখে কোনো লজ্জা নেই, কোনো অপরাধবোধ নেই… শুধু ঠাণ্ডা এক তৃপ্তি।\n\nসেদিন আমি বুঝলাম—চুরি শুধু সোনার হয় না। সবচেয়ে বড় চুরি হয়—একটা মেয়ের বিশ্বাস, তার ভালোবাসা, আর তার সম্মান চুরি করে।` },
+  { title: "নিঃশব্দ বিসর্জন", content: `আমি কখনোই আমার স্বামীকে বলিনি যে তার "প্রেমিকা" আসলে আমার সবচেয়ে কাছের বন্ধু ছিল। ঝগড়া করে পাড়া মাথায় তোলার বদলে আমি তাদের দুজনকে একদিন বাড়িতে দামী ডিনারে আমন্ত্রণ জানালাম। তারা টেবিলের নিচে লুকিয়ে হাত ধরে ছিল, আর আমি এমন ভান করছিলাম যেন কিছুই দেখিনি।\n\nহালকা হাসি মুখে আমি তাকে একটা ছোট নীল বাক্স এগিয়ে দিলাম।\n\nহেসে বললাম, "ধন্যবাদ তোমাকে, শুচি… তোমার এই 'বিশ্বস্ততার' জন্য।"\n\nসে ভেবেছিল ভেতরে হয়তো দামী কোনো উপহার থাকবে। কিন্তু বাক্স খুলতেই তার মুখের সব রং উধাও হয়ে গেল। আমার স্বামী এক মুহূর্তে বুঝে গেল, আমি চিৎকার না করেই তার পুরো জীবন ভেঙে দিয়েছি।\n\nআমার নাম লীলা। বয়স চৌত্রিশ। আমি একজন ইন্টেরিয়র ডিজাইনার। মানুষের ঘর বদলে দেওয়াই আমার কাজ। দেয়ালের ফাটল ঢেকে দিই দামী ওয়ালপেপারের আড়ালে, আর ভাঙা জিনিসকে নতুন রূপে "স্টাইল" বানিয়ে দিই।\n\nআমার স্বামী একজন বড় আইনজীবী। স্মার্ট, ভদ্র, আর ভীষণ হিসেবি। নিউ কায়রোর আমাদের ফ্ল্যাট, সামনে সাদা মার্সিডিজ—সবকিছু দেখে সবাই ভাবত আমরা একদম পারফেক্ট দম্পতি।\n\nতারপর এল মিরনা।\n\nশুধু বন্ধু না, আমার ছায়ার মতো ছিল। পনেরো বছরের সম্পর্ক আমাদের।\n\nএকদিন সকালে সবকিছু বদলে গেল। কফির গন্ধে ভরা ঘরে আমার স্বামী শাওয়ার নিচ্ছিলেন। তার ট্যাবলেটটা টেবিলে খোলা ছিল।\n\nএকটা মেসেজ চোখে পড়ে গেল। রাত ৩:৪২ মিনিটে মিরনা লিখেছে— "তোমার পারফিউম এখনো আমার বালিশে লেগে আছে। লীলা কিছুই বুঝতে পারে না।"\n\nসবকিছু এক মুহূর্তে থেমে গেল আমার ভেতরে।\n\nআমি জানতাম, আমি যদি তখনই চিৎকার করি, তাহলে সবকিছু উল্টো আমার দিকেই ফিরে আসবে। তাই আমি শান্ত থাকলাম।\n\nট্যাবলেটটা ঠিক জায়গায় রাখলাম। বিছানা গুছালাম। রান্নাঘরে গিয়ে কফি বানালাম। এমনভাবে দাঁড়ালাম যেন কিছুই হয়নি।\n\nআমার স্বামী বাথরুম থেকে বেরিয়ে এলো। এসে আমার কপালে চুমু দিলেন। বললেন, "সকালটা সুন্দর হোক।"\n\nআমি হেসে বললাম, "তোমারও ভালো কাটুক।"\n\nআর ঠিক সেই মুহূর্তেই—তার পতনের শুরু হয়ে গেল।\n\nতারপর এলো সেই রাত।\n\nআমি তাদের দুজনকেই আমন্ত্রণ জানালাম এক ডিনারে। আলো মৃদু, টেবিল সাজানো দামী খাবারে।\n\nতারা হাসছিল, কথা বলছিল, এমনকি নিজেদের ভেতরের সম্পর্ক লুকানোর চেষ্টা করছিল না। টেবিলের নিচে হাত ধরা, চোখে চোখ পড়া—সবই আমি দেখছিলাম, কিন্তু কিছু বলছিলাম না।\n\nডিনার শেষের দিকে আমি উঠে গেলাম। হাতে একটা ছোট নীল বাক্স।\n\nহেসে বললাম, "এটা তোমার জন্য, শুচি। তোমার বিশ্বস্ততার স্মৃতি।"\n\nসে খুশি হয়ে বাক্স নিল।\n\nশুচি ধীরে ধীরে বাক্স খুলল।\n\nভেতরের জিনিসটা দেখতেই তার হাত কেঁপে উঠল। মুখের হাসি মুহূর্তে হারিয়ে গেল।\n\nআমি শান্ত গলায় বললাম, "আমি সব জানি।"\n\nঘরের বাতাস যেন থমকে গেল।\n\nসেই রাতে আমি চিৎকার করিনি। কোনো নাটক করিনি। শুধু সত্যটা রেখে দিলাম তাদের সামনে—নীরব, পরিষ্কার, এবং ভয়ংকর।\n\nকারণ কেউ যখন বিশ্বাস ভাঙে, প্রতিশোধ সবসময় শব্দ করে আসে না। কখনো কখনো প্রতিশোধ আসে নীরবে… আর সেটাই সবচেয়ে ভয়ংকর।` },
+  { title: "নীরব লড়াই", content: `আমার স্বামীর জানাজা শেষ হওয়ার পর, আমি এখনও কালো পোশাক গায়ে লেগে থাকা অবস্থায় বাড়ি ফিরে এলাম। দরজা খুলতেই দেখি… আমার শাশুড়ি আর পরিবারের আটজন সদস্য এমনভাবে সুটকেস গোছাচ্ছে যেন এটা কোনো হোটেল।\n\n"এই বাড়িটা এখন আমাদের। রিদের সব কিছুই আমাদের। তুমি বেরিয়ে যাও," তারা বলল, গলা নামানো ছাড়াই।\n\nআমি এক মুহূর্ত নড়লাম না… তারপর হেসে ফেললাম।\n\nকারণ যদি তারা সত্যিই বিশ্বাস করে রিদ "কিছুই রেখে যায়নি", তাহলে তারা কখনোই জানত না সে আসলে কে ছিল… বা সে মৃত্যুর আগে কী সই করে গেছে।\n\nসেন্ট অগাস্টিন শহরের তৃতীয় তলায় উঠতে উঠতে আমার পা ব্যথায় অবশ হয়ে আসছিল, মাথা ফাঁকা লাগছিল। করিডরে এখনও জানাজার লিলির গন্ধ ভেসে আসছিল।\n\nদরজা খুলতেই দেখি মার্জোরি আমার ডাইনিং রুমে দাঁড়িয়ে আছে, এমনভাবে নির্দেশ দিচ্ছে যেন সে কোনো রিসোর্টের ম্যানেজার। আলমারির দরজা খোলা, রিদের শার্ট অর্ধেক ঝুলে আছে।\n\n"এই বাড়িটা এখন আমাদের," সে বলল, আমাকে দেখে একটুও চমকাল না। "রিদের সব কিছুই। তোমাকে চলে যেতে হবে।"\n\nআমি তাদের পাশ কাটিয়ে তাকালাম দরজার পাশে রাখা রিদের ছাইয়ের কলসটার দিকে।\n\n"কে তোমাদের ঢুকতে দিল?" আমি জিজ্ঞেস করলাম।\n\nমার্জোরি একটা পিতলের চাবি দেখাল। "আমি তার মা। আমার কাছে সবসময় চাবি ছিল।"\n\nডেকলান বলল, "এখন তুমি কে? একজন বিধবা। শুধু এটুকুই।"\n\nসেটাই ছিল মুহূর্তটা, যখন আমি হেসে ফেললাম।\n\nকারণ ছয় দিন আগে, হাসপাতালের সেই ঘরে রিদ আমার হাত চেপে ধরে ফিসফিস করে বলেছিল—তারা যদি ফুল শুকানোর আগেই আসে, আগে হাসবে। এলেনা সব সামলে নেবে।\n\nআমি হাসতে হাসতে ঘরটা নিস্তব্ধ করে দিলাম।\n\nমার্জোরি বলল, "তোমার কি মাথা খারাপ হয়ে গেছে?"\n\n"না," আমি চোখের পানি মুছতে মুছতে বললাম। "তোমরা শুধু রিদকে যেভাবে কখনো বুঝোনি, ঠিক সেই ভুলটাই আবার করেছ।"\n\nডেকলান সোজা হয়ে দাঁড়াল। "কোনো উইল নেই। আমরা চেক করেছি।"\n\n"অবশ্যই চেক করেছ," আমি বললাম। "আর অবশ্যই পাওনি।"\n\nঠিক তখনই আমার ফোন কেঁপে উঠল।\n\nরাইসা: আমরা নিচে আছি।\n\nআমি রিদের ডেস্কের দিকে তাকালাম, তারপর মার্জোরির দিকে।\n\n"তোমরা কখনো জানতেই পারোনি রিদ আসলে কে ছিল," আমি ধীরে বললাম। "আর মৃত্যুর ছয় দিন আগে সে কী সই করে গেছে, সেটাও তোমাদের ধারণার বাইরে।"\n\nপরের মুহূর্তেই দরজায় কড়া নাড়ার শব্দ হলো।\n\nআমি দরজা খুলতেই দেখি রাইসা ক্রুজ দাঁড়িয়ে আছে, সঙ্গে একজন ডেপুটি, বিল্ডিং ম্যানেজার, আর হাতে কালো ফোল্ডার—মার্জোরির নাম প্রথম পাতায় লেখা।\n\nতখনই আমার শাশুড়ির মুখের হাসি প্রথমবারের মতো থেমে গেল…` },
+  { title: "শেষ আশ্রয়", content: `ডিভোর্সের দিনটা যেন আমার জীবনের শেষ বিচার ছিল। আমার স্বামীর পরিবার শহরের সেরা আইনজীবীদের এনে আমাকে আর আমার নবজাতক মেয়েকে একেবারে রাস্তায় ফেলে দিল।\n\nকয়েক সপ্তাহ পরের কথা। শহরের এক কোণায়, একটা নিলামে বিক্রি হয়ে যাওয়া ভাঙাচোরা বাড়ির পেছনে পড়ে থাকা পুরোনো কাঠ আর ভাঙা আসবাবের স্তূপ ঘেঁটে কিছু কাজের জিনিস খুঁজছিলাম আমি।\n\nহঠাৎ একটা বিলাসবহুল গাড়ি এসে থামল আমার পাশেই।\n\nগাড়ির দরজা খুলল। একজন নারী নামলেন। তাঁর হাই হিলের শব্দ কাঁকর ভেদ করে উঠছিল—যেন তিনি অন্য এক জগতের মানুষ।\n\n"মাফ করবেন… আপনি কি ইশিতা চৌধুরী?"\n\nআমি থমকে গেলাম। হাতে তখনও একটা ধারালো কাঠের টুকরো ধরা।\n\nধীরে ধীরে তাকালাম তাঁর দিকে—কালো পরিপাটি পোশাক, কানে মুক্তোর দুল, চুল নিখুঁতভাবে বাঁধা, আর চোখে এমন এক শান্তি… যা শুধু ক্ষমতাবান মানুষের মধ্যেই থাকে।\n\n"হ্যাঁ… আমিই," গলা শুকিয়ে আসছিল আমার। "যদি আমাকে তাড়াতে আসেন, তাহলে বলি—এখানে তেমন কিছু নেই।"\n\nতিনি কিছুক্ষণ চুপ করে রইলেন। শুধু তাকিয়ে রইলেন আমার দিকে… তারপর আমার পায়ের পাশে রাখা বাচ্চার ক্যারিয়ারের দিকে।\n\n"আমার নাম বেলী রহমান," তিনি অবশেষে বললেন। "আমি মিসেস হেলেনা রায়চৌধুরীর সম্পত্তির আইনজীবী।"\n\nআমার বুক ধক করে উঠল। আমার দিদা।\n\nযে নারীকে পুরো পরিবার ভয়ে, শ্রদ্ধায় মেনে চলত। যিনি বারো বছর আগে আমাকে নিজের জীবন থেকে মুছে ফেলেছিলেন।\n\nআমার নাম ইশিতা চৌধুরী। বয়স বত্রিশ। যেদিন আমার জীবনটা বদলে গেল… সেদিন আমি দাঁড়িয়ে ছিলাম একটা পরিত্যক্ত বাড়ির পেছনে—হাতে ময়লা, শরীরে ধুলো।\n\nতিন মাস আগে… আমি তখনও বিবাহিত। আমার স্বামী আরিয়ান চৌধুরী—একজন ধনী রিয়েল এস্টেট ব্যবসায়ী।\n\nতারপর একদিন… আমি শোবার ঘরের দরজা খুলে দেখলাম—সে আমাদের বিছানায়… তার সেক্রেটারির সঙ্গে।\n\nডিভোর্সটা কোনো বিচ্ছেদ ছিল না। ওটা ছিল একটা শাস্তি। নিষ্ঠুর। নির্দয়।\n\nসে সবকিছু রেখে দিল নিজের কাছে। বাড়ি। গাড়ি। ব্যাংকের টাকা। সবকিছু।\n\nআমি বাঁচার জন্য লড়াই করলাম। রাস্তায় ফেলে দেওয়া আসবাব কুড়িয়ে আনতাম। শহরের এক কোণে ছোট্ট একটা গুদামে সেগুলো মেরামত করতাম। তারপর অনলাইনে বিক্রি করতাম—যাতে ডায়াপার, দুধ, আর আরেকটা সপ্তাহ পার করার আশা জোগাড় করতে পারি।\n\nএটা কোনো স্বপ্নের জীবন ছিল না। কিন্তু আমার মেয়েটা অন্তত না খেয়ে থাকেনি।\n\nআর তারপর… বেলী রহমান তাঁর ব্যাগ থেকে একটা মোটা খাম বের করলেন। খামের ওপর আমার দিদার সিল মারা।\n\nতিনি শান্ত গলায় বললেন—\n"মিসেস রায়চৌধুরী আপনাকে ভুলে যাননি, ইশিতা… তিনি আপনাকে রক্ষা করে গেছেন।"\n\nসেই মুহূর্তে আমি বুঝলাম—আমার প্রাক্তন স্বামী একটা ভয়ংকর ভুল করে ফেলেছে।\n\nকারণ এই খামটা খুললেই… চৌধুরী পরিবারের জন্য সবকিছু আর আগের মতো থাকবে না।` }
+];
+
 // ===== STATE =====
 let lang = 'bn';
 let state = {
@@ -551,6 +1147,10 @@ let state = {
   adTimer: null,
   storyTimer: null,
   storySeconds: 0,
+  currentStoryIndex: -1,
+  readStories: [],
+  lastScrollTime: 0,
+  scrollActive: false,
 };
 
 // ===== STORAGE =====
@@ -560,6 +1160,7 @@ function save() {
 
 function load() {
   state.users = JSON.parse(localStorage.getItem('ebd_v2_users') || '{}');
+  // Check session
   const session = JSON.parse(localStorage.getItem('ebd_session') || 'null');
   if (session) {
     const daysSince = (Date.now() - session.time) / (1000 * 60 * 60 * 24);
@@ -581,6 +1182,7 @@ function setLang(l) {
   document.querySelectorAll('[data-bn]').forEach(el => {
     el.textContent = l === 'bn' ? el.dataset.bn : el.dataset.en;
   });
+  // Update placeholders
   if (l === 'en') {
     document.getElementById('loginEmail').placeholder = 'Your email or number';
     document.getElementById('loginPass').placeholder = 'Enter password';
@@ -643,7 +1245,7 @@ function doRegister() {
     id, name, password: pass,
     email: isEmail ? email : '',
     phone: isEmail ? '' : email,
-    balance: 0,
+    balance: 0, // stored in millicents (1 millicent = $0.001)
     totalEarned: 0,
     withdrawn: 0,
     referCode: code,
@@ -656,7 +1258,7 @@ function doRegister() {
   if (refer) {
     const referrer = Object.values(state.users).find(u => u.referCode === refer);
     if (referrer) {
-      referrer.balance += 10;
+      referrer.balance += 10; // $0.010
       referrer.referCount++;
       referrer.referEarned += 10;
       referrer.totalEarned += 10;
@@ -685,7 +1287,7 @@ function enterApp() {
 // ===== UI =====
 function refreshUI() {
   const u = state.currentUser;
-  const usdBalance = u.balance / 1000;
+  const usdBalance = u.balance / 1000; // balance stored as millicents
 
   document.getElementById('hAvatar').textContent = u.name[0].toUpperCase();
   document.getElementById('hName').textContent = u.name;
@@ -737,19 +1339,16 @@ const TASKS = [
 
 function renderTasks() {
   const u = state.currentUser;
-  const today = new Date().toDateString();
   const list = document.getElementById('taskList');
   list.innerHTML = '';
 
   TASKS.forEach(t => {
-    const key = today + '_' + t.id;
-    const done = u.completedTasks[key];
     const name = lang === 'bn' ? t.nameBn : t.nameEn;
     const desc = lang === 'bn' ? t.descBn : t.descEn;
-    const btnLabel = done ? (lang === 'bn' ? '✅ সম্পন্ন' : '✅ Done') : (lang === 'bn' ? 'শুরু করুন' : 'Start');
+    const btnLabel = lang === 'bn' ? 'শুরু করুন' : 'Start';
 
     list.innerHTML += `
-      <div class="task-card ${done ? 'completed' : ''}">
+      <div class="task-card">
         <div class="task-icon-wrap" style="background:${t.color}">${t.icon}</div>
         <div class="task-info">
           <div class="task-name">${name}</div>
@@ -758,7 +1357,7 @@ function renderTasks() {
         <div class="task-right">
           <div class="task-reward-val">${t.rewardLabel}</div>
           <div class="task-reward-label">REWARD</div>
-          <button class="task-btn ${done ? 'done' : 'start'}" ${done ? 'disabled' : `onclick="startTask('${t.id}')"`}>${btnLabel}</button>
+          <button class="task-btn start" onclick="startTask('${t.id}')">${btnLabel}</button>
         </div>
       </div>`;
   });
@@ -773,13 +1372,15 @@ function startTask(id) {
 const AD_LINK = 'https://rustydrawer.com/h3jk7eq6yh?key=ebadb442103f98e4b1fb95063a66e992';
 const STORY_LINK = 'https://earnbd992.blogspot.com/2026/03/blog-post_17.html';
 
-// ===== AD MODAL =====
+// ===== AD MODAL — Tab Focus Tracking =====
 let adSeconds = 30;
 let adCompleted = false;
+let adPaused = false;
 
 function openAdModal() {
   adSeconds = 30;
   adCompleted = false;
+  adPaused = false;
   document.getElementById('adSec').textContent = 30;
   document.getElementById('adTimerFill').style.width = '100%';
   document.getElementById('adClaimBtn').classList.remove('show');
@@ -794,6 +1395,8 @@ function openAdModal() {
 
   clearInterval(state.adTimer);
   state.adTimer = setInterval(() => {
+    // ট্যাব হিডেন বা উইন্ডো মিনিমাইজ হলে টাইমার বন্ধ
+    if (document.hidden || adPaused) return;
     adSeconds--;
     const el = document.getElementById('adSec');
     if (el) el.textContent = adSeconds;
@@ -808,13 +1411,28 @@ function openAdModal() {
   }, 1000);
 }
 
+// ট্যাব ভিজিবিলিটি চেঞ্জ হলে অ্যাড টাইমার পজ করো
+document.addEventListener('visibilitychange', () => {
+  if (document.getElementById('adModal')?.classList.contains('open')) {
+    if (document.hidden) {
+      showToast('⚠️ ট্যাব সুইচ করলে টাইমার বন্ধ থাকবে!');
+    }
+  }
+  if (document.getElementById('storyModal')?.classList.contains('open')) {
+    if (document.hidden) {
+      state.scrollActive = false;
+      showToast('⚠️ অ্যাপ থেকে বের হলে সময় কাউন্ট হবে না!');
+    }
+  }
+});
+
 function claimAd() {
   if (!adCompleted) return;
   const u = state.currentUser;
-  const key = new Date().toDateString() + '_ad';
   u.balance += 10;
   u.totalEarned += 10;
-  u.completedTasks[key] = true;
+  if (!u.completedTasks) u.completedTasks = {};
+  u.completedTasks['ad_' + Date.now()] = true;
   state.users[u.id] = u;
   save();
   refreshUI();
@@ -830,44 +1448,128 @@ function cancelAd() {
   closeModal('adModal');
 }
 
-// ===== STORY MODAL =====
+// ===== STORY MODAL — In-App Scroll Tracking =====
 let storySeconds = 0;
 let storyRunning = false;
+let scrollCheckInterval = null;
 
 function openStoryModal() {
   storySeconds = 0;
   storyRunning = true;
-  updateStoryUI();
+  state.lastScrollTime = 0;
+  state.scrollActive = false;
+
+  // নতুন গল্প বেছে নাও
+  const u = state.currentUser;
+  if (!u.readStories) u.readStories = [];
+  let available = STORIES.filter((_, i) => !u.readStories.includes(i));
+  if (available.length === 0) {
+    u.readStories = [];
+    available = STORIES;
+    save();
+  }
+  const pickIdx = STORIES.indexOf(available[Math.floor(Math.random() * available.length)]);
+  state.currentStoryIndex = pickIdx;
+
+  const story = STORIES[pickIdx];
+
+  // গল্পের টাইটেল আপডেট
+  document.getElementById('storyTitleDisplay').textContent = story.title;
+
+  // গল্পের কন্টেন্ট রেন্ডার
+  const contentDiv = document.getElementById('storyContent');
+  contentDiv.innerHTML = story.content.split('\n').map(p =>
+    p.trim() ? `<p style="margin-bottom:14px;">${p}</p>` : '<br>'
+  ).join('');
+
+  // next story bar লুকাও
+  document.getElementById('nextStoryBar').style.display = 'none';
+
+  // progress reset
+  document.getElementById('storyFill').style.width = '0%';
+  document.getElementById('storySec').textContent = '0.0';
+  document.getElementById('storyRewardText').textContent = '$0.00';
+  document.getElementById('storyClaimReward').textContent = '$0.00';
+
   document.getElementById('storyModal').classList.add('open');
 
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.openLink(STORY_LINK);
-  } else {
-    window.open(STORY_LINK, '_blank');
-  }
+  // স্ক্রল ট্র্যাকিং — শুধু স্ক্রল করলেই সময় চলবে
+  contentDiv.addEventListener('scroll', onStoryScroll);
 
+  // প্রতি সেকেন্ডে চেক করো: স্ক্রল active আছে কিনা
+  clearInterval(scrollCheckInterval);
   clearInterval(state.storyTimer);
+
   state.storyTimer = setInterval(() => {
     if (!storyRunning) return;
-    storySeconds++;
-    updateStoryUI();
+    if (document.hidden) return; // ট্যাব হিডেন হলে টাইমার চলবে না
+
+    const now = Date.now();
+    // ২ সেকেন্ডের মধ্যে স্ক্রল না হলে টাইমার বন্ধ
+    if (now - state.lastScrollTime < 2000 && state.lastScrollTime > 0) {
+      storySeconds++;
+      updateStoryUI();
+    }
+
+    // গল্পের শেষে পৌঁছালে next story দেখাও
+    const el = document.getElementById('storyContent');
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) {
+      document.getElementById('nextStoryBar').style.display = 'block';
+    }
   }, 1000);
+}
+
+function onStoryScroll() {
+  state.lastScrollTime = Date.now();
+  state.scrollActive = true;
+}
+
+function loadNextStory() {
+  const u = state.currentUser;
+  if (!u.readStories) u.readStories = [];
+  if (!u.readStories.includes(state.currentStoryIndex)) {
+    u.readStories.push(state.currentStoryIndex);
+    state.users[u.id] = u;
+    save();
+  }
+
+  document.getElementById('nextStoryBar').style.display = 'none';
+
+  let available = STORIES.filter((_, i) => !u.readStories.includes(i));
+  if (available.length === 0) {
+    u.readStories = [];
+    available = STORIES;
+    save();
+  }
+  const pickIdx = STORIES.indexOf(available[Math.floor(Math.random() * available.length)]);
+  state.currentStoryIndex = pickIdx;
+
+  const story = STORIES[pickIdx];
+  document.getElementById('storyTitleDisplay').textContent = story.title;
+
+  const contentDiv = document.getElementById('storyContent');
+  contentDiv.innerHTML = story.content.split('\n').map(p =>
+    p.trim() ? `<p style="margin-bottom:14px;">${p}</p>` : '<br>'
+  ).join('');
+  contentDiv.scrollTop = 0;
+
+  showToast('📖 নতুন গল্প লোড হয়েছে!');
 }
 
 function updateStoryUI() {
   const mins = storySeconds / 60;
   const pct = Math.min((mins / 20) * 100, 100);
   document.getElementById('storyFill').style.width = pct + '%';
-
-  const minsDisplay = (storySeconds / 60).toFixed(1);
-  document.getElementById('storySec').textContent = minsDisplay;
+  document.getElementById('storySec').textContent = (storySeconds / 60).toFixed(1);
 
   let reward = 0;
   if (mins >= 20) reward = 100;
   else if (mins >= 10) reward = 50;
   else if (mins >= 5) reward = 20;
 
-  document.getElementById('storyRewardText').textContent = fmtDollar(reward / 1000);
+  const r = fmtDollar(reward / 1000);
+  document.getElementById('storyRewardText').textContent = r;
+  document.getElementById('storyClaimReward').textContent = r;
 }
 
 function claimStory() {
@@ -883,20 +1585,25 @@ function claimStory() {
   }
 
   const u = state.currentUser;
-  const key = new Date().toDateString() + '_story';
+  if (!u.readStories) u.readStories = [];
+  if (!u.readStories.includes(state.currentStoryIndex)) {
+    u.readStories.push(state.currentStoryIndex);
+  }
   u.balance += reward;
   u.totalEarned += reward;
-  u.completedTasks[key] = true;
   state.users[u.id] = u;
   save();
   refreshUI();
   cancelStory();
-  showToast('🎉 ' + fmtDollar(reward/1000) + ' আপনার ব্যালেন্সে যোগ হয়েছে!');
+  showToast('🎉 ' + fmtDollar(reward / 1000) + ' আপনার ব্যালেন্সে যোগ হয়েছে!');
 }
 
 function cancelStory() {
   storyRunning = false;
   clearInterval(state.storyTimer);
+  clearInterval(scrollCheckInterval);
+  const contentDiv = document.getElementById('storyContent');
+  if (contentDiv) contentDiv.removeEventListener('scroll', onStoryScroll);
   closeModal('storyModal');
 }
 
@@ -933,11 +1640,10 @@ function selMethod(btn, method) {
   document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   state.wMethod = method;
-  const labels = { bkash: 'bKash নম্বর', nagad: 'Nagad নম্বর', rocket: 'Rocket নম্বর' };
-  document.getElementById('mLabel').textContent = labels[method];
+  const labels = { bkash: 'bKash নম্বর', nagad: 'Nagad নম্বর', binance: 'Binance UID / Email' };
+  document.getElementById('mLabel').textContent = labels[method] || method;
 }
 
-// ✅ UPDATED: doWithdraw() — API call যোগ করা হয়েছে
 function doWithdraw() {
   const u = state.currentUser;
   const num = document.getElementById('wNumber').value.trim();
@@ -961,18 +1667,6 @@ function doWithdraw() {
   document.getElementById('wNumber').value = '';
   document.getElementById('wAmount').value = '';
   showToast('✅ উইথড্র অনুরোধ পাঠানো হয়েছে!');
-
-  // ✅ Server-এ notify করা — অ্যাডমিন Telegram-এ মেসেজ পাবেন
-  fetch('/api/notify-withdraw', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      userName: u.name,
-      amount: amt.toFixed(2),
-      method: state.wMethod,
-      number: num
-    })
-  }).catch(() => {}); // network error হলেও app ঠিকঠাক কাজ করবে
 }
 
 // ===== NAVIGATION =====
@@ -1021,4 +1715,4 @@ makeStars();
 load();
 </script>
 </body>
-  </html>
+</html>
