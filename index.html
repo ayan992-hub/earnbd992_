@@ -1282,7 +1282,7 @@ const TASKS = [
     descEn: 'Watch for 30 seconds',
     icon: '📺',
     color: 'rgba(0,212,255,0.1)',
-    rewardMilli: 10, // $0.010
+    rewardMilli: 10,
     rewardLabel: '$0.010'
   },
   {
@@ -1332,6 +1332,10 @@ function startTask(id) {
   else if (id === 'story') openStoryModal();
 }
 
+// ===== LINKS =====
+const AD_LINK = 'https://rustydrawer.com/h3jk7eq6yh?key=ebadb442103f98e4b1fb95063a66e992';
+const STORY_LINK = 'https://earnbd992.blogspot.com/2026/03/blog-post_17.html';
+
 // ===== AD MODAL =====
 let adSeconds = 30;
 let adCompleted = false;
@@ -1344,6 +1348,13 @@ function openAdModal() {
   document.getElementById('adClaimBtn').classList.remove('show');
   document.getElementById('adTimerText').innerHTML = '⏳ <span id="adSec">30</span> seconds remaining';
   document.getElementById('adModal').classList.add('open');
+
+  // অ্যাড লিংক নতুন ট্যাবে খুলবে
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.openLink(AD_LINK);
+  } else {
+    window.open(AD_LINK, '_blank');
+  }
 
   clearInterval(state.adTimer);
   state.adTimer = setInterval(() => {
@@ -1392,6 +1403,13 @@ function openStoryModal() {
   storyRunning = true;
   updateStoryUI();
   document.getElementById('storyModal').classList.add('open');
+
+  // গল্পের লিংক নতুন ট্যাবে খুলবে
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.openLink(STORY_LINK);
+  } else {
+    window.open(STORY_LINK, '_blank');
+  }
 
   clearInterval(state.storyTimer);
   state.storyTimer = setInterval(() => {
@@ -1555,4 +1573,4 @@ makeStars();
 load();
 </script>
 </body>
-</html>
+  </html>
