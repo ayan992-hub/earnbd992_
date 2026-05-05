@@ -158,6 +158,74 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .faq-q{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--accent)}
 .faq-a{font-size:13px;color:var(--muted);line-height:1.7}
 
+/* QUICK ACTIONS */
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.qa-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:none;transition:all 0.2s;position:relative;overflow:hidden}
+.qa-btn:active{transform:scale(0.95)}
+.qa-btn .qa-icon{font-size:26px;line-height:1}
+.qa-btn .qa-label{font-size:10px;font-weight:700;color:var(--muted);font-family:var(--font-en);letter-spacing:0.5px}
+.qa-btn.qa-task{background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(0,212,255,0.03));border:1px solid rgba(0,212,255,0.2)}
+.qa-btn.qa-refer{background:linear-gradient(135deg,rgba(123,47,255,0.08),rgba(123,47,255,0.03));border:1px solid rgba(123,47,255,0.2)}
+.qa-btn.qa-wallet{background:linear-gradient(135deg,rgba(0,230,118,0.08),rgba(0,230,118,0.03));border:1px solid rgba(0,230,118,0.2)}
+.qa-btn.qa-earn{background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(255,215,0,0.03));border:1px solid rgba(255,215,0,0.2)}
+
+/* 7-DAY CHART */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:16px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chart-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:var(--font-en)}
+.chart-total{font-family:var(--font-en);font-size:16px;font-weight:800;color:var(--accent)}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.chart-bar-bg{flex:1;width:100%;background:var(--bg2);border-radius:6px;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.chart-bar-fill{width:100%;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:6px;transition:height 0.8s cubic-bezier(0.34,1.56,0.64,1);min-height:3px}
+.chart-bar-day{font-size:9px;color:var(--muted);font-family:var(--font-en);font-weight:700}
+.chart-bar-fill.today{background:linear-gradient(180deg,var(--green),#00a040)}
+
+/* TASK PAGE */
+.task-page-header{background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(123,47,255,0.09));border:1px solid rgba(0,212,255,0.12);border-radius:18px;padding:16px;margin-bottom:14px;text-align:center}
+.task-page-header h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.task-page-header p{font-size:12px;color:var(--muted)}
+.task-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.task-item{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:15px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.task-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:0 3px 3px 0}
+.task-item-num{width:36px;height:36px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(123,47,255,0.1));border:1px solid rgba(0,212,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-en);font-size:15px;font-weight:800;color:var(--accent);flex-shrink:0}
+.task-item-info{flex:1}
+.task-item-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.task-item-sub{font-size:11px;color:var(--muted)}
+.task-item-btn{padding:8px 16px;border-radius:10px;border:none;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;flex-shrink:0}
+.task-item-btn.unavailable{background:var(--bg2);color:var(--muted);cursor:not-allowed;border:1px solid var(--border)}
+
+/* WALLET PAGE (renamed withdraw) */
+.wallet-history{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-top:12px}
+.wallet-history h3{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:var(--font-en)}
+.wh-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.wh-item:last-child{border-bottom:none}
+.wh-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.wh-info{flex:1}
+.wh-title{font-size:13px;font-weight:700}
+.wh-date{font-size:11px;color:var(--muted);margin-top:1px}
+.wh-amount{font-family:var(--font-en);font-size:14px;font-weight:800}
+.wh-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block}
+.wh-status.pending{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3)}
+.wh-status.success{background:rgba(0,230,118,0.15);color:var(--green);border:1px solid rgba(0,230,118,0.3)}
+.wh-status.rejected{background:rgba(255,82,82,0.15);color:var(--red);border:1px solid rgba(255,82,82,0.3)}
+
+/* ADMIN TASK MANAGEMENT */
+.admin-task-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px}
+.admin-task-item .ati-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ati-num{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:white;flex-shrink:0}
+.ati-label{font-size:14px;font-weight:700;flex:1}
+.ati-fields{display:flex;flex-direction:column;gap:8px}
+.ati-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-bn);font-size:13px;outline:none}
+.ati-input:focus{border-color:var(--accent)}
+.ati-save{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;padding:8px 16px;color:white;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:4px}
+
+/* ADMIN WITHDRAW ACTIONS */
+.withdraw-actions{display:flex;gap:8px;margin-top:8px}
+.btn-approve{flex:1;background:linear-gradient(135deg,var(--green),#00a040);border:none;border-radius:10px;padding:8px;color:white;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer}
+.btn-reject{flex:1;background:linear-gradient(135deg,var(--red),#b71c1c);border:none;border-radius:10px;padding:8px;color:white;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer}
+.btn-done{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--muted);font-family:var(--font-bn);font-size:12px;cursor:not-allowed}
+
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;position:relative}
 .nav-btn.active{color:var(--accent)}
@@ -316,7 +384,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="wc-icon">👋</div>
       <div>
         <div class="wc-title" id="wcTitle">স্বাগতম!</div>
-        <div class="wc-sub">অ্যাড দেখুন এবং আয় করুন</div>
+        <div class="wc-sub">টাস্ক করুন এবং আয় করুন</div>
       </div>
     </div>
     <div class="stats-row">
@@ -324,14 +392,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="stat-card"><div class="s-icon">👥</div><div class="s-val" id="sRefer">0</div><div class="s-lab">REFERS</div></div>
       <div class="stat-card"><div class="s-icon">💸</div><div class="s-val" id="sWithdraw">$0</div><div class="s-lab">WITHDRAWN</div></div>
     </div>
-    <div class="sec-title">আজকের টাস্ক</div>
-    <div class="task-list" id="taskList"></div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--muted);line-height:2.2">
-      📺 অ্যাড ১ দেখুন → <strong style="color:var(--green)">$0.010</strong> আয়<br>
-      📺 অ্যাড ২ দেখুন → <strong style="color:var(--green)">$0.010</strong> আয়<br>
-      🎁 বন্ধু রেফার করুন → <strong style="color:var(--green)">$0.010</strong> বোনাস<br>
-      ⚠️ ৩০ সেকেন্ড পূর্ণ হলেই পেমেন্ট পাবেন
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <button class="qa-btn qa-task" onclick="goPage('task',document.querySelectorAll('.nav-btn')[1])">
+        <span class="qa-icon">📋</span><span class="qa-label">TASK</span>
+      </button>
+      <button class="qa-btn qa-refer" onclick="goPage('refer',document.querySelectorAll('.nav-btn')[2])">
+        <span class="qa-icon">🎁</span><span class="qa-label">REFER</span>
+      </button>
+      <button class="qa-btn qa-wallet" onclick="goPage('withdraw',document.querySelectorAll('.nav-btn')[3])">
+        <span class="qa-icon">👛</span><span class="qa-label">WALLET</span>
+      </button>
+      <button class="qa-btn qa-earn" onclick="goPage('leader',document.querySelectorAll('.nav-btn')[4])">
+        <span class="qa-icon">🏆</span><span class="qa-label">RANKING</span>
+      </button>
     </div>
+
+    <!-- 7-DAY EARNINGS CHART -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">📊 গত ৭ দিনের আয়</div>
+        <div class="chart-total" id="chart7Total">$0.000</div>
+      </div>
+      <div class="chart-bars" id="chart7Bars">
+        <!-- JS দিয়ে রেন্ডার হবে -->
+      </div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--muted);line-height:2.2">
+      📋 টাস্ক করুন → <strong style="color:var(--green)">আয় করুন</strong><br>
+      🎁 বন্ধু রেফার করুন → <strong style="color:var(--green)">$0.010</strong> বোনাস<br>
+      👛 ব্যালেন্স জমলে Wallet থেকে Withdraw করুন<br>
+      ⚠️ সর্বনিম্ন উইথড্র: <strong style="color:var(--text)">$0.20</strong>
+    </div>
+  </div>
+
+  <!-- TASK PAGE -->
+  <div class="page" id="taskPage">
+    <div class="task-page-header">
+      <h2>📋 সকল টাস্ক</h2>
+      <p>টাস্ক সম্পন্ন করুন এবং আয় করুন</p>
+    </div>
+    <div class="task-grid" id="taskGrid"></div>
   </div>
 
   <div class="page" id="leaderPage">
@@ -377,6 +480,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       💱 রেট: <strong style="color:var(--text)">$1 = ৳110</strong><br>
       📋 অ্যাডমিন অনুমোদনের পর পাঠানো হয়
     </div>
+    <div class="wallet-history">
+      <h3>📜 WITHDRAWAL HISTORY</h3>
+      <div id="walletHistory"><div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">লোড হচ্ছে...</div></div>
+    </div>
   </div>
 
   <div class="page" id="supportPage">
@@ -403,9 +510,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span><span class="nl">HOME</span></button>
-    <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span><span class="nl">RANK</span></button>
+    <button class="nav-btn" onclick="goPage('task',this)"><span class="ni">📋</span><span class="nl">TASK</span></button>
     <button class="nav-btn" onclick="goPage('refer',this)"><span class="ni">🎁</span><span class="nl">REFER</span></button>
-    <button class="nav-btn" onclick="goPage('withdraw',this)"><span class="ni">💸</span><span class="nl">WITHDRAW</span></button>
+    <button class="nav-btn" onclick="goPage('withdraw',this)"><span class="ni">👛</span><span class="nl">WALLET</span></button>
+    <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span><span class="nl">RANK</span></button>
     <button class="nav-btn" onclick="goPage('support',this)"><span class="ni">🆘</span><span class="nl">SUPPORT</span></button>
   </nav>
 </div>
@@ -498,7 +606,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     </div>
     <div class="admin-section">
       <button class="refresh-btn" onclick="loadAdminData()">🔄 রিফ্রেশ করুন</button>
-      <h3>💸 উইথড্র অনুরোধ</h3>
+
+      <!-- TASK MANAGEMENT -->
+      <h3>📋 টাস্ক ম্যানেজমেন্ট</h3>
+      <div id="adminTaskList"></div>
+
+      <h3 style="margin-top:14px">💸 উইথড্র অনুরোধ</h3>
       <div id="adminWithdrawList"></div>
     </div>
     <div class="admin-section">
@@ -515,18 +628,19 @@ const RATE = 110;
 const SESSION_DAYS = 5;
 const ADMIN_PASSWORD = 'earnbd@admin2024';
 const AD_SECS = 30;
-const CIRCUMFERENCE = 2 * Math.PI * 21; // ~131.9
+const CIRCUMFERENCE = 2 * Math.PI * 21;
 
 const AD_LINKS = {
   1: 'https://rustydrawer.com/t7gsgvpj?key=f22abad2d980eea18471bddc274468ac',
   2: 'https://rustydrawer.com/t7gsgvpj?key=f22abad2d980eea18471bddc274468ac'
 };
 
+// Default 10 tasks — admin can override via Firebase
+let CUSTOM_TASKS = Array.from({length:10},(_,i)=>({id:`task${i+1}`,name:`টাস্ক ${i+1}`,link:''}));
+
 let state = { currentUser: null, wMethod: 'bkash' };
 let db, fbDoc, fbSetDoc, fbGetDoc, fbUpdateDoc, fbCollection, fbAddDoc, fbServerTimestamp, fbGetDocs;
 let subClicked = false;
-
-// Ad timers
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
@@ -536,6 +650,9 @@ window.addEventListener('firebase-ready', async () => {
   db=window._db; fbDoc=window._doc; fbSetDoc=window._setDoc; fbGetDoc=window._getDoc;
   fbUpdateDoc=window._updateDoc; fbCollection=window._collection; fbAddDoc=window._addDoc;
   fbServerTimestamp=window._serverTimestamp; fbGetDocs=window._getDocs;
+
+  // Load custom tasks config
+  await loadTaskConfig();
 
   const session = JSON.parse(localStorage.getItem('ebd_session')||'null');
   if (session) {
@@ -552,6 +669,21 @@ window.addEventListener('firebase-ready', async () => {
   }
   showScreen('subScreen');
 });
+
+// ===== TASK CONFIG =====
+async function loadTaskConfig() {
+  try {
+    const snap = await fbGetDoc(fbDoc(db,'config','tasks'));
+    if (snap.exists()) CUSTOM_TASKS = snap.data().tasks || CUSTOM_TASKS;
+  } catch(e) {}
+}
+
+async function saveTaskConfig() {
+  try {
+    await fbSetDoc(fbDoc(db,'config','tasks'), {tasks: CUSTOM_TASKS});
+    showToast('✅ টাস্ক সেভ হয়েছে!');
+  } catch(e) { showToast('❌ সেভ সমস্যা!'); }
+}
 
 // ===== SUBSCRIBE =====
 document.getElementById('subChannelBtn').addEventListener('click', ()=>{ subClicked=true; });
@@ -609,7 +741,7 @@ async function doRegister() {
     const isEmail=email.includes('@');
     const code='EBD-'+Math.random().toString(36).substr(2,4).toUpperCase();
     const id='u'+Date.now();
-    const user={name,password:pass,email:isEmail?email:'',phone:isEmail?'':email,balance:0,totalEarned:0,withdrawn:0,referCode:code,referCount:0,referEarned:0,taskCounts:{},subVerified:true,joinDate:new Date().toISOString()};
+    const user={name,password:pass,email:isEmail?email:'',phone:isEmail?'':email,balance:0,totalEarned:0,withdrawn:0,referCode:code,referCount:0,referEarned:0,taskCounts:{},dailyEarnings:{},subVerified:true,joinDate:new Date().toISOString()};
     await fbSetDoc(fbDoc(db,'users',id),user);
     if(referrer)await fbUpdateDoc(fbDoc(db,'users',referrer.id),{balance:referrer.balance+10,referCount:referrer.referCount+1,referEarned:referrer.referEarned+10,totalEarned:referrer.totalEarned+10});
     fetch('/api/notify-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userName:name,referredBy:referrer?.name||''})}).catch(()=>{});
@@ -623,6 +755,7 @@ async function doRegister() {
 function showErr(el,msg){el.textContent=msg;el.style.display='block';}
 function fmtDollar(usd){return '$'+usd.toFixed(3);}
 function toBDT(usd){return Math.round(usd*RATE);}
+function todayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
 function refreshUI() {
   const u=state.currentUser;
@@ -640,76 +773,87 @@ function refreshUI() {
   document.getElementById('rEarned').textContent=fmtDollar(u.referEarned/1000);
   document.getElementById('wBalance').textContent=bal.toFixed(3);
   document.getElementById('wBalanceTaka').textContent='≈ ৳'+toBDT(bal)+' BDT';
-  renderTasks();
+  render7DayChart();
+  renderTaskPage();
 }
 
-const TASKS=[
-  {id:'ad1',name:'অ্যাড ১ দেখুন',desc:'৩০ সেকেন্ড → $0.010 | আনলিমিটেড',icon:'📺',color:'rgba(0,212,255,0.1)',label:'$0.010/বার',num:1},
-  {id:'ad2',name:'অ্যাড ২ দেখুন',desc:'৩০ সেকেন্ড → $0.010 | আনলিমিটেড',icon:'📺',color:'rgba(123,47,255,0.1)',label:'$0.010/বার',num:2}
-];
-
-function renderTasks(){
-  const tc=state.currentUser.taskCounts||{};
-  const list=document.getElementById('taskList');
-  list.innerHTML='';
-  TASKS.forEach(t=>{
-    const count=tc[t.id]||0;
-    list.innerHTML+=`
-      <div class="task-card">
-        ${count>0?`<div class="task-count-badge">${count}× সম্পন্ন</div>`:''}
-        <div class="task-icon-wrap" style="background:${t.color}">${t.icon}</div>
-        <div class="task-info"><div class="task-name">${t.name}</div><div class="task-desc">${t.desc}</div></div>
-        <div class="task-right">
-          <div class="task-reward-val">${t.label}</div>
-          <div class="task-reward-label">REWARD</div>
-          <button class="task-btn" onclick="startAd(${t.num})">শুরু করুন</button>
+// ===== 7-DAY EARNINGS CHART =====
+function render7DayChart() {
+  const u = state.currentUser;
+  const de = u.dailyEarnings || {};
+  const days = [];
+  const labels = ['র','সো','ম','বু','বৃ','শু','শ'];
+  let total7 = 0;
+  for (let i=6; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const val = (de[key]||0)/1000;
+    const dayName = labels[d.getDay()];
+    days.push({key, val, dayName, isToday: i===0});
+    total7 += val;
+  }
+  document.getElementById('chart7Total').textContent = fmtDollar(total7);
+  const maxVal = Math.max(...days.map(d=>d.val), 0.001);
+  const bars = document.getElementById('chart7Bars');
+  bars.innerHTML = '';
+  days.forEach(d => {
+    const pct = Math.max((d.val/maxVal)*100, d.val>0?8:3);
+    bars.innerHTML += `
+      <div class="chart-bar-wrap">
+        <div class="chart-bar-bg">
+          <div class="chart-bar-fill ${d.isToday?'today':''}" style="height:${pct}%"></div>
         </div>
+        <div class="chart-bar-day">${d.dayName}</div>
       </div>`;
   });
 }
 
-// ===== AD SYSTEM — IFRAME =====
-function startAd(num) {
-  // Reset
-  adRem[num] = AD_SECS;
-  adDone[num] = false;
-  clearInterval(adTimers[num]);
+// ===== TASK PAGE =====
+function renderTaskPage() {
+  const grid = document.getElementById('taskGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  CUSTOM_TASKS.forEach((t, i) => {
+    const hasLink = t.link && t.link.trim() !== '';
+    grid.innerHTML += `
+      <div class="task-item">
+        <div class="task-item-num">${i+1}</div>
+        <div class="task-item-info">
+          <div class="task-item-name">${t.name}</div>
+          <div class="task-item-sub">${hasLink ? 'ট্যাপ করুন এবং সম্পন্ন করুন' : 'শীঘ্রই আসছে...'}</div>
+        </div>
+        ${hasLink
+          ? `<button class="task-item-btn" onclick="openTaskLink('${t.link}')">শুরু করুন</button>`
+          : `<button class="task-item-btn unavailable" disabled>Not Available</button>`}
+      </div>`;
+  });
+}
 
-  // Reset UI
+function openTaskLink(link) {
+  if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
+  else window.open(link, '_blank');
+}
+
+// ===== AD SYSTEM (kept for ads 1 & 2) =====
+function startAd(num) {
+  adRem[num] = AD_SECS; adDone[num] = false;
+  clearInterval(adTimers[num]);
   updateAdUI(num);
   document.getElementById(`ad${num}Claim`).classList.remove('show');
   document.getElementById(`ad${num}Blocked`).classList.remove('show');
-
-  // Show fullscreen
   document.getElementById(`ad${num}Screen`).classList.add('open');
-
-  // Load iframe
   const iframe = document.getElementById(`ad${num}Frame`);
   iframe.src = AD_LINKS[num];
-
-  // iframe error হলে blocked message দেখাও
-  iframe.onerror = () => {
-    document.getElementById(`ad${num}Blocked`).classList.add('show');
-  };
-
-  // 3 সেকেন্ড পর check করো iframe load হয়েছে কিনা
+  iframe.onerror = () => document.getElementById(`ad${num}Blocked`).classList.add('show');
   setTimeout(() => {
     try {
-      // iframe block detect — contentDocument null হলে blocked
-      if (!iframe.contentDocument && !iframe.contentWindow?.document) {
+      if (!iframe.contentDocument && !iframe.contentWindow?.document)
         document.getElementById(`ad${num}Blocked`).classList.add('show');
-      }
-    } catch(e) {
-      // cross-origin error = iframe লোড হয়েছে! (এটাই ভালো)
-      document.getElementById(`ad${num}Blocked`).classList.remove('show');
-    }
+    } catch(e) { document.getElementById(`ad${num}Blocked`).classList.remove('show'); }
   }, 3000);
-
-  // Timer শুরু — iframe এ থাকলেই চলবে
   adTimers[num] = setInterval(() => {
     adRem[num]--;
     updateAdUI(num);
-
     if (adRem[num] <= 0) {
       clearInterval(adTimers[num]);
       adDone[num] = true;
@@ -721,16 +865,14 @@ function startAd(num) {
 
 function updateAdUI(num) {
   const rem = adRem[num];
-  const pct = rem / AD_SECS;
-  const offset = CIRCUMFERENCE * (1 - pct);
+  const pct = rem/AD_SECS;
   document.getElementById(`ad${num}Sec`).textContent = rem;
-  document.getElementById(`ad${num}Circle`).style.strokeDashoffset = offset;
+  document.getElementById(`ad${num}Circle`).style.strokeDashoffset = CIRCUMFERENCE*(1-pct);
   document.getElementById(`ad${num}Fill`).style.width = (pct*100)+'%';
   document.getElementById(`ad${num}ProgressText`).textContent = rem+'s';
 }
 
 function openAdExternal(num) {
-  // iframe block হলে external এ খোলো কিন্তু timer চলতে থাকবে
   if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(AD_LINKS[num]);
   else window.open(AD_LINKS[num],'_blank');
 }
@@ -741,10 +883,13 @@ async function claimAd(num) {
   u.balance+=10; u.totalEarned+=10;
   if(!u.taskCounts)u.taskCounts={};
   u.taskCounts[`ad${num}`]=(u.taskCounts[`ad${num}`]||0)+1;
+  // Track daily earnings
+  if(!u.dailyEarnings)u.dailyEarnings={};
+  const dk=todayKey();
+  u.dailyEarnings[dk]=(u.dailyEarnings[dk]||0)+10;
   try {
-    await fbUpdateDoc(fbDoc(db,'users',u.id),{balance:u.balance,totalEarned:u.totalEarned,taskCounts:u.taskCounts});
-    closeAd(num,true);
-    refreshUI();
+    await fbUpdateDoc(fbDoc(db,'users',u.id),{balance:u.balance,totalEarned:u.totalEarned,taskCounts:u.taskCounts,dailyEarnings:u.dailyEarnings});
+    closeAd(num,true); refreshUI();
     showToast('🎉 $0.010 আপনার ব্যালেন্সে যোগ হয়েছে!');
   } catch(e){u.balance-=10;u.totalEarned-=10;showToast('❌ সমস্যা হয়েছে!');}
 }
@@ -777,6 +922,34 @@ async function renderLeaderboard(){
   }catch(e){list.innerHTML='<div class="admin-empty">লোড করতে সমস্যা</div>';}
 }
 
+// ===== WALLET HISTORY =====
+async function loadWalletHistory() {
+  const container = document.getElementById('walletHistory');
+  if (!container || !state.currentUser) return;
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'withdrawals'));
+    const all = [];
+    snap.forEach(d => { const data={id:d.id,...d.data()}; if(data.userId===state.currentUser.id) all.push(data); });
+    all.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    if (!all.length) { container.innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">কোনো হিস্ট্রি নেই</div>'; return; }
+    container.innerHTML = '';
+    all.forEach(w => {
+      const statusLabel = w.status==='success' ? '✅ সফল' : w.status==='rejected' ? '❌ বাতিল' : '⏳ অপেক্ষায়';
+      const statusClass = w.status==='success' ? 'success' : w.status==='rejected' ? 'rejected' : 'pending';
+      container.innerHTML += `
+        <div class="wh-item">
+          <div class="wh-icon" style="background:rgba(0,212,255,0.1)">${w.method==='bkash'?'📱':'🟠'}</div>
+          <div class="wh-info">
+            <div class="wh-title">${w.method==='bkash'?'bKash':'Nagad'} — ${w.number}</div>
+            <div class="wh-date">${w.createdAt?new Date(w.createdAt.seconds*1000).toLocaleDateString('bn-BD'):''}</div>
+            <span class="wh-status ${statusClass}">${statusLabel}</span>
+          </div>
+          <div class="wh-amount" style="color:${w.status==='success'?'var(--green)':w.status==='rejected'?'var(--red)':'var(--gold)'}">$${w.amount}</div>
+        </div>`;
+    });
+  } catch(e) { container.innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">লোড সমস্যা</div>'; }
+}
+
 // ===== WITHDRAW =====
 function selMethod(btn,method){
   document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));
@@ -793,13 +966,15 @@ async function doWithdraw(){
   if(amt<0.20){showErr(err,'সর্বনিম্ন $0.20!');return;}
   if(amt>u.balance/1000){showErr(err,'পর্যাপ্ত ব্যালেন্স নেই!');return;}
   const amtMilli=Math.round(amt*1000);
-  u.balance-=amtMilli;u.withdrawn+=amtMilli;
+  u.balance-=amtMilli; u.withdrawn+=amtMilli;
   try{
     await fbUpdateDoc(fbDoc(db,'users',u.id),{balance:u.balance,withdrawn:u.withdrawn});
     await fbAddDoc(fbCollection(db,'withdrawals'),{userId:u.id,userName:u.name,amount:amt.toFixed(2),method:state.wMethod,number:num,status:'pending',createdAt:fbServerTimestamp()});
     fetch('/api/notify-withdraw',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userName:u.name,amount:amt.toFixed(2),method:state.wMethod,number:num})}).catch(()=>{});
-    err.style.display='none';document.getElementById('wNumber').value='';document.getElementById('wAmount').value='';
-    refreshUI();showToast('✅ উইথড্র অনুরোধ পাঠানো হয়েছে!');
+    err.style.display='none';
+    document.getElementById('wNumber').value='';document.getElementById('wAmount').value='';
+    refreshUI(); loadWalletHistory();
+    showToast('✅ উইথড্র অনুরোধ পাঠানো হয়েছে!');
   }catch(e){u.balance+=amtMilli;u.withdrawn-=amtMilli;showErr(err,'সমস্যা হয়েছে!');}
 }
 
@@ -816,8 +991,37 @@ async function adminLogin(){
   loadAdminData();
 }
 
+async function adminApproveWithdraw(wId, userId, amount) {
+  try {
+    await fbUpdateDoc(fbDoc(db,'withdrawals',wId),{status:'success'});
+    // Add notification for user
+    await fbAddDoc(fbCollection(db,'notifications'),{userId,message:`✅ আপনার $${amount} উইথড্র সফল হয়েছে! টাকা পাঠানো হয়েছে।`,type:'withdraw_success',createdAt:fbServerTimestamp(),read:false});
+    showToast('✅ পেমেন্ট অনুমোদন করা হয়েছে!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
+}
+
+async function adminRejectWithdraw(wId, userId, amountStr) {
+  try {
+    // Refund balance
+    const userSnap = await fbGetDoc(fbDoc(db,'users',userId));
+    if (userSnap.exists()) {
+      const ud = userSnap.data();
+      const amtMilli = Math.round(parseFloat(amountStr)*1000);
+      await fbUpdateDoc(fbDoc(db,'users',userId),{balance:ud.balance+amtMilli, withdrawn:Math.max(0,ud.withdrawn-amtMilli)});
+    }
+    await fbUpdateDoc(fbDoc(db,'withdrawals',wId),{status:'rejected'});
+    await fbAddDoc(fbCollection(db,'notifications'),{userId,message:`❌ আপনার $${amountStr} উইথড্র বাতিল হয়েছে। ব্যালেন্স ফেরত দেওয়া হয়েছে।`,type:'withdraw_rejected',createdAt:fbServerTimestamp(),read:false});
+    showToast('❌ উইথড্র বাতিল করা হয়েছে, ব্যালেন্স ফেরত!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
+}
+
 async function loadAdminData(){
   try{
+    // Load task config for admin editing
+    renderAdminTasks();
+
     const userSnap=await fbGetDocs(fbCollection(db,'users'));
     const users=[];let totalEarned=0;const today=new Date().toDateString();let todayCount=0;
     userSnap.forEach(d=>{const u={id:d.id,...d.data()};users.push(u);totalEarned+=u.totalEarned||0;if(new Date(u.joinDate).toDateString()===today)todayCount++;});
@@ -825,27 +1029,81 @@ async function loadAdminData(){
     document.getElementById('aTotal').textContent=users.length;
     document.getElementById('aTotalEarned').textContent=fmtDollar(totalEarned/1000);
     document.getElementById('aToday').textContent=todayCount;
+
     const wSnap=await fbGetDocs(fbCollection(db,'withdrawals'));
     const withdraws=[];wSnap.forEach(d=>withdraws.push({id:d.id,...d.data()}));
-    document.getElementById('aWithdraws').textContent=withdraws.length;
+    document.getElementById('aWithdraws').textContent=withdraws.filter(w=>w.status==='pending').length;
+
     const wList=document.getElementById('adminWithdrawList');
     if(!withdraws.length){wList.innerHTML='<div class="admin-empty">কোনো উইথড্র নেই</div>';}
-    else{wList.innerHTML='';[...withdraws].reverse().forEach(w=>{wList.innerHTML+=`<div class="admin-card"><span class="ac-amount">$${w.amount}</span><div class="ac-name">${w.userName}</div><div class="ac-detail">📱 ${w.method} — ${w.number}<br><span class="ac-badge">⏳ অপেক্ষায়</span></div></div>`;});}
+    else{
+      wList.innerHTML='';
+      [...withdraws].reverse().forEach(w=>{
+        const isPending = w.status==='pending';
+        const statusHtml = w.status==='success'
+          ? '<span class="ac-badge" style="background:rgba(0,230,118,0.15);color:var(--green);border-color:rgba(0,230,118,0.3)">✅ সফল</span>'
+          : w.status==='rejected'
+          ? '<span class="ac-badge" style="background:rgba(255,82,82,0.15);color:var(--red);border-color:rgba(255,82,82,0.3)">❌ বাতিল</span>'
+          : '<span class="ac-badge">⏳ অপেক্ষায়</span>';
+        wList.innerHTML+=`
+          <div class="admin-card">
+            <span class="ac-amount">$${w.amount}</span>
+            <div class="ac-name">${w.userName}</div>
+            <div class="ac-detail">📱 ${w.method} — ${w.number}<br>${statusHtml}</div>
+            ${isPending ? `
+            <div class="withdraw-actions">
+              <button class="btn-approve" onclick="adminApproveWithdraw('${w.id}','${w.userId}','${w.amount}')">✅ অনুমোদন</button>
+              <button class="btn-reject" onclick="adminRejectWithdraw('${w.id}','${w.userId}','${w.amount}')">❌ বাতিল</button>
+            </div>` : ''}
+          </div>`;
+      });
+    }
+
     const uList=document.getElementById('adminUserList');uList.innerHTML='';
     users.forEach(u=>{
       const tc=u.taskCounts||{};
       const total=Object.values(tc).reduce((a,b)=>a+b,0);
-      uList.innerHTML+=`<div class="admin-card"><span class="ac-amount">${fmtDollar(u.balance/1000)}</span><div class="ac-name">${u.name}</div><div class="ac-detail">📞 ${u.phone||u.email}<br>💰 ${fmtDollar(u.totalEarned/1000)} | 💸 ${fmtDollar(u.withdrawn/1000)}<br>✅ ${total}বার অ্যাড | 👥 ${u.referCount||0} রেফার<br>📅 ${new Date(u.joinDate).toLocaleDateString('bn-BD')}</div></div>`;
+      uList.innerHTML+=`<div class="admin-card"><span class="ac-amount">${fmtDollar(u.balance/1000)}</span><div class="ac-name">${u.name}</div><div class="ac-detail">📞 ${u.phone||u.email}<br>💰 ${fmtDollar(u.totalEarned/1000)} | 💸 ${fmtDollar(u.withdrawn/1000)}<br>✅ ${total}বার টাস্ক | 👥 ${u.referCount||0} রেফার<br>📅 ${new Date(u.joinDate).toLocaleDateString('bn-BD')}</div></div>`;
     });
   }catch(e){showToast('ডেটা লোড সমস্যা!');}
 }
 
+function renderAdminTasks() {
+  const list = document.getElementById('adminTaskList');
+  if (!list) return;
+  list.innerHTML = '';
+  CUSTOM_TASKS.forEach((t, i) => {
+    list.innerHTML += `
+      <div class="admin-task-item">
+        <div class="ati-head">
+          <div class="ati-num">${i+1}</div>
+          <div class="ati-label">টাস্ক ${i+1}</div>
+        </div>
+        <div class="ati-fields">
+          <input class="ati-input" id="tname_${i}" placeholder="টাস্কের নাম" value="${t.name||''}">
+          <input class="ati-input" id="tlink_${i}" placeholder="লিংক (না থাকলে ফাঁকা রাখুন)" value="${t.link||''}">
+          <button class="ati-save" onclick="saveOneTask(${i})">💾 সেভ করুন</button>
+        </div>
+      </div>`;
+  });
+}
+
+async function saveOneTask(i) {
+  const name = document.getElementById(`tname_${i}`).value.trim() || `টাস্ক ${i+1}`;
+  const link = document.getElementById(`tlink_${i}`).value.trim();
+  CUSTOM_TASKS[i] = { ...CUSTOM_TASKS[i], name, link };
+  await saveTaskConfig();
+  renderTaskPage();
+}
+
 // ===== NAVIGATION =====
-function goPage(page,btn){
+function goPage(page, btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(page+'Page').classList.add('active');btn.classList.add('active');
-  if(page==='leader')renderLeaderboard();
+  document.getElementById(page+'Page').classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(page==='leader') renderLeaderboard();
+  if(page==='withdraw') loadWalletHistory();
 }
 
 function copyRefer(){
@@ -863,8 +1121,28 @@ function makeStars(){
   for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';c.appendChild(s);}
 }
 
+// Check notifications for current user (withdraw success/reject)
+async function checkNotifications() {
+  if (!state.currentUser) return;
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'notifications'));
+    const unread = [];
+    snap.forEach(d => {
+      const n = {id:d.id,...d.data()};
+      if (n.userId===state.currentUser.id && !n.read) unread.push(n);
+    });
+    for (const n of unread) {
+      showToast(n.message);
+      await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
+    }
+  } catch(e) {}
+}
+
 if(window.Telegram?.WebApp){window.Telegram.WebApp.expand();window.Telegram.WebApp.ready();}
 makeStars();
+
+// Check notifications every 30 seconds
+setInterval(()=>{ if(state.currentUser) checkNotifications(); }, 30000);
 </script>
 </body>
-  </html>
+        </html>
