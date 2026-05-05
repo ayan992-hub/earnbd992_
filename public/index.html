@@ -7,7 +7,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyCH77JAttr-nJ0cxCwQcgfO4jR_wJSLJoY",
     authDomain: "earn-bd-a158c.firebaseapp.com",
@@ -20,7 +20,7 @@
   const db = getFirestore(app);
   window._db=db; window._doc=doc; window._setDoc=setDoc; window._getDoc=getDoc;
   window._updateDoc=updateDoc; window._collection=collection; window._addDoc=addDoc;
-  window._serverTimestamp=serverTimestamp; window._getDocs=getDocs;
+  window._serverTimestamp=serverTimestamp; window._getDocs=getDocs; window._deleteDoc=deleteDoc;
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -225,6 +225,46 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .btn-approve{flex:1;background:linear-gradient(135deg,var(--green),#00a040);border:none;border-radius:10px;padding:8px;color:white;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer}
 .btn-reject{flex:1;background:linear-gradient(135deg,var(--red),#b71c1c);border:none;border-radius:10px;padding:8px;color:white;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer}
 .btn-done{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--muted);font-family:var(--font-bn);font-size:12px;cursor:not-allowed}
+
+/* PROOF MODAL */
+.proof-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.proof-modal.open{opacity:1;pointer-events:all}
+.proof-sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 18px 30px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);max-height:90vh;overflow-y:auto}
+.proof-modal.open .proof-sheet{transform:translateY(0)}
+.proof-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.proof-title{font-size:17px;font-weight:800;margin-bottom:4px;text-align:center}
+.proof-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px}
+.proof-task-name{background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(123,47,255,0.08));border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;text-align:center}
+.proof-img-area{border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;transition:all 0.2s;position:relative;overflow:hidden;min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.proof-img-area.has-img{padding:0;border-style:solid;border-color:rgba(0,212,255,0.3)}
+.proof-img-area img{width:100%;border-radius:12px;display:block}
+.proof-img-icon{font-size:32px}
+.proof-img-label{font-size:13px;color:var(--muted);font-weight:600}
+.proof-img-sub{font-size:11px;color:var(--muted)}
+.proof-textarea{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--text);font-family:var(--font-bn);font-size:14px;resize:none;height:90px;outline:none;margin-bottom:14px}
+.proof-textarea:focus{border-color:var(--accent)}
+.proof-submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:white;font-family:var(--font-bn);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(0,212,255,0.2)}
+.proof-submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+.proof-cancel{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:var(--font-bn);font-size:14px;cursor:pointer;margin-top:8px}
+.task-pending-badge{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
+.task-approved-badge{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
+/* ADMIN PROOF */
+.proof-admin-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.pac-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pac-avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:15px;flex-shrink:0}
+.pac-name{font-size:14px;font-weight:700}
+.pac-task{font-size:11px;color:var(--accent);margin-top:2px}
+.pac-time{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.pac-desc{background:var(--bg2);border-radius:10px;padding:10px;font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.pac-img{width:100%;border-radius:10px;margin-bottom:10px;cursor:pointer;display:block}
+.pac-no-img{background:var(--bg2);border-radius:10px;padding:10px;font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px}
+.pac-actions{display:flex;gap:8px}
+.pac-approve{flex:1;background:linear-gradient(135deg,var(--green),#00a040);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
+.pac-reject{flex:1;background:linear-gradient(135deg,var(--red),#b71c1c);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
+.img-viewer{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;display:none}
+.img-viewer.open{display:flex}
+.img-viewer img{max-width:95%;max-height:90vh;border-radius:12px}
+.img-viewer-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;position:relative}
@@ -611,6 +651,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <h3>📋 টাস্ক ম্যানেজমেন্ট</h3>
       <div id="adminTaskList"></div>
 
+      <h3 style="margin-top:14px">📸 Proof জমা (<span id="aProofCount">0</span>)</h3>
+      <div id="adminProofList"></div>
+
       <h3 style="margin-top:14px">💸 উইথড্র অনুরোধ</h3>
       <div id="adminWithdrawList"></div>
     </div>
@@ -619,6 +662,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div id="adminUserList"></div>
     </div>
   </div>
+</div>
+
+<!-- PROOF MODAL -->
+<div class="proof-modal" id="proofModal">
+  <div class="proof-sheet">
+    <div class="proof-handle"></div>
+    <div class="proof-title">📸 Proof জমা দিন</div>
+    <div class="proof-sub">কাজের প্রমাণ জমা দিন, অ্যাডমিন যাচাই করবেন</div>
+    <div class="proof-task-name" id="proofTaskName">টাস্ক ১</div>
+    <div class="proof-img-area" id="proofImgArea" onclick="document.getElementById('proofImgInput').click()">
+      <div class="proof-img-icon">📷</div>
+      <div class="proof-img-label">ছবি যোগ করুন</div>
+      <div class="proof-img-sub">ট্যাপ করুন (ঐচ্ছিক)</div>
+    </div>
+    <input type="file" id="proofImgInput" accept="image/*" style="display:none" onchange="handleProofImg(this)">
+    <textarea class="proof-textarea" id="proofText" placeholder="কাজের বিবরণ লিখুন... (যেমন: স্ক্রিনশট নিয়েছি, চ্যানেলে জয়েন করেছি ইত্যাদি)"></textarea>
+    <button class="proof-submit-btn" id="proofSubmitBtn" onclick="submitProof()">✅ জমা দিন</button>
+    <button class="proof-cancel" onclick="closeProofModal()">বাতিল করুন</button>
+  </div>
+</div>
+
+<!-- IMAGE VIEWER -->
+<div class="img-viewer" id="imgViewer">
+  <img id="imgViewerImg" src="" alt="">
+  <button class="img-viewer-close" onclick="closeImgViewer()">✕</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -639,17 +707,18 @@ const AD_LINKS = {
 let CUSTOM_TASKS = Array.from({length:10},(_,i)=>({id:`task${i+1}`,name:`টাস্ক ${i+1}`,link:''}));
 
 let state = { currentUser: null, wMethod: 'bkash' };
-let db, fbDoc, fbSetDoc, fbGetDoc, fbUpdateDoc, fbCollection, fbAddDoc, fbServerTimestamp, fbGetDocs;
+let db, fbDoc, fbSetDoc, fbGetDoc, fbUpdateDoc, fbCollection, fbAddDoc, fbServerTimestamp, fbGetDocs, fbDeleteDoc;
 let subClicked = false;
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
+let proofState = { taskIndex: null, taskName: '', imgBase64: null };
 
 // ===== FIREBASE =====
 window.addEventListener('firebase-ready', async () => {
   db=window._db; fbDoc=window._doc; fbSetDoc=window._setDoc; fbGetDoc=window._getDoc;
   fbUpdateDoc=window._updateDoc; fbCollection=window._collection; fbAddDoc=window._addDoc;
-  fbServerTimestamp=window._serverTimestamp; fbGetDocs=window._getDocs;
+  fbServerTimestamp=window._serverTimestamp; fbGetDocs=window._getDocs; fbDeleteDoc=window._deleteDoc;
 
   // Load custom tasks config
   await loadTaskConfig();
@@ -809,29 +878,181 @@ function render7DayChart() {
 }
 
 // ===== TASK PAGE =====
-function renderTaskPage() {
+async function renderTaskPage() {
   const grid = document.getElementById('taskGrid');
   if (!grid) return;
+  grid.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">লোড হচ্ছে...</div>';
+
+  // Load user's pending proofs
+  let pendingTasks = {};
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'proofs'));
+    snap.forEach(d => {
+      const p = d.data();
+      if (p.userId === state.currentUser.id && p.status === 'pending') {
+        pendingTasks[p.taskIndex] = true;
+      }
+    });
+  } catch(e) {}
+
   grid.innerHTML = '';
   CUSTOM_TASKS.forEach((t, i) => {
     const hasLink = t.link && t.link.trim() !== '';
+    const isPending = pendingTasks[i] === true;
+    let btnHtml = '';
+    if (!hasLink) {
+      btnHtml = `<button class="task-item-btn unavailable" disabled>Not Available</button>`;
+    } else if (isPending) {
+      btnHtml = `<button class="task-item-btn" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:default" disabled>⏳ Pending</button>`;
+    } else {
+      btnHtml = `<button class="task-item-btn" onclick="openTaskWithProof(${i},'${t.link}','${t.name.replace(/'/g,"\\'")}')">শুরু করুন</button>`;
+    }
     grid.innerHTML += `
       <div class="task-item">
         <div class="task-item-num">${i+1}</div>
         <div class="task-item-info">
           <div class="task-item-name">${t.name}</div>
-          <div class="task-item-sub">${hasLink ? 'ট্যাপ করুন এবং সম্পন্ন করুন' : 'শীঘ্রই আসছে...'}</div>
+          <div class="task-item-sub">${hasLink ? (isPending ? 'অ্যাডমিন যাচাই করছেন...' : 'ট্যাপ করুন এবং সম্পন্ন করুন') : 'শীঘ্রই আসছে...'}</div>
+          ${isPending ? '<span class="task-pending-badge">⏳ Pending</span>' : ''}
         </div>
-        ${hasLink
-          ? `<button class="task-item-btn" onclick="openTaskLink('${t.link}')">শুরু করুন</button>`
-          : `<button class="task-item-btn unavailable" disabled>Not Available</button>`}
+        ${btnHtml}
       </div>`;
   });
+}
+
+function openTaskWithProof(taskIndex, link, taskName) {
+  // Open the task link
+  if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
+  else window.open(link, '_blank');
+  // Show proof modal after short delay
+  setTimeout(() => openProofModal(taskIndex, taskName), 800);
 }
 
 function openTaskLink(link) {
   if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
   else window.open(link, '_blank');
+}
+
+// ===== PROOF MODAL =====
+function openProofModal(taskIndex, taskName) {
+  proofState.taskIndex = taskIndex;
+  proofState.taskName = taskName;
+  proofState.imgBase64 = null;
+  document.getElementById('proofTaskName').textContent = taskName;
+  document.getElementById('proofText').value = '';
+  document.getElementById('proofImgArea').classList.remove('has-img');
+  document.getElementById('proofImgArea').innerHTML = `
+    <div class="proof-img-icon">📷</div>
+    <div class="proof-img-label">ছবি যোগ করুন</div>
+    <div class="proof-img-sub">ট্যাপ করুন (ঐচ্ছিক)</div>`;
+  document.getElementById('proofModal').classList.add('open');
+}
+
+function closeProofModal() {
+  document.getElementById('proofModal').classList.remove('open');
+}
+
+function handleProofImg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  // Resize & compress image to keep base64 small
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 600;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      proofState.imgBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      const area = document.getElementById('proofImgArea');
+      area.classList.add('has-img');
+      area.innerHTML = `<img src="${proofState.imgBase64}" alt="proof">`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitProof() {
+  const text = document.getElementById('proofText').value.trim();
+  if (!text && !proofState.imgBase64) {
+    showToast('⚠️ ছবি বা বিবরণ অন্তত একটা দিন!'); return;
+  }
+  const btn = document.getElementById('proofSubmitBtn');
+  btn.disabled = true; btn.textContent = 'জমা হচ্ছে...';
+  try {
+    await fbAddDoc(fbCollection(db,'proofs'), {
+      userId: state.currentUser.id,
+      userName: state.currentUser.name,
+      taskIndex: proofState.taskIndex,
+      taskName: proofState.taskName,
+      description: text,
+      image: proofState.imgBase64 || null,
+      status: 'pending',
+      createdAt: fbServerTimestamp()
+    });
+    closeProofModal();
+    showToast('✅ Proof জমা হয়েছে! অ্যাডমিন যাচাই করবেন।');
+    renderTaskPage();
+  } catch(e) {
+    showToast('❌ জমা দিতে সমস্যা হয়েছে!');
+  }
+  btn.disabled = false; btn.textContent = '✅ জমা দিন';
+}
+
+// ===== IMAGE VIEWER =====
+function openImgViewer(src) {
+  document.getElementById('imgViewerImg').src = src;
+  document.getElementById('imgViewer').classList.add('open');
+}
+function closeImgViewer() {
+  document.getElementById('imgViewer').classList.remove('open');
+}
+
+// ===== ADMIN PROOF ACTIONS =====
+async function adminApproveProof(proofId, userId, userName, taskName) {
+  try {
+    // Give $0.010 = 10 milliDollar to user
+    const userSnap = await fbGetDoc(fbDoc(db,'users',userId));
+    if (userSnap.exists()) {
+      const ud = userSnap.data();
+      const dk = todayKey();
+      const de = ud.dailyEarnings || {};
+      de[dk] = (de[dk]||0) + 10;
+      await fbUpdateDoc(fbDoc(db,'users',userId), {
+        balance: (ud.balance||0) + 10,
+        totalEarned: (ud.totalEarned||0) + 10,
+        dailyEarnings: de
+      });
+    }
+    // Notify user
+    await fbAddDoc(fbCollection(db,'notifications'), {
+      userId, message: `✅ "${taskName}" টাস্কের proof অনুমোদিত হয়েছে! $0.010 আপনার ব্যালেন্সে যোগ হয়েছে।`,
+      type:'proof_approved', createdAt: fbServerTimestamp(), read: false
+    });
+    // Delete proof document
+    await fbDeleteDoc(fbDoc(db,'proofs',proofId));
+    showToast('✅ Proof অনুমোদিত, টাকা দেওয়া হয়েছে!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
+}
+
+async function adminRejectProof(proofId, userId, taskName) {
+  try {
+    // Notify user
+    await fbAddDoc(fbCollection(db,'notifications'), {
+      userId, message: `❌ "${taskName}" টাস্কের proof বাতিল হয়েছে। আবার চেষ্টা করুন।`,
+      type:'proof_rejected', createdAt: fbServerTimestamp(), read: false
+    });
+    // Delete proof document
+    await fbDeleteDoc(fbDoc(db,'proofs',proofId));
+    showToast('❌ Proof বাতিল করা হয়েছে!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
 }
 
 // ===== AD SYSTEM (kept for ads 1 & 2) =====
@@ -1019,7 +1240,6 @@ async function adminRejectWithdraw(wId, userId, amountStr) {
 
 async function loadAdminData(){
   try{
-    // Load task config for admin editing
     renderAdminTasks();
 
     const userSnap=await fbGetDocs(fbCollection(db,'users'));
@@ -1029,6 +1249,41 @@ async function loadAdminData(){
     document.getElementById('aTotal').textContent=users.length;
     document.getElementById('aTotalEarned').textContent=fmtDollar(totalEarned/1000);
     document.getElementById('aToday').textContent=todayCount;
+
+    // Load proofs
+    const proofSnap = await fbGetDocs(fbCollection(db,'proofs'));
+    const proofs = [];
+    proofSnap.forEach(d => proofs.push({id:d.id,...d.data()}));
+    proofs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    document.getElementById('aProofCount').textContent = proofs.length;
+    const pList = document.getElementById('adminProofList');
+    if (!proofs.length) {
+      pList.innerHTML = '<div class="admin-empty">কোনো Proof জমা নেই</div>';
+    } else {
+      pList.innerHTML = '';
+      proofs.forEach(p => {
+        const timeStr = p.createdAt ? new Date(p.createdAt.seconds*1000).toLocaleString('bn-BD') : '';
+        pList.innerHTML += `
+          <div class="proof-admin-card">
+            <div class="pac-header">
+              <div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div>
+              <div>
+                <div class="pac-name">${p.userName}</div>
+                <div class="pac-task">📋 ${p.taskName}</div>
+              </div>
+              <div class="pac-time">${timeStr}</div>
+            </div>
+            ${p.description ? `<div class="pac-desc">💬 ${p.description}</div>` : ''}
+            ${p.image
+              ? `<img class="pac-img" src="${p.image}" onclick="openImgViewer('${p.image}')" alt="proof">`
+              : `<div class="pac-no-img">📷 ছবি নেই</div>`}
+            <div class="pac-actions">
+              <button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}')">✅ অনুমোদন + $0.010</button>
+              <button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ বাতিল</button>
+            </div>
+          </div>`;
+      });
+    }
 
     const wSnap=await fbGetDocs(fbCollection(db,'withdrawals'));
     const withdraws=[];wSnap.forEach(d=>withdraws.push({id:d.id,...d.data()}));
@@ -1104,6 +1359,7 @@ function goPage(page, btn) {
   if(btn) btn.classList.add('active');
   if(page==='leader') renderLeaderboard();
   if(page==='withdraw') loadWalletHistory();
+  if(page==='task') renderTaskPage();
 }
 
 function copyRefer(){
@@ -1145,4 +1401,4 @@ makeStars();
 setInterval(()=>{ if(state.currentUser) checkNotifications(); }, 30000);
 </script>
 </body>
-        </html>
+</html>
