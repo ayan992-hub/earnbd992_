@@ -236,8 +236,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .proof-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px}
 .proof-task-name{background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(123,47,255,0.08));border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;text-align:center}
 .proof-img-area{border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;transition:all 0.2s;position:relative;overflow:hidden;min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
-.proof-img-area.has-img{padding:0;border-style:solid;border-color:rgba(0,212,255,0.3)}
-.proof-img-area img{width:100%;border-radius:12px;display:block}
+.proof-img-area.has-img{padding:8px;border-style:solid;border-color:rgba(0,212,255,0.3);flex-wrap:wrap;flex-direction:row;align-items:flex-start;gap:6px}
+.proof-img-area img{width:calc(50% - 3px);border-radius:10px;display:block;object-fit:cover;aspect-ratio:1}
 .proof-img-icon{font-size:32px}
 .proof-img-label{font-size:13px;color:var(--muted);font-weight:600}
 .proof-img-sub{font-size:11px;color:var(--muted)}
@@ -699,9 +699,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     <div class="proof-img-area" id="proofImgArea" onclick="document.getElementById('proofImgInput').click()">
       <div class="proof-img-icon">📷</div>
       <div class="proof-img-label">ছবি যোগ করুন</div>
-      <div class="proof-img-sub">ট্যাপ করুন (ঐচ্ছিক)</div>
+      <div class="proof-img-sub">একাধিক ছবি যোগ করা যাবে</div>
     </div>
-    <input type="file" id="proofImgInput" accept="image/*" style="display:none" onchange="handleProofImg(this)">
+    <input type="file" id="proofImgInput" accept="image/*" multiple style="display:none" onchange="handleProofImgs(this)">
     <textarea class="proof-textarea" id="proofText" placeholder="কাজের বিবরণ লিখুন... (যেমন: স্ক্রিনশট নিয়েছি, চ্যানেলে জয়েন করেছি ইত্যাদি)"></textarea>
     <button class="proof-submit-btn" id="proofSubmitBtn" onclick="submitProof()">✅ জমা দিন</button>
     <button class="proof-cancel" onclick="closeProofModal()">বাতিল করুন</button>
@@ -737,7 +737,7 @@ let subClicked = false;
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
-let proofState = { taskIndex: null, taskName: '', imgBase64: null };
+let proofState = { taskIndex: null, taskName: '', images: [] };
 
 // ===== FIREBASE =====
 window.addEventListener('firebase-ready', async () => {
@@ -963,14 +963,14 @@ function openTaskLink(link) {
 function openProofModal(taskIndex, taskName) {
   proofState.taskIndex = taskIndex;
   proofState.taskName = taskName;
-  proofState.imgBase64 = null;
+  proofState.images = [];
   document.getElementById('proofTaskName').textContent = taskName;
   document.getElementById('proofText').value = '';
   document.getElementById('proofImgArea').classList.remove('has-img');
   document.getElementById('proofImgArea').innerHTML = `
     <div class="proof-img-icon">📷</div>
     <div class="proof-img-label">ছবি যোগ করুন</div>
-    <div class="proof-img-sub">ট্যাপ করুন (ঐচ্ছিক)</div>`;
+    <div class="proof-img-sub">একাধিক ছবি যোগ করা যাবে</div>`;
   document.getElementById('proofModal').classList.add('open');
 }
 
@@ -978,10 +978,7 @@ function closeProofModal() {
   document.getElementById('proofModal').classList.remove('open');
 }
 
-function handleProofImg(input) {
-  const file = input.files[0];
-  if (!file) return;
-  // Resize & compress image to keep base64 small
+function resizeImage(file, callback) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = new Image();
@@ -993,19 +990,51 @@ function handleProofImg(input) {
       if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      proofState.imgBase64 = canvas.toDataURL('image/jpeg', 0.7);
-      const area = document.getElementById('proofImgArea');
-      area.classList.add('has-img');
-      area.innerHTML = `<img src="${proofState.imgBase64}" alt="proof">`;
+      callback(canvas.toDataURL('image/jpeg', 0.7));
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
+function handleProofImgs(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  let processed = 0;
+  files.forEach(file => {
+    resizeImage(file, (b64) => {
+      proofState.images.push(b64);
+      processed++;
+      if (processed === files.length) renderProofImgArea();
+    });
+  });
+}
+
+function renderProofImgArea() {
+  const area = document.getElementById('proofImgArea');
+  if (!proofState.images.length) {
+    area.classList.remove('has-img');
+    area.innerHTML = `<div class="proof-img-icon">📷</div><div class="proof-img-label">ছবি যোগ করুন</div><div class="proof-img-sub">একাধিক ছবি যোগ করা যাবে</div>`;
+    return;
+  }
+  area.classList.add('has-img');
+  area.innerHTML = proofState.images.map((b64,i) =>
+    `<div style="position:relative;width:calc(50% - 3px)">
+      <img src="${b64}" alt="proof" style="width:100%;border-radius:10px;display:block;object-fit:cover;aspect-ratio:1">
+      <button onclick="removeProofImg(${i})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border:none;color:white;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>`
+  ).join('') +
+  `<div onclick="document.getElementById('proofImgInput').click()" style="width:calc(50% - 3px);aspect-ratio:1;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:var(--muted)">+</div>`;
+}
+
+function removeProofImg(i) {
+  proofState.images.splice(i, 1);
+  renderProofImgArea();
+}
+
 async function submitProof() {
   const text = document.getElementById('proofText').value.trim();
-  if (!text && !proofState.imgBase64) {
+  if (!text && proofState.images.length === 0) {
     showToast('⚠️ ছবি বা বিবরণ অন্তত একটা দিন!'); return;
   }
   const btn = document.getElementById('proofSubmitBtn');
@@ -1017,7 +1046,8 @@ async function submitProof() {
       taskIndex: proofState.taskIndex,
       taskName: proofState.taskName,
       description: text,
-      image: proofState.imgBase64 || null,
+      images: proofState.images.length ? proofState.images : null,
+      image: proofState.images[0] || null,
       status: 'pending',
       createdAt: fbServerTimestamp()
     });
@@ -1048,11 +1078,14 @@ async function adminApproveProof(proofId, userId, userName, taskName) {
       const ud = userSnap.data();
       const dk = todayKey();
       const de = ud.dailyEarnings || {};
+      const tc = ud.taskCounts || {};
+      tc['proof_'+proofId.slice(-4)] = (tc['proof_'+proofId.slice(-4)]||0) + 1;
       de[dk] = (de[dk]||0) + 10;
       await fbUpdateDoc(fbDoc(db,'users',userId), {
         balance: (ud.balance||0) + 10,
         totalEarned: (ud.totalEarned||0) + 10,
-        dailyEarnings: de
+        dailyEarnings: de,
+        taskCounts: tc
       });
     }
     // Notify user
@@ -1300,7 +1333,9 @@ async function loadAdminData(){
               <div class="pac-time">${timeStr}</div>
             </div>
             ${p.description ? `<div class="pac-desc">💬 ${p.description}</div>` : ''}
-            ${p.image
+            ${p.images && p.images.length
+              ? p.images.map((img,i) => `<img class="pac-img" src="${img}" onclick="openImgViewer('${img}')" alt="proof ${i+1}" style="margin-bottom:6px">`).join('')
+              : p.image
               ? `<img class="pac-img" src="${p.image}" onclick="openImgViewer('${p.image}')" alt="proof">`
               : `<div class="pac-no-img">📷 ছবি নেই</div>`}
             <div class="pac-actions">
@@ -1532,7 +1567,9 @@ async function checkAutoApproveProofs() {
           const dk = todayKey();
           const de = ud.dailyEarnings||{};
           de[dk]=(de[dk]||0)+10;
-          await fbUpdateDoc(fbDoc(db,'users',p.userId),{balance:(ud.balance||0)+10,totalEarned:(ud.totalEarned||0)+10,dailyEarnings:de});
+          const tc2 = ud.taskCounts||{};
+          tc2['auto_'+p.id.slice(-4)]=(tc2['auto_'+p.id.slice(-4)]||0)+1;
+          await fbUpdateDoc(fbDoc(db,'users',p.userId),{balance:(ud.balance||0)+10,totalEarned:(ud.totalEarned||0)+10,dailyEarnings:de,taskCounts:tc2});
         }
         await fbAddDoc(fbCollection(db,'notifications'),{
           userId:p.userId,
@@ -1571,4 +1608,4 @@ setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000)
 // Also check once on login
 </script>
 </body>
-  </html>
+        </html>
