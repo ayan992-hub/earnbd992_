@@ -256,15 +256,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .pac-task{font-size:11px;color:var(--accent);margin-top:2px}
 .pac-time{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap}
 .pac-desc{background:var(--bg2);border-radius:10px;padding:10px;font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6}
-.pac-img{width:100%;border-radius:10px;margin-bottom:10px;cursor:pointer;display:block}
+.pac-img{width:72px;height:72px;border-radius:8px;cursor:pointer;display:inline-block;object-fit:cover;border:2px solid var(--border);transition:transform 0.15s,border-color 0.15s}.pac-img:hover{transform:scale(1.05);border-color:var(--accent)}.pac-imgs-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .pac-no-img{background:var(--bg2);border-radius:10px;padding:10px;font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px}
 .pac-actions{display:flex;gap:8px}
 .pac-approve{flex:1;background:linear-gradient(135deg,var(--green),#00a040);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
 .pac-reject{flex:1;background:linear-gradient(135deg,var(--red),#b71c1c);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
-.img-viewer{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;display:none}
+.img-viewer{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999;align-items:center;justify-content:center;display:none;flex-direction:column;gap:12px;padding:20px}
 .img-viewer.open{display:flex}
-.img-viewer img{max-width:95%;max-height:90vh;border-radius:12px}
-.img-viewer-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
+.img-viewer img{max-width:100%;max-height:82vh;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.6);object-fit:contain}
+.img-viewer-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:20px;width:42px;height:42px;border-radius:50%;cursor:pointer;backdrop-filter:blur(8px)}
+.img-viewer-hint{color:rgba(255,255,255,0.4);font-size:12px;font-family:var(--font-en)}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,48,0.97);border-top:1px solid var(--border);display:flex;z-index:100;padding:6px 4px calc(6px + env(safe-area-inset-bottom));backdrop-filter:blur(20px);box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.25s;position:relative;border-radius:12px;margin:0 2px}
@@ -709,8 +710,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 </div>
 
 <!-- IMAGE VIEWER -->
-<div class="img-viewer" id="imgViewer">
-  <img id="imgViewerImg" src="" alt="">
+<div class="img-viewer" id="imgViewer" onclick="closeImgViewer()">
+  <img id="imgViewerImg" src="" alt="" onclick="event.stopPropagation()">
+  <div class="img-viewer-hint">বাইরে ট্যাপ করলে বন্ধ হবে</div>
   <button class="img-viewer-close" onclick="closeImgViewer()">✕</button>
 </div>
 
@@ -756,7 +758,7 @@ window.addEventListener('firebase-ready', async () => {
         const snap = await fbGetDoc(fbDoc(db,'users',session.id));
         if (snap.exists()) {
           state.currentUser = {id:session.id,...snap.data()};
-          if (state.currentUser.subVerified) { showScreen('appScreen'); refreshUI(); return; }
+          if (state.currentUser.subVerified) { showScreen('appScreen'); refreshUI(); setTimeout(checkAutoApproveProofs, 2000); return; }
         }
       } catch(e) {}
     }
@@ -815,7 +817,7 @@ async function doLogin() {
     err.style.display='none';
     state.currentUser=found;
     localStorage.setItem('ebd_session',JSON.stringify({id:found.id,time:Date.now()}));
-    showScreen('appScreen'); refreshUI();
+    showScreen('appScreen'); refreshUI(); setTimeout(checkAutoApproveProofs, 2000);
   } catch(e){showErr(err,'সমস্যা হয়েছে!');}
 }
 
@@ -1333,10 +1335,13 @@ async function loadAdminData(){
               <div class="pac-time">${timeStr}</div>
             </div>
             ${p.description ? `<div class="pac-desc">💬 ${p.description}</div>` : ''}
-            ${p.images && p.images.length
-              ? p.images.map((img,i) => `<img class="pac-img" src="${img}" onclick="openImgViewer('${img}')" alt="proof ${i+1}" style="margin-bottom:6px">`).join('')
-              : p.image
-              ? `<img class="pac-img" src="${p.image}" onclick="openImgViewer('${p.image}')" alt="proof">`
+            ${(p.images && p.images.length) || p.image
+              ? `<div class="pac-imgs-row">${
+                  (p.images && p.images.length
+                    ? p.images
+                    : [p.image]
+                  ).map((img,i) => `<img class="pac-img" src="${img}" onclick="openImgViewer('${img}')" alt="proof ${i+1}" title="ক্লিক করে বড় দেখুন">`).join('')
+                }</div>`
               : `<div class="pac-no-img">📷 ছবি নেই</div>`}
             <div class="pac-actions">
               <button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}')">✅ অনুমোদন + $0.010</button>
@@ -1554,32 +1559,51 @@ async function checkAutoApproveProofs() {
     const snap = await fbGetDocs(fbCollection(db,'proofs'));
     const now = Date.now();
     for (const d of snap.docs) {
-      const p = {id:d.id,...d.data()};
-      if (p.status !== 'pending') continue;
-      const createdMs = p.createdAt?.seconds ? p.createdAt.seconds*1000 : null;
-      if (!createdMs) continue;
-      const hoursPassed = (now - createdMs) / (1000*60*60);
-      if (hoursPassed >= 24) {
-        // Auto approve
+      try {
+        const p = {id:d.id,...d.data()};
+        if (p.status && p.status !== 'pending') continue;
+
+        // createdAt থেকে ms বের করো — Firestore Timestamp বা millis দুটোই handle করো
+        let createdMs = null;
+        if (p.createdAt?.seconds) createdMs = p.createdAt.seconds * 1000;
+        else if (p.createdAt?.toMillis) createdMs = p.createdAt.toMillis();
+        else if (typeof p.createdAt === 'number') createdMs = p.createdAt;
+        else if (p.submittedAt) createdMs = p.submittedAt;
+
+        if (!createdMs) {
+          // createdAt নেই — proof এর doc এ এখনই timestamp সেট করো যাতে পরে কাজ করে
+          await fbUpdateDoc(fbDoc(db,'proofs',p.id), {createdAt: fbServerTimestamp()});
+          continue;
+        }
+
+        const hoursPassed = (now - createdMs) / (1000*60*60);
+        if (hoursPassed < 24) continue;
+
+        // ২৪ ঘন্টা পার — Auto Approve করো
         const userSnap = await fbGetDoc(fbDoc(db,'users',p.userId));
         if (userSnap.exists()) {
           const ud = userSnap.data();
           const dk = todayKey();
           const de = ud.dailyEarnings||{};
-          de[dk]=(de[dk]||0)+10;
+          de[dk] = (de[dk]||0) + 10;
           const tc2 = ud.taskCounts||{};
-          tc2['auto_'+p.id.slice(-4)]=(tc2['auto_'+p.id.slice(-4)]||0)+1;
-          await fbUpdateDoc(fbDoc(db,'users',p.userId),{balance:(ud.balance||0)+10,totalEarned:(ud.totalEarned||0)+10,dailyEarnings:de,taskCounts:tc2});
+          tc2['auto_'+p.id.slice(-4)] = (tc2['auto_'+p.id.slice(-4)]||0) + 1;
+          await fbUpdateDoc(fbDoc(db,'users',p.userId), {
+            balance: (ud.balance||0) + 10,
+            totalEarned: (ud.totalEarned||0) + 10,
+            dailyEarnings: de,
+            taskCounts: tc2
+          });
         }
-        await fbAddDoc(fbCollection(db,'notifications'),{
-          userId:p.userId,
-          message:`🎉 অভিনন্দন! আপনার "${p.taskName}" টাস্ক স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে! $0.010 আপনার ব্যালেন্সে যোগ হয়েছে।`,
-          type:'proof_auto_approved', createdAt:fbServerTimestamp(), read:false
+        await fbAddDoc(fbCollection(db,'notifications'), {
+          userId: p.userId,
+          message: `🎉 অভিনন্দন! আপনার "${p.taskName||'টাস্ক'}" স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে! $0.010 আপনার ব্যালেন্সে যোগ হয়েছে।`,
+          type: 'proof_auto_approved', createdAt: fbServerTimestamp(), read: false
         });
-        await fbDeleteDoc(fbDoc(db,'proofs',p.id));
-      }
+        await fbUpdateDoc(fbDoc(db,'proofs',p.id), {status:'auto_approved'});
+      } catch(innerErr) { console.warn('auto-approve single proof error:', innerErr); }
     }
-  } catch(e){}
+  } catch(e) { console.warn('checkAutoApproveProofs error:', e); }
 }
 
 if(window.Telegram?.WebApp){window.Telegram.WebApp.expand();window.Telegram.WebApp.ready();}
@@ -1608,4 +1632,4 @@ setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000)
 // Also check once on login
 </script>
 </body>
-        </html>
+</html>
