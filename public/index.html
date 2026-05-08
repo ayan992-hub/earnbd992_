@@ -96,7 +96,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .wc-icon{font-size:36px}
 .wc-title{font-size:16px;font-weight:700}
 .wc-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:18px}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.stat-card{background:var(--card2);border-radius:16px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;border:1px solid transparent}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
+.stat-blue{border-color:rgba(99,179,237,0.2);background:linear-gradient(145deg,rgba(99,179,237,0.08),var(--card2))}.stat-blue::before{background:linear-gradient(90deg,#63b3ed,#4299e1)}
+.stat-green{border-color:rgba(72,187,120,0.2);background:linear-gradient(145deg,rgba(72,187,120,0.08),var(--card2))}.stat-green::before{background:linear-gradient(90deg,#48bb78,#38a169)}
+.stat-teal{border-color:rgba(0,212,255,0.2);background:linear-gradient(145deg,rgba(0,212,255,0.08),var(--card2))}.stat-teal::before{background:linear-gradient(90deg,#00d4ff,#0099cc)}
+.stat-orange{border-color:rgba(237,137,54,0.2);background:linear-gradient(145deg,rgba(237,137,54,0.08),var(--card2))}.stat-orange::before{background:linear-gradient(90deg,#ed8936,#dd6b20)}
+.stat-purple{border-color:rgba(159,122,234,0.2);background:linear-gradient(145deg,rgba(159,122,234,0.08),var(--card2))}.stat-purple::before{background:linear-gradient(90deg,#9f7aea,#805ad5)}
+.stat-gold{border-color:rgba(255,193,7,0.2);background:linear-gradient(145deg,rgba(255,193,7,0.08),var(--card2))}.stat-gold::before{background:linear-gradient(90deg,#ffc107,#ff9800)}
+.s-icon-wrap{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.s-blue{background:rgba(99,179,237,0.15)}.s-green{background:rgba(72,187,120,0.15)}.s-teal{background:rgba(0,212,255,0.15)}.s-orange{background:rgba(237,137,54,0.15)}.s-purple{background:rgba(159,122,234,0.15)}.s-gold{background:rgba(255,193,7,0.15)}
+.s-val{font-size:22px;font-weight:800;font-family:var(--font-en);color:var(--text);line-height:1}
+.s-lab{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;font-family:var(--font-en);text-align:center}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 8px;text-align:center}
 .stat-card .s-icon{font-size:20px;margin-bottom:5px}
 .stat-card .s-val{font-family:var(--font-en);font-size:18px;font-weight:800;color:var(--accent);line-height:1}
@@ -468,10 +480,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       </div>
     </div>
     <div class="stats-row">
-      <div class="stat-card"><div class="s-icon">✅</div><div class="s-val" id="sDone">0</div><div class="s-lab">TASKS</div></div>
-      <div class="stat-card"><div class="s-icon">👥</div><div class="s-val" id="sRefer">0</div><div class="s-lab">REFERS</div></div>
-      <div class="stat-card"><div class="s-icon">💸</div><div class="s-val" id="sWithdraw">$0</div><div class="s-lab">WITHDRAWN</div></div>
-      <div class="stat-card"><div class="s-icon">💰</div><div class="s-val" id="sTotalEarning">$0.000</div><div class="s-lab">TOTAL EARNING</div></div>
+      <div class="stat-card stat-blue"><div class="s-icon-wrap s-blue">📋</div><div class="s-val" id="sTasksToday">0</div><div class="s-lab">TASKS TODAY</div></div>
+      <div class="stat-card stat-green"><div class="s-icon-wrap s-green">✅</div><div class="s-val" id="sApprovedToday">0</div><div class="s-lab">APPROVED TODAY</div></div>
+      <div class="stat-card stat-teal"><div class="s-icon-wrap s-teal">💰</div><div class="s-val" id="sEarnedToday">$0.000</div><div class="s-lab">EARNED TODAY</div></div>
+      <div class="stat-card stat-orange"><div class="s-icon-wrap s-orange">⏳</div><div class="s-val" id="sTaskPending">0</div><div class="s-lab">TASK PENDING</div></div>
+      <div class="stat-card stat-purple"><div class="s-icon-wrap s-purple">💸</div><div class="s-val" id="sWithdrawPending">0</div><div class="s-lab">WITHDRAW PENDING</div></div>
+      <div class="stat-card stat-gold"><div class="s-icon-wrap s-gold">💰</div><div class="s-val" id="sTotalEarning">$0.000</div><div class="s-lab">TOTAL EARNING</div></div>
     </div>
 
 
@@ -739,7 +753,7 @@ let subClicked = false;
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
-let proofState = { taskIndex: null, taskName: '', images: [] };
+let proofState = { taskIndex: null, taskName: '', taskLink: '', images: [] };
 
 // ===== FIREBASE =====
 window.addEventListener('firebase-ready', async () => {
@@ -759,10 +773,13 @@ window.addEventListener('firebase-ready', async () => {
         if (snap.exists()) {
           state.currentUser = {id:session.id,...snap.data()};
           if (state.currentUser.subVerified) { showScreen('appScreen'); refreshUI(); setTimeout(checkAutoApproveProofs, 2000); return; }
+          // subVerified না থাকলে auth screen এ পাঠাও, sub screen না
+          showScreen('authScreen'); return;
         }
       } catch(e) {}
     }
   }
+  // নতুন user — sub screen দেখাও
   showScreen('subScreen');
 });
 
@@ -813,6 +830,7 @@ async function doLogin() {
     let found=null;
     snap.forEach(d=>{const u=d.data();if((u.email===em||u.phone===em)&&u.password===pw)found={id:d.id,...u};});
     if(!found){showErr(err,'ভুল ইমেইল বা পাসওয়ার্ড!');return;}
+    // আগে join করা থাকলে skip, নইলে mark করো
     if(!found.subVerified){await fbUpdateDoc(fbDoc(db,'users',found.id),{subVerified:true});found.subVerified=true;}
     err.style.display='none';
     state.currentUser=found;
@@ -861,10 +879,19 @@ function refreshUI() {
   document.getElementById('hBalance').textContent=fmtDollar(bal);
   document.getElementById('wcTitle').textContent='স্বাগতম, '+u.name.split(' ')[0]+'!';
   const tc=u.taskCounts||{};
-  document.getElementById('sDone').textContent=Object.values(tc).reduce((a,b)=>a+b,0);
-  document.getElementById('sRefer').textContent=u.referCount;
-  document.getElementById('sWithdraw').textContent=fmtDollar(u.withdrawn/1000);
+  const dk=todayKey();
+  const de=u.dailyEarnings||{};
+  const earnedTodayVal=(de[dk]||0)/1000;
+  const tasksToday=u.tasksToday&&u.tasksToday[dk]?u.tasksToday[dk]:0;
+  const approvedToday=u.approvedToday&&u.approvedToday[dk]?u.approvedToday[dk]:0;
+  document.getElementById('sTasksToday').textContent=tasksToday;
+  document.getElementById('sApprovedToday').textContent=approvedToday;
+  document.getElementById('sEarnedToday').textContent=fmtDollar(earnedTodayVal);
+  document.getElementById('sTaskPending').textContent=u.pendingCount||0;
+  document.getElementById('sWithdrawPending').textContent=u.withdrawPending||0;
   document.getElementById('sTotalEarning').textContent=fmtDollar(u.totalEarned/1000);
+  // fetch live pending counts
+  refreshPendingCounts();
   document.getElementById('referCode').textContent=u.referCode;
   document.getElementById('rCount').textContent=u.referCount;
   document.getElementById('rEarned').textContent=fmtDollar(u.referEarned/1000);
@@ -872,6 +899,32 @@ function refreshUI() {
   document.getElementById('wBalanceTaka').textContent='≈ ৳'+toBDT(bal)+' BDT';
   render7DayChart();
   renderTaskPage();
+}
+
+// ===== LIVE PENDING COUNTS =====
+async function refreshPendingCounts() {
+  if (!state.currentUser) return;
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'proofs'));
+    let pending = 0;
+    snap.forEach(d => {
+      const p = d.data();
+      if (p.userId === state.currentUser.id && (!p.status || p.status === 'pending')) pending++;
+    });
+    document.getElementById('sTaskPending').textContent = pending;
+    // update in memory too
+    state.currentUser.pendingCount = pending;
+  } catch(e) {}
+  try {
+    const snap2 = await fbGetDocs(fbCollection(db,'withdrawals'));
+    let wPending = 0;
+    snap2.forEach(d => {
+      const w = d.data();
+      if (w.userId === state.currentUser.id && w.status === 'pending') wPending++;
+    });
+    document.getElementById('sWithdrawPending').textContent = wPending;
+    state.currentUser.withdrawPending = wPending;
+  } catch(e) {}
 }
 
 // ===== 7-DAY EARNINGS CHART =====
@@ -911,48 +964,51 @@ async function renderTaskPage() {
   if (!grid) return;
   grid.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">লোড হচ্ছে...</div>';
 
-  // Load user's pending proofs
-  let pendingTasks = {};
+  let linkCounts = {}, linkLastTime = {}, pendingCount = 0;
   try {
     const snap = await fbGetDocs(fbCollection(db,'proofs'));
+    const now = Date.now();
     snap.forEach(d => {
       const p = d.data();
-      if (p.userId === state.currentUser.id && p.status === 'pending') {
-        pendingTasks[p.taskIndex] = true;
-      }
+      if (p.userId !== state.currentUser.id) return;
+      if (!p.status || p.status === 'pending') pendingCount++;
+      if (!p.taskLink) return;
+      const ms = p.submittedAt || (p.createdAt?.seconds ? p.createdAt.seconds*1000 : 0);
+      if ((now - ms) / 3600000 < 1) linkCounts[p.taskLink] = (linkCounts[p.taskLink]||0) + 1;
+      if (!linkLastTime[p.taskLink] || ms > linkLastTime[p.taskLink]) linkLastTime[p.taskLink] = ms;
     });
   } catch(e) {}
+
+  document.getElementById('sTaskPending').textContent = pendingCount;
+  state.currentUser.pendingCount = pendingCount;
 
   grid.innerHTML = '';
   CUSTOM_TASKS.forEach((t, i) => {
     const hasLink = t.link && t.link.trim() !== '';
-    const isPending = pendingTasks[i] === true;
-    let btnHtml = '';
+    const usedCount = linkCounts[t.link] || 0;
+    const lastTime = linkLastTime[t.link] || 0;
+    const isMaxed = usedCount >= 3;
+    const cooldownLeft = isMaxed ? Math.max(1, Math.ceil(60 - (Date.now() - lastTime)/60000)) : 0;
+    let btnHtml = '', subText = '', badge = '';
     if (!hasLink) {
-      btnHtml = `<button class="task-item-btn unavailable" disabled>Not Available</button>`;
-    } else if (isPending) {
-      btnHtml = `<button class="task-item-btn" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:default" disabled>⏳ Pending</button>`;
+      btnHtml = `<button class="task-item-btn unavailable" disabled>শীঘ্রই</button>`;
+      subText = 'শীঘ্রই আসছে...';
+    } else if (isMaxed) {
+      btnHtml = `<button class="task-item-btn" style="background:rgba(237,137,54,0.15);color:#ed8936;border:1px solid rgba(237,137,54,0.3);cursor:default;font-size:11px" disabled>⏳ ${cooldownLeft} মিনিট পর</button>`;
+      subText = `৩টা সম্পন্ন — ${cooldownLeft} মিনিট পর আবার পারবেন`;
+      badge = `<span style="font-size:10px;color:#ed8936;font-weight:700;display:block;margin-top:3px">✓✓✓ সীমা পূর্ণ</span>`;
     } else {
-      btnHtml = `<button class="task-item-btn" onclick="openTaskWithProof(${i},'${t.link}','${t.name.replace(/'/g,"\\'")}')">শুরু করুন</button>`;
+      const doneStr = usedCount > 0 ? ` (${usedCount}/3)` : '';
+      btnHtml = `<button class="task-item-btn" onclick="openTaskWithProof(${i},'${t.link}','${t.name.replace(/'/g,"\'")}')">শুরু করুন${doneStr}</button>`;
+      subText = usedCount > 0 ? `${usedCount}/3 সম্পন্ন — আরও ${3-usedCount}টা করতে পারবেন` : 'ট্যাপ করুন এবং সম্পন্ন করুন';
     }
-    grid.innerHTML += `
-      <div class="task-item">
-        <div class="task-item-num">${i+1}</div>
-        <div class="task-item-info">
-          <div class="task-item-name">${t.name}</div>
-          <div class="task-item-sub">${hasLink ? (isPending ? 'অ্যাডমিন যাচাই করছেন...' : 'ট্যাপ করুন এবং সম্পন্ন করুন') : 'শীঘ্রই আসছে...'}</div>
-          ${isPending ? '<span class="task-pending-badge">⏳ Pending</span>' : ''}
-        </div>
-        ${btnHtml}
-      </div>`;
+    grid.innerHTML += `<div class="task-item"><div class="task-item-num">${i+1}</div><div class="task-item-info"><div class="task-item-name">${t.name}</div><div class="task-item-sub">${subText}</div>${badge}</div>${btnHtml}</div>`;
   });
 }
-
 function openTaskWithProof(taskIndex, link, taskName) {
-  // Open the task link
+  proofState.taskLink = link;
   if (window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
   else window.open(link, '_blank');
-  // Show proof modal after short delay
   setTimeout(() => openProofModal(taskIndex, taskName), 800);
 }
 
@@ -1042,16 +1098,26 @@ async function submitProof() {
   const btn = document.getElementById('proofSubmitBtn');
   btn.disabled = true; btn.textContent = 'জমা হচ্ছে...';
   try {
+    const dk = todayKey();
+    // tasksToday আপডেট
+    const tToday = state.currentUser.tasksToday || {};
+    tToday[dk] = (tToday[dk]||0) + 1;
+    await fbUpdateDoc(fbDoc(db,'users',state.currentUser.id), {tasksToday: tToday});
+    state.currentUser.tasksToday = tToday;
+    document.getElementById('sTasksToday').textContent = tToday[dk]||0;
+
     await fbAddDoc(fbCollection(db,'proofs'), {
       userId: state.currentUser.id,
       userName: state.currentUser.name,
       taskIndex: proofState.taskIndex,
       taskName: proofState.taskName,
+      taskLink: proofState.taskLink,
       description: text,
       images: proofState.images.length ? proofState.images : null,
       image: proofState.images[0] || null,
       status: 'pending',
-      createdAt: fbServerTimestamp()
+      createdAt: fbServerTimestamp(),
+      submittedAt: Date.now()
     });
     closeProofModal();
     showToast('✅ Proof জমা হয়েছে! অ্যাডমিন যাচাই করবেন।');
@@ -1083,11 +1149,14 @@ async function adminApproveProof(proofId, userId, userName, taskName) {
       const tc = ud.taskCounts || {};
       tc['proof_'+proofId.slice(-4)] = (tc['proof_'+proofId.slice(-4)]||0) + 1;
       de[dk] = (de[dk]||0) + 10;
+      const aToday = ud.approvedToday || {};
+      aToday[dk] = (aToday[dk]||0) + 1;
       await fbUpdateDoc(fbDoc(db,'users',userId), {
         balance: (ud.balance||0) + 10,
         totalEarned: (ud.totalEarned||0) + 10,
         dailyEarnings: de,
-        taskCounts: tc
+        taskCounts: tc,
+        approvedToday: aToday
       });
     }
     // Notify user
@@ -1632,4 +1701,4 @@ setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000)
 // Also check once on login
 </script>
 </body>
-</html>
+        </html>
