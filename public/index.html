@@ -974,6 +974,7 @@ async function renderTaskPage() {
       if (!p.status || p.status === 'pending') pendingCount++;
       if (!p.taskLink) return;
       const ms = p.submittedAt || (p.createdAt?.seconds ? p.createdAt.seconds*1000 : 0);
+      // pending, approved, rejected সব status ১ ঘন্টার মধ্যে count করো
       if ((now - ms) / 3600000 < 1) linkCounts[p.taskLink] = (linkCounts[p.taskLink]||0) + 1;
       if (!linkLastTime[p.taskLink] || ms > linkLastTime[p.taskLink]) linkLastTime[p.taskLink] = ms;
     });
@@ -1164,8 +1165,8 @@ async function adminApproveProof(proofId, userId, userName, taskName) {
       userId, message: `✅ "${taskName}" টাস্কের proof অনুমোদিত হয়েছে! $0.010 আপনার ব্যালেন্সে যোগ হয়েছে।`,
       type:'proof_approved', createdAt: fbServerTimestamp(), read: false
     });
-    // Delete proof document
-    await fbDeleteDoc(fbDoc(db,'proofs',proofId));
+    // status approved রাখো — delete করো না (cooldown এর জন্য)
+    await fbUpdateDoc(fbDoc(db,'proofs',proofId), {status:'approved'});
     showToast('✅ Proof অনুমোদিত, টাকা দেওয়া হয়েছে!');
     loadAdminData();
   } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
@@ -1178,8 +1179,8 @@ async function adminRejectProof(proofId, userId, taskName) {
       userId, message: `❌ "${taskName}" টাস্কের proof বাতিল হয়েছে। আবার চেষ্টা করুন।`,
       type:'proof_rejected', createdAt: fbServerTimestamp(), read: false
     });
-    // Delete proof document
-    await fbDeleteDoc(fbDoc(db,'proofs',proofId));
+    // status rejected রাখো — cooldown এর জন্য
+    await fbUpdateDoc(fbDoc(db,'proofs',proofId), {status:'rejected'});
     showToast('❌ Proof বাতিল করা হয়েছে!');
     loadAdminData();
   } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
@@ -1383,7 +1384,7 @@ async function loadAdminData(){
     // Load proofs
     const proofSnap = await fbGetDocs(fbCollection(db,'proofs'));
     const proofs = [];
-    proofSnap.forEach(d => proofs.push({id:d.id,...d.data()}));
+    proofSnap.forEach(d => { const p={id:d.id,...d.data()}; if(!p.status||p.status==='pending') proofs.push(p); });
     proofs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
     document.getElementById('aProofCount').textContent = proofs.length;
     const pList = document.getElementById('adminProofList');
