@@ -96,7 +96,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .wc-icon{font-size:36px}
 .wc-title{font-size:16px;font-weight:700}
 .wc-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:18px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 8px;text-align:center}
 .stat-card .s-icon{font-size:20px;margin-bottom:5px}
 .stat-card .s-val{font-family:var(--font-en);font-size:18px;font-weight:800;color:var(--accent);line-height:1}
@@ -266,12 +266,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .img-viewer img{max-width:95%;max-height:90vh;border-radius:12px}
 .img-viewer-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(10px)}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;position:relative}
-.nav-btn.active{color:var(--accent)}
-.nav-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:2px 2px 0 0}
-.nav-btn .ni{font-size:22px}
-.nav-btn .nl{font-size:10px;font-weight:700;margin-top:2px;font-family:var(--font-en)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,48,0.97);border-top:1px solid var(--border);display:flex;z-index:100;padding:6px 4px calc(6px + env(safe-area-inset-bottom));backdrop-filter:blur(20px);box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.25s;position:relative;border-radius:12px;margin:0 2px}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,0.08)}
+.nav-btn.active::after{content:"";position:absolute;bottom:2px;left:30%;right:30%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
+.nav-btn .ni{font-size:20px;line-height:1;transition:transform 0.25s}
+.nav-btn.active .ni{transform:scale(1.15)}
+.nav-btn .nl{font-size:9px;font-weight:700;margin-top:3px;font-family:var(--font-en);letter-spacing:0.5px}
+
+
+
+
+
+
 
 /* ===== AD FULLSCREEN WITH IFRAME ===== */
 .ad-fullscreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column}
@@ -312,8 +319,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .btn-ad-cancel{width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:var(--font-bn);font-size:13px;cursor:pointer}
 .ad-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px}
 
+/* NOTIFICATION POPUP */
+.notif-popup{position:fixed;top:80px;left:12px;right:12px;background:linear-gradient(135deg,var(--card2),var(--card));border:1.5px solid rgba(0,212,255,0.35);border-radius:16px;padding:14px 16px;z-index:1200;box-shadow:0 8px 32px rgba(0,212,255,0.15),0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:flex-start;gap:12px;animation:slideDown 0.4s cubic-bezier(0.34,1.3,0.64,1) both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+.notif-popup.success{border-color:rgba(0,230,118,0.4);box-shadow:0 8px 32px rgba(0,230,118,0.15)}
+.notif-popup.error{border-color:rgba(255,82,82,0.4);box-shadow:0 8px 32px rgba(255,82,82,0.15)}
+.notif-icon{font-size:28px;flex-shrink:0;line-height:1}
+.notif-body{flex:1}
+.notif-title{font-size:14px;font-weight:800;margin-bottom:3px}
+.notif-msg{font-size:12px;color:var(--muted);line-height:1.5}
+.notif-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;flex-shrink:0;padding:0;line-height:1}
+
 .toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 22px;font-size:14px;z-index:999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,0.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 
 /* ADMIN */
 #adminScreen{background:var(--bg);padding-bottom:20px;min-height:100vh}
@@ -388,6 +407,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="form-group"><label>পাসওয়ার্ড</label><input type="password" id="loginPass" placeholder="পাসওয়ার্ড দিন"></div>
       <p class="error-msg" id="loginError"></p>
       <button class="btn-primary" onclick="doLogin()">লগইন করুন →</button>
+      <div style="text-align:center;margin-top:14px">
+        <button onclick="showForgotForm()" style="background:none;border:none;color:var(--accent);font-family:var(--font-bn);font-size:13px;cursor:pointer;text-decoration:underline">পাসওয়ার্ড ভুলে গেছেন?</button>
+      </div>
+    </div>
+    <!-- FORGOT PASSWORD FORM -->
+    <div id="forgotForm" style="display:none">
+      <div style="text-align:center;margin-bottom:16px;font-size:14px;color:var(--muted)">নাম ও Phone/Email দিয়ে verify করুন</div>
+      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="forgotName" placeholder="রেজিস্ট্রেশনের নাম"></div>
+      <div class="form-group"><label>মোবাইল / ইমেইল</label><input type="text" id="forgotEmail" placeholder="01XXXXXXXXX বা @gmail.com"></div>
+      <div id="forgotNewPassDiv" style="display:none">
+        <div class="form-group"><label>নতুন পাসওয়ার্ড</label><input type="password" id="forgotNewPass" placeholder="নতুন পাসওয়ার্ড দিন (কমপক্ষে ৬ অক্ষর)"></div>
+      </div>
+      <p class="error-msg" id="forgotError"></p>
+      <button class="btn-primary" id="forgotBtn" onclick="doForgotPassword()">যাচাই করুন →</button>
+      <div style="text-align:center;margin-top:12px">
+        <button onclick="hideForgotForm()" style="background:none;border:none;color:var(--muted);font-family:var(--font-bn);font-size:13px;cursor:pointer">← লগইনে ফিরুন</button>
+      </div>
     </div>
     <div id="registerForm" style="display:none">
       <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="regName" placeholder="আপনার নাম"></div>
@@ -410,12 +446,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
         <div class="header-sub">● ACTIVE</div>
       </div>
     </div>
-    <div class="balance-pill">
-      <span style="font-size:16px">💵</span>
-      <div>
-        <div class="bal-amount" id="hBalance">$0.000</div>
-        <div class="bal-unit">USD Balance</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="balance-pill">
+        <span style="font-size:16px">💵</span>
+        <div>
+          <div class="bal-amount" id="hBalance">$0.000</div>
+          <div class="bal-unit">USD Balance</div>
+        </div>
       </div>
+      <button onclick="goPage('support',null)" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)">☰</button>
     </div>
   </div>
 
@@ -431,23 +470,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="stat-card"><div class="s-icon">✅</div><div class="s-val" id="sDone">0</div><div class="s-lab">TASKS</div></div>
       <div class="stat-card"><div class="s-icon">👥</div><div class="s-val" id="sRefer">0</div><div class="s-lab">REFERS</div></div>
       <div class="stat-card"><div class="s-icon">💸</div><div class="s-val" id="sWithdraw">$0</div><div class="s-lab">WITHDRAWN</div></div>
+      <div class="stat-card"><div class="s-icon">💰</div><div class="s-val" id="sTotalEarning">$0.000</div><div class="s-lab">TOTAL EARNING</div></div>
     </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="quick-actions">
-      <button class="qa-btn qa-task" onclick="goPage('task',document.querySelectorAll('.nav-btn')[1])">
-        <span class="qa-icon">📋</span><span class="qa-label">TASK</span>
-      </button>
-      <button class="qa-btn qa-refer" onclick="goPage('refer',document.querySelectorAll('.nav-btn')[2])">
-        <span class="qa-icon">🎁</span><span class="qa-label">REFER</span>
-      </button>
-      <button class="qa-btn qa-wallet" onclick="goPage('withdraw',document.querySelectorAll('.nav-btn')[3])">
-        <span class="qa-icon">👛</span><span class="qa-label">WALLET</span>
-      </button>
-      <button class="qa-btn qa-earn" onclick="goPage('leader',document.querySelectorAll('.nav-btn')[4])">
-        <span class="qa-icon">🏆</span><span class="qa-label">RANKING</span>
-      </button>
-    </div>
 
     <!-- 7-DAY EARNINGS CHART -->
     <div class="chart-card">
@@ -464,7 +489,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       📋 টাস্ক করুন → <strong style="color:var(--green)">আয় করুন</strong><br>
       🎁 বন্ধু রেফার করুন → <strong style="color:var(--green)">$0.010</strong> বোনাস<br>
       👛 ব্যালেন্স জমলে Wallet থেকে Withdraw করুন<br>
-      ⚠️ সর্বনিম্ন উইথড্র: <strong style="color:var(--text)">$0.20</strong>
+      ⚠️ সর্বনিম্ন উইথড্র: <strong style="color:var(--text)">$0.80</strong>
     </div>
   </div>
 
@@ -510,12 +535,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
         <button class="method-btn" onclick="selMethod(this,'nagad')">🟠 Nagad</button>
       </div>
       <div class="form-group"><label id="mLabel">bKash নম্বর</label><input type="tel" id="wNumber" placeholder="01XXXXXXXXX"></div>
-      <div class="form-group"><label>পরিমাণ (সর্বনিম্ন $0.20)</label><input type="number" id="wAmount" placeholder="0.20" step="0.01"></div>
+      <div class="form-group"><label>পরিমাণ (সর্বনিম্ন $0.80)</label><input type="number" id="wAmount" placeholder="0.80" step="0.01"></div>
       <p class="error-msg" id="wError"></p>
       <button class="btn-primary" onclick="doWithdraw()">উইথড্র করুন →</button>
     </div>
     <div class="info-box">
-      ⚠️ সর্বনিম্ন উইথড্র: <strong style="color:var(--text)">$0.20 (≈৳30)</strong><br>
+      ⚠️ সর্বনিম্ন উইথড্র: <strong style="color:var(--text)">$0.80 (≈৳88)</strong><br>
       ⏱️ প্রক্রিয়াকরণ: <strong style="color:var(--text)">১-২৪ ঘণ্টা</strong><br>
       💱 রেট: <strong style="color:var(--text)">$1 = ৳110</strong><br>
       📋 অ্যাডমিন অনুমোদনের পর পাঠানো হয়
@@ -538,23 +563,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div><div class="sl-title">অফিসিয়াল চ্যানেল</div><div class="sl-desc">আপডেট ও পেমেন্ট প্রমাণ দেখুন</div></div>
       <div class="sl-arrow">›</div>
     </a>
-    <div style="margin-top:12px">
-      <button class="btn-primary" style="background:linear-gradient(135deg,#ff5252,#b71c1c)" onclick="showAdminLogin()">🔐 Admin Panel</button>
-    </div>
     <div class="sec-title" style="margin-top:16px">FAQ</div>
-    <div class="faq-item"><div class="faq-q">প্রশ্ন: প্রতিদিন কতটা আয় করা যায়?</div><div class="faq-a">যত বেশি অ্যাড দেখবেন, তত বেশি আয় হবে। কোনো সীমা নেই!</div></div>
+    <div class="faq-item"><div class="faq-q">প্রশ্ন: প্রতিদিন কতটা আয় করা যায়?</div><div class="faq-a">যত বেশি টাস্ক করবেন ও অ্যাড দেখবেন, তত বেশি আয় হবে।</div></div>
     <div class="faq-item"><div class="faq-q">প্রশ্ন: উইথড্র কতদিনে পাবো?</div><div class="faq-a">সাধারণত ১-২৪ ঘণ্টার মধ্যে পেমেন্ট পাঠানো হয়।</div></div>
-    <div class="faq-item"><div class="faq-q">প্রশ্ন: অ্যাড কীভাবে দেখতে হবে?</div><div class="faq-a">অ্যাপের ভেতরেই অ্যাড দেখা যাবে। ৩০ সেকেন্ড পূর্ণ হলে Claim করুন।</div></div>
+    <div class="faq-item"><div class="faq-q">প্রশ্ন: সর্বনিম্ন উইথড্র কত?</div><div class="faq-a">সর্বনিম্ন $0.80 হলে উইথড্র করা যাবে।</div></div>
     <div class="faq-item"><div class="faq-q">প্রশ্ন: রেফার বোনাস কখন পাবো?</div><div class="faq-a">বন্ধু রেজিস্ট্রেশন করার পরপরই আপনার অ্যাকাউন্টে $0.010 যোগ হবে।</div></div>
+    <!-- EarnBD secret admin tap -->
+    <div id="earnbdTap" onclick="handleEarnBDTap()" style="text-align:center;margin-top:30px;margin-bottom:10px;padding:12px;cursor:pointer;user-select:none">
+      <span style="font-size:13px;color:var(--muted);font-weight:700;letter-spacing:2px;opacity:0.5">EarnBD</span>
+    </div>
   </div>
 
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="goPage('home',this)"><span class="ni">🏠</span><span class="nl">HOME</span></button>
     <button class="nav-btn" onclick="goPage('task',this)"><span class="ni">📋</span><span class="nl">TASK</span></button>
     <button class="nav-btn" onclick="goPage('refer',this)"><span class="ni">🎁</span><span class="nl">REFER</span></button>
-    <button class="nav-btn" onclick="goPage('withdraw',this)"><span class="ni">👛</span><span class="nl">WALLET</span></button>
+    <button class="nav-btn" onclick="goPage('withdraw',this)"><span class="ni">💳</span><span class="nl">WALLET</span></button>
     <button class="nav-btn" onclick="goPage('leader',this)"><span class="ni">🏆</span><span class="nl">RANK</span></button>
-    <button class="nav-btn" onclick="goPage('support',this)"><span class="ni">🆘</span><span class="nl">SUPPORT</span></button>
   </nav>
 </div>
 
@@ -837,6 +862,7 @@ function refreshUI() {
   document.getElementById('sDone').textContent=Object.values(tc).reduce((a,b)=>a+b,0);
   document.getElementById('sRefer').textContent=u.referCount;
   document.getElementById('sWithdraw').textContent=fmtDollar(u.withdrawn/1000);
+  document.getElementById('sTotalEarning').textContent=fmtDollar(u.totalEarned/1000);
   document.getElementById('referCode').textContent=u.referCode;
   document.getElementById('rCount').textContent=u.referCount;
   document.getElementById('rEarned').textContent=fmtDollar(u.referEarned/1000);
@@ -1184,7 +1210,7 @@ async function doWithdraw(){
   const amt=parseFloat(document.getElementById('wAmount').value);
   const err=document.getElementById('wError');
   if(!num||!amt){showErr(err,'সব তথ্য পূরণ করুন!');return;}
-  if(amt<0.20){showErr(err,'সর্বনিম্ন $0.20!');return;}
+  if(amt<0.80){showErr(err,'সর্বনিম্ন $0.80!');return;}
   if(amt>u.balance/1000){showErr(err,'পর্যাপ্ত ব্যালেন্স নেই!');return;}
   const amtMilli=Math.round(amt*1000);
   u.balance-=amtMilli; u.withdrawn+=amtMilli;
@@ -1378,7 +1404,8 @@ function makeStars(){
 }
 
 // Check notifications for current user (withdraw success/reject)
-async function checkNotifications() {
+// [Replaced by beautiful popup system above]
+async function checkNotifications_legacy() {
   if (!state.currentUser) return;
   try {
     const snap = await fbGetDocs(fbCollection(db,'notifications'));
@@ -1394,11 +1421,154 @@ async function checkNotifications() {
   } catch(e) {}
 }
 
+// ===== BEAUTIFUL NOTIFICATION POPUP =====
+let notifQueue = [];
+let notifShowing = false;
+function showNotifPopup(msg, type='info') {
+  notifQueue.push({msg, type});
+  if (!notifShowing) processNotifQueue();
+}
+function processNotifQueue() {
+  if (!notifQueue.length) { notifShowing=false; return; }
+  notifShowing = true;
+  const {msg, type} = notifQueue.shift();
+  // Parse icon & title from message
+  let icon='🔔', title='নতুন বিজ্ঞপ্তি', body=msg, cls='';
+  if (msg.includes('অনুমোদিত') || msg.includes('অনুমোদন') || msg.includes('সফল')) {
+    icon='🎉'; title='অভিনন্দন!'; cls='success';
+  } else if (msg.includes('বাতিল') || msg.includes('ব্যর্থ')) {
+    icon='😔'; title='দুঃখিত!'; cls='error';
+  } else if (msg.includes('উইথড্র')) {
+    icon='💳'; title='উইথড্র আপডেট';
+  }
+  const el = document.createElement('div');
+  el.className = `notif-popup ${cls}`;
+  el.innerHTML = `
+    <div class="notif-icon">${icon}</div>
+    <div class="notif-body">
+      <div class="notif-title">${title}</div>
+      <div class="notif-msg">${body}</div>
+    </div>
+    <button class="notif-close" onclick="this.parentElement.remove();setTimeout(processNotifQueue,300)">✕</button>`;
+  document.body.appendChild(el);
+  setTimeout(() => { el.remove(); setTimeout(processNotifQueue, 300); }, 5000);
+}
+
+// ===== FORGOT PASSWORD =====
+let forgotVerified = false;
+let forgotUserId = null;
+function showForgotForm() {
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('forgotForm').style.display='block';
+  document.getElementById('registerForm').style.display='none';
+  forgotVerified=false; forgotUserId=null;
+  document.getElementById('forgotNewPassDiv').style.display='none';
+  document.getElementById('forgotBtn').textContent='যাচাই করুন →';
+}
+function hideForgotForm() {
+  document.getElementById('forgotForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+}
+async function doForgotPassword() {
+  const err = document.getElementById('forgotError');
+  if (!forgotVerified) {
+    // Step 1: verify name + phone/email
+    const name = document.getElementById('forgotName').value.trim();
+    const contact = document.getElementById('forgotEmail').value.trim();
+    if (!name||!contact){showErr(err,'সব তথ্য পূরণ করুন!');return;}
+    try {
+      const snap = await fbGetDocs(fbCollection(db,'users'));
+      let found = null;
+      snap.forEach(d=>{const u=d.data();if(u.name===name&&(u.email===contact||u.phone===contact))found={id:d.id,...u};});
+      if(!found){showErr(err,'নাম বা Phone/Email মিলছে না!');return;}
+      forgotVerified=true; forgotUserId=found.id;
+      err.style.display='none';
+      document.getElementById('forgotNewPassDiv').style.display='block';
+      document.getElementById('forgotBtn').textContent='পাসওয়ার্ড পরিবর্তন করুন →';
+    } catch(e){showErr(err,'সমস্যা হয়েছে!');}
+  } else {
+    // Step 2: set new password
+    const newPass = document.getElementById('forgotNewPass').value;
+    if(!newPass||newPass.length<6){showErr(err,'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর!');return;}
+    try {
+      await fbUpdateDoc(fbDoc(db,'users',forgotUserId),{password:newPass});
+      err.style.display='none';
+      showToast('✅ পাসওয়ার্ড পরিবর্তন হয়েছে! লগইন করুন।');
+      hideForgotForm();
+    } catch(e){showErr(err,'সমস্যা হয়েছে!');}
+  }
+}
+
+// ===== EARNBD SECRET TAP (Admin) =====
+let earnbdTapCount = 0;
+let earnbdTapTimer = null;
+function handleEarnBDTap() {
+  earnbdTapCount++;
+  clearTimeout(earnbdTapTimer);
+  if (earnbdTapCount >= 3) {
+    earnbdTapCount=0;
+    showAdminLogin();
+    return;
+  }
+  earnbdTapTimer = setTimeout(()=>{ earnbdTapCount=0; }, 1000);
+}
+
+// ===== 24 HOUR AUTO APPROVE =====
+async function checkAutoApproveProofs() {
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'proofs'));
+    const now = Date.now();
+    for (const d of snap.docs) {
+      const p = {id:d.id,...d.data()};
+      if (p.status !== 'pending') continue;
+      const createdMs = p.createdAt?.seconds ? p.createdAt.seconds*1000 : null;
+      if (!createdMs) continue;
+      const hoursPassed = (now - createdMs) / (1000*60*60);
+      if (hoursPassed >= 24) {
+        // Auto approve
+        const userSnap = await fbGetDoc(fbDoc(db,'users',p.userId));
+        if (userSnap.exists()) {
+          const ud = userSnap.data();
+          const dk = todayKey();
+          const de = ud.dailyEarnings||{};
+          de[dk]=(de[dk]||0)+10;
+          await fbUpdateDoc(fbDoc(db,'users',p.userId),{balance:(ud.balance||0)+10,totalEarned:(ud.totalEarned||0)+10,dailyEarnings:de});
+        }
+        await fbAddDoc(fbCollection(db,'notifications'),{
+          userId:p.userId,
+          message:`🎉 অভিনন্দন! আপনার "${p.taskName}" টাস্ক স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে! $0.010 আপনার ব্যালেন্সে যোগ হয়েছে।`,
+          type:'proof_auto_approved', createdAt:fbServerTimestamp(), read:false
+        });
+        await fbDeleteDoc(fbDoc(db,'proofs',p.id));
+      }
+    }
+  } catch(e){}
+}
+
 if(window.Telegram?.WebApp){window.Telegram.WebApp.expand();window.Telegram.WebApp.ready();}
 makeStars();
 
-// Check notifications every 30 seconds
-setInterval(()=>{ if(state.currentUser) checkNotifications(); }, 30000);
+// Check notifications every 30 seconds — beautiful popup
+setInterval(async ()=>{
+  if (!state.currentUser) return;
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'notifications'));
+    const unread = [];
+    snap.forEach(d => {
+      const n = {id:d.id,...d.data()};
+      if (n.userId===state.currentUser.id && !n.read) unread.push(n);
+    });
+    for (const n of unread) {
+      showNotifPopup(n.message, n.type==='proof_approved'||n.type==='withdraw_success'||n.type==='proof_auto_approved' ? 'success' : n.type==='proof_rejected'||n.type==='withdraw_rejected' ? 'error' : 'info');
+      await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
+      if (state.currentUser) { const us=await fbGetDoc(fbDoc(db,'users',state.currentUser.id)); if(us.exists()){state.currentUser={id:state.currentUser.id,...us.data()};refreshUI();} }
+    }
+  } catch(e) {}
+}, 30000);
+
+// Auto approve proofs every 10 minutes
+setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000);
+// Also check once on login
 </script>
 </body>
-</html>
+  </html>
