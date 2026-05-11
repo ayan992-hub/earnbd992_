@@ -342,13 +342,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .notif-title{font-size:14px;font-weight:800;margin-bottom:3px}
 .notif-msg{font-size:12px;color:var(--muted);line-height:1.5}
 .notif-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;flex-shrink:0;padding:0;line-height:1}
+.lang-toggle{display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:700}
+.lang-toggle span{transition:opacity 0.2s}
 
 .toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 22px;font-size:14px;z-index:999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,0.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 
 /* ADMIN */
-#adminScreen{background:var(--bg);padding-bottom:20px;min-height:100vh}
+#adminScreen{background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+.admin-tabs{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--border);scrollbar-width:none;flex-shrink:0}
+.admin-tabs::-webkit-scrollbar{display:none}
+.admin-tab{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-en);transition:all 0.2s;white-space:nowrap}
+.admin-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}
+.admin-tab-content{display:none;padding:14px;flex:1;overflow-y:auto}
+.admin-tab-content.active{display:block}
+.settings-section{display:flex;flex-direction:column;gap:10px;padding-bottom:30px}
+.settings-group-title{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:0.5px;padding:8px 0 4px;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;flex-direction:column;gap:6px}
+.setting-row label{font-size:12px;color:var(--muted);font-weight:600}
+.setting-row input{padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px}
 .admin-header{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:20px 18px;display:flex;align-items:center;justify-content:space-between}
 .admin-header h2{font-size:20px;font-weight:800;color:white}
 .admin-back{background:rgba(255,255,255,0.2);border:none;color:white;padding:8px 14px;border-radius:10px;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
@@ -467,7 +480,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
           <div class="bal-unit">USD Balance</div>
         </div>
       </div>
-      <button onclick="goPage('support',null)" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)">☰</button>
+      <button id="langToggleBtn" onclick="toggleLang()" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:10px;height:38px;padding:0 10px;font-size:11px;font-weight:800;cursor:pointer;color:var(--accent)">🌐 BN</button><button onclick="goPage('support',null)" style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)">☰</button>
     </div>
   </div>
 
@@ -665,42 +678,105 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 <!-- ADMIN -->
 <div class="screen" id="adminScreen">
   <div class="admin-header">
-    <h2>🔐 Admin Panel</h2>
-    <button class="admin-back" onclick="showScreen('appScreen')">← ফিরুন</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🔐</span>
+      <h2 style="font-size:16px;font-weight:800">Admin Panel</h2>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="refresh-btn" onclick="loadAdminData()" style="padding:6px 12px;font-size:12px">🔄</button>
+      <button class="admin-back" onclick="showScreen('appScreen')">← ফিরুন</button>
+    </div>
   </div>
+
+  <!-- LOGIN -->
   <div id="adminLoginDiv">
     <div class="admin-login">
-      <h3>🔑 অ্যাডমিন লগইন</h3>
-      <p>শুধুমাত্র অ্যাডমিনের জন্য</p>
-      <div class="form-group"><label>Admin Password</label><input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন"></div>
+      <div style="font-size:48px;text-align:center;margin-bottom:12px">🔑</div>
+      <h3 style="text-align:center;margin-bottom:6px">Admin Login</h3>
+      <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px">শুধুমাত্র অ্যাডমিনের জন্য</p>
+      <div class="form-group"><label>Password</label><input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন"></div>
       <p class="error-msg" id="adminError"></p>
       <button class="btn-primary" onclick="adminLogin()">প্রবেশ করুন →</button>
     </div>
   </div>
+
+  <!-- DASHBOARD -->
   <div id="adminDashboard" style="display:none">
+
+    <!-- OVERVIEW STATS -->
     <div class="admin-stats">
-      <div class="admin-stat"><div class="as-icon">👥</div><div class="as-val" id="aTotal">0</div><div class="as-lab">মোট ব্যবহারকারী</div></div>
-      <div class="admin-stat"><div class="as-icon">💸</div><div class="as-val" id="aWithdraws">0</div><div class="as-lab">উইথড্র অনুরোধ</div></div>
-      <div class="admin-stat"><div class="as-icon">💰</div><div class="as-val" id="aTotalEarned">$0</div><div class="as-lab">মোট আয়</div></div>
-      <div class="admin-stat"><div class="as-icon">🆕</div><div class="as-val" id="aToday">0</div><div class="as-lab">আজকের নতুন</div></div>
+      <div class="admin-stat"><div class="as-icon">👥</div><div class="as-val" id="aTotal">0</div><div class="as-lab">Users</div></div>
+      <div class="admin-stat"><div class="as-icon">📋</div><div class="as-val" id="aProofCount">0</div><div class="as-lab">Proofs</div></div>
+      <div class="admin-stat"><div class="as-icon">💸</div><div class="as-val" id="aWithdraws">0</div><div class="as-lab">Withdraws</div></div>
+      <div class="admin-stat"><div class="as-icon">💰</div><div class="as-val" id="aTotalEarned">$0</div><div class="as-lab">Total Paid</div></div>
     </div>
-    <div class="admin-section">
-      <button class="refresh-btn" onclick="loadAdminData()">🔄 রিফ্রেশ করুন</button>
 
-      <!-- TASK MANAGEMENT -->
-      <h3>📋 টাস্ক ম্যানেজমেন্ট</h3>
-      <div id="adminTaskList"></div>
+    <!-- TAB NAVIGATION -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('proofs',this)">📸 Proof</button>
+      <button class="admin-tab" onclick="switchAdminTab('withdraws',this)">💸 Withdraw</button>
+      <button class="admin-tab" onclick="switchAdminTab('tasks',this)">📋 Tasks</button>
+      <button class="admin-tab" onclick="switchAdminTab('users',this)">👥 Users</button>
+      <button class="admin-tab" onclick="switchAdminTab('passreset',this)">🔑 Reset</button>
+      <button class="admin-tab" onclick="switchAdminTab('settings',this)">⚙️ Settings</button>
+    </div>
 
-      <h3 style="margin-top:14px">📸 Proof জমা (<span id="aProofCount">0</span>)</h3>
+    <!-- TAB: PROOFS -->
+    <div class="admin-tab-content active" id="atab-proofs">
       <div id="adminProofList"></div>
+    </div>
 
-      <h3 style="margin-top:14px">💸 উইথড্র অনুরোধ</h3>
+    <!-- TAB: WITHDRAWS -->
+    <div class="admin-tab-content" id="atab-withdraws">
       <div id="adminWithdrawList"></div>
     </div>
-    <div class="admin-section">
-      <h3>👥 সব ব্যবহারকারী</h3>
+
+    <!-- TAB: TASKS -->
+    <div class="admin-tab-content" id="atab-tasks">
+      <div style="margin-bottom:12px">
+        <button class="btn-primary" style="font-size:13px;padding:10px" onclick="adminAddTask()">➕ নতুন Task যোগ করুন</button>
+      </div>
+      <div id="adminTaskList"></div>
+    </div>
+
+    <!-- TAB: USERS -->
+    <div class="admin-tab-content" id="atab-users">
+      <div style="margin-bottom:10px">
+        <input type="text" id="userSearchInput" placeholder="🔍 নাম বা ইমেইল খুঁজুন..." style="width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px" oninput="filterAdminUsers(this.value)">
+      </div>
       <div id="adminUserList"></div>
     </div>
+
+    <!-- TAB: PASSWORD RESET REQUESTS -->
+    <div class="admin-tab-content" id="atab-passreset">
+      <div id="adminPassResetList"><div class="admin-empty">লোড হচ্ছে...</div></div>
+    </div>
+
+    <!-- TAB: SETTINGS -->
+    <div class="admin-tab-content" id="atab-settings">
+      <div class="settings-section">
+        <div class="settings-group-title">💱 রেট ও পেমেন্ট</div>
+        <div class="setting-row"><label>Dollar Rate (১$=কত টাকা)</label><input type="number" id="sDollarRate" placeholder="110"></div>
+        <div class="setting-row"><label>Minimum Withdraw ($)</label><input type="number" id="sMinWithdraw" step="0.01" placeholder="0.80"></div>
+        <div class="setting-row"><label>Refer Bonus ($)</label><input type="number" id="sReferBonus" step="0.001" placeholder="0.010"></div>
+        <div class="setting-row"><label>Task Approve Bonus ($)</label><input type="number" id="sTaskBonus" step="0.001" placeholder="0.010"></div>
+
+        <div class="settings-group-title" style="margin-top:16px">📋 Task সেটিংস</div>
+        <div class="setting-row"><label>এক Task এ সর্বোচ্চ Proof</label><input type="number" id="sTaskLimit" placeholder="3"></div>
+        <div class="setting-row"><label>Cooldown সময় (মিনিট)</label><input type="number" id="sCooldown" placeholder="60"></div>
+
+        <div class="settings-group-title" style="margin-top:16px">📢 অ্যাপ তথ্য</div>
+        <div class="setting-row"><label>Telegram Channel Link</label><input type="text" id="sTgChannel" placeholder="https://t.me/..."></div>
+        <div class="setting-row"><label>Telegram Support Link</label><input type="text" id="sTgSupport" placeholder="https://t.me/..."></div>
+        <div class="setting-row"><label>Notice (সব user দেখবে)</label><textarea id="sNotice" rows="3" style="width:100%;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;resize:none" placeholder="কোনো notice থাকলে লিখুন..."></textarea></div>
+
+        <div class="settings-group-title" style="margin-top:16px">🔐 Admin</div>
+        <div class="setting-row"><label>নতুন Admin Password</label><input type="password" id="sAdminPass" placeholder="পরিবর্তন করতে চাইলে লিখুন"></div>
+
+        <button class="btn-primary" style="margin-top:16px" onclick="saveAdminSettings()">💾 সেটিংস সেভ করুন</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -892,6 +968,8 @@ function refreshUI() {
   document.getElementById('sTotalEarning').textContent=fmtDollar(u.totalEarned/1000);
   // fetch live pending counts
   refreshPendingCounts();
+  // apply language
+  setTimeout(applyLang, 50);
   document.getElementById('referCode').textContent=u.referCode;
   document.getElementById('rCount').textContent=u.referCount;
   document.getElementById('rEarned').textContent=fmtDollar(u.referEarned/1000);
@@ -899,6 +977,46 @@ function refreshUI() {
   document.getElementById('wBalanceTaka').textContent='≈ ৳'+toBDT(bal)+' BDT';
   render7DayChart();
   renderTaskPage();
+}
+
+// ===== LANGUAGE SYSTEM =====
+let appLang = localStorage.getItem('ebd_lang') || 'en';
+const LANG = {
+  en: {
+    home:'Home', task:'Task', refer:'Refer', wallet:'Wallet', rank:'Rank',
+    balance:'USD Balance', active:'● ACTIVE', welcome:'Welcome',
+    tasksToday:'TASKS TODAY', approvedToday:'APPROVED TODAY', earnedToday:'EARNED TODAY',
+    taskPending:'TASK PENDING', withdrawPending:'WITHDRAW PENDING', totalEarning:'TOTAL EARNING',
+    startTask:'Start', earnings7:'📊 Last 7 Days Earnings',
+  },
+  bn: {
+    home:'হোম', task:'টাস্ক', refer:'রেফার', wallet:'ওয়ালেট', rank:'র‌্যাংক',
+    balance:'USD ব্যালেন্স', active:'● সক্রিয়', welcome:'স্বাগতম',
+    tasksToday:'আজকের টাস্ক', approvedToday:'অনুমোদিত', earnedToday:'আজকের আয়',
+    taskPending:'পেন্ডিং টাস্ক', withdrawPending:'পেন্ডিং উইথড্র', totalEarning:'মোট আয়',
+    startTask:'শুরু করুন', earnings7:'📊 গত ৭ দিনের আয়',
+  }
+};
+function applyLang() {
+  const L = LANG[appLang];
+  // nav labels
+  const navLabels = document.querySelectorAll('.nl');
+  const navKeys = ['home','task','refer','wallet','rank'];
+  navLabels.forEach((el,i) => { if(navKeys[i]) el.textContent = L[navKeys[i]].toUpperCase(); });
+  // stat labels
+  const labMap = {sTasksToday:'tasksToday',sApprovedToday:'approvedToday',sEarnedToday:'earnedToday',sTaskPending:'taskPending',sWithdrawPending:'withdrawPending',sTotalEarning:'totalEarning'};
+  Object.entries(labMap).forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    if (el) { const lab = el.parentElement.querySelector('.s-lab'); if(lab) lab.textContent = L[key]; }
+  });
+  document.getElementById('hBalance') && (document.querySelector('.bal-unit') && (document.querySelector('.bal-unit').textContent = L['balance']));
+  document.getElementById('header-sub') && (document.getElementById('header-sub').textContent = L['active']);
+}
+function toggleLang() {
+  appLang = appLang === 'en' ? 'bn' : 'en';
+  localStorage.setItem('ebd_lang', appLang);
+  document.getElementById('langToggleBtn').textContent = appLang === 'en' ? '🌐 BN' : '🌐 EN';
+  applyLang();
 }
 
 // ===== LIVE PENDING COUNTS =====
@@ -964,7 +1082,7 @@ async function renderTaskPage() {
   if (!grid) return;
   grid.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">লোড হচ্ছে...</div>';
 
-  let linkCounts = {}, linkLastTime = {}, pendingCount = 0;
+  let taskCounts2 = {}, taskLastTime = {}, pendingCount = 0;
   try {
     const snap = await fbGetDocs(fbCollection(db,'proofs'));
     const now = Date.now();
@@ -972,11 +1090,12 @@ async function renderTaskPage() {
       const p = d.data();
       if (p.userId !== state.currentUser.id) return;
       if (!p.status || p.status === 'pending') pendingCount++;
-      if (!p.taskLink) return;
+      // taskIndex দিয়ে track করো (সব status — pending/approved/rejected)
+      const idx = p.taskIndex;
+      if (idx === undefined || idx === null) return;
       const ms = p.submittedAt || (p.createdAt?.seconds ? p.createdAt.seconds*1000 : 0);
-      // pending, approved, rejected সব status ১ ঘন্টার মধ্যে count করো
-      if ((now - ms) / 3600000 < 1) linkCounts[p.taskLink] = (linkCounts[p.taskLink]||0) + 1;
-      if (!linkLastTime[p.taskLink] || ms > linkLastTime[p.taskLink]) linkLastTime[p.taskLink] = ms;
+      if ((now - ms) / 3600000 < 1) taskCounts2[idx] = (taskCounts2[idx]||0) + 1;
+      if (!taskLastTime[idx] || ms > taskLastTime[idx]) taskLastTime[idx] = ms;
     });
   } catch(e) {}
 
@@ -986,8 +1105,8 @@ async function renderTaskPage() {
   grid.innerHTML = '';
   CUSTOM_TASKS.forEach((t, i) => {
     const hasLink = t.link && t.link.trim() !== '';
-    const usedCount = linkCounts[t.link] || 0;
-    const lastTime = linkLastTime[t.link] || 0;
+    const usedCount = taskCounts2[i] || 0;
+    const lastTime = taskLastTime[i] || 0;
     const isMaxed = usedCount >= 3;
     const cooldownLeft = isMaxed ? Math.max(1, Math.ceil(60 - (Date.now() - lastTime)/60000)) : 0;
     let btnHtml = '', subText = '', badge = '';
@@ -1331,7 +1450,210 @@ async function doWithdraw(){
 }
 
 // ===== ADMIN =====
-function showAdminLogin(){showScreen('adminScreen');document.getElementById('adminLoginDiv').style.display='block';document.getElementById('adminDashboard').style.display='none';}
+
+// ===============================
+// PART 2 এর কোড part2.html থেকে
+// নিচের সব কোড part2.html এ আছে
+// ===============================
+<!-- 
+  ====================================
+  EARNBD - PART 2 (Admin + Settings JS)
+  ====================================
+  এই ফাইলের সব কোড part1.html এর
+  </script> এর আগে paste করুন
+  ====================================
+-->
+<script>
+// PART 2 START — paste করুন part1.html এ </script> এর আগে
+
+// ===== ADMIN SETTINGS =====
+let ADMIN_SETTINGS = {
+  dollarRate: 110, minWithdraw: 0.80, referBonus: 0.010,
+  taskBonus: 0.010, taskLimit: 3, cooldown: 60,
+  tgChannel: 'https://t.me/ayan2446', tgSupport: 'https://t.me/Ownerearnbd',
+  notice: '', adminPass: 'admin123'
+};
+
+async function loadAdminSettings() {
+  try {
+    const snap = await fbGetDoc(fbDoc(db,'config','settings'));
+    if (snap.exists()) ADMIN_SETTINGS = {...ADMIN_SETTINGS, ...snap.data()};
+  } catch(e) {}
+}
+
+async function saveAdminSettings() {
+  try {
+    const s = {
+      dollarRate: parseFloat(document.getElementById('sDollarRate').value)||110,
+      minWithdraw: parseFloat(document.getElementById('sMinWithdraw').value)||0.80,
+      referBonus: parseFloat(document.getElementById('sReferBonus').value)||0.010,
+      taskBonus: parseFloat(document.getElementById('sTaskBonus').value)||0.010,
+      taskLimit: parseInt(document.getElementById('sTaskLimit').value)||3,
+      cooldown: parseInt(document.getElementById('sCooldown').value)||60,
+      tgChannel: document.getElementById('sTgChannel').value||ADMIN_SETTINGS.tgChannel,
+      tgSupport: document.getElementById('sTgSupport').value||ADMIN_SETTINGS.tgSupport,
+      notice: document.getElementById('sNotice').value||'',
+    };
+    const newPass = document.getElementById('sAdminPass').value;
+    if (newPass) s.adminPass = newPass;
+    await fbSetDoc(fbDoc(db,'config','settings'), s);
+    ADMIN_SETTINGS = {...ADMIN_SETTINGS, ...s};
+    showToast('✅ সেটিংস সেভ হয়েছে!');
+    document.getElementById('sAdminPass').value = '';
+  } catch(e) { showToast('❌ সেভ হয়নি: '+e.message); }
+}
+
+function fillSettingsForm() {
+  document.getElementById('sDollarRate').value = ADMIN_SETTINGS.dollarRate||110;
+  document.getElementById('sMinWithdraw').value = ADMIN_SETTINGS.minWithdraw||0.80;
+  document.getElementById('sReferBonus').value = ADMIN_SETTINGS.referBonus||0.010;
+  document.getElementById('sTaskBonus').value = ADMIN_SETTINGS.taskBonus||0.010;
+  document.getElementById('sTaskLimit').value = ADMIN_SETTINGS.taskLimit||3;
+  document.getElementById('sCooldown').value = ADMIN_SETTINGS.cooldown||60;
+  document.getElementById('sTgChannel').value = ADMIN_SETTINGS.tgChannel||'';
+  document.getElementById('sTgSupport').value = ADMIN_SETTINGS.tgSupport||'';
+  document.getElementById('sNotice').value = ADMIN_SETTINGS.notice||'';
+}
+
+// ===== ADMIN TAB SWITCH =====
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('atab-'+tab).classList.add('active');
+  if (tab === 'settings') fillSettingsForm();
+  if (tab === 'passreset') loadPassResetRequests();
+}
+
+// ===== PASSWORD RESET REQUESTS =====
+async function loadPassResetRequests() {
+  const el = document.getElementById('adminPassResetList');
+  el.innerHTML = '<div class="admin-empty">লোড হচ্ছে...</div>';
+  try {
+    const snap = await fbGetDocs(fbCollection(db,'passResetRequests'));
+    const reqs = [];
+    snap.forEach(d => reqs.push({id:d.id,...d.data()}));
+    const pending = reqs.filter(r => r.status === 'pending');
+    if (!pending.length) { el.innerHTML = '<div class="admin-empty">কোনো reset request নেই</div>'; return; }
+    el.innerHTML = pending.map(r => `
+      <div class="admin-proof-card" style="margin-bottom:10px">
+        <div style="font-weight:700">${r.userName}</div>
+        <div style="font-size:12px;color:var(--muted)">${r.contact}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">${new Date(r.createdAt?.seconds*1000||Date.now()).toLocaleString('bn-BD')}</div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <input type="text" id="newpass_${r.id}" placeholder="নতুন পাসওয়ার্ড দিন" style="flex:1;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
+          <button onclick="approvePassReset('${r.id}','${r.userId}')" style="background:var(--green);color:#000;border:none;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;font-size:12px">✅</button>
+          <button onclick="rejectPassReset('${r.id}','${r.userId}')" style="background:var(--red);color:white;border:none;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;font-size:12px">❌</button>
+        </div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div class="admin-empty">লোড হয়নি</div>'; }
+}
+
+async function approvePassReset(reqId, userId) {
+  const newPass = document.getElementById('newpass_'+reqId).value.trim();
+  if (!newPass || newPass.length < 4) { showToast('পাসওয়ার্ড দিন!'); return; }
+  try {
+    await fbUpdateDoc(fbDoc(db,'users',userId), {password: newPass});
+    await fbUpdateDoc(fbDoc(db,'passResetRequests',reqId), {status:'approved'});
+    await fbAddDoc(fbCollection(db,'notifications'), {
+      userId, message: `🔑 আপনার পাসওয়ার্ড রিসেট হয়েছে! নতুন পাসওয়ার্ড: ${newPass}`,
+      type:'pass_reset', createdAt: fbServerTimestamp(), read: false
+    });
+    showToast('✅ পাসওয়ার্ড রিসেট হয়েছে!');
+    loadPassResetRequests();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে!'); }
+}
+
+async function rejectPassReset(reqId, userId) {
+  try {
+    await fbUpdateDoc(fbDoc(db,'passResetRequests',reqId), {status:'rejected'});
+    await fbAddDoc(fbCollection(db,'notifications'), {
+      userId, message: `❌ আপনার পাসওয়ার্ড রিসেট request বাতিল হয়েছে। সাপোর্টে যোগাযোগ করুন।`,
+      type:'pass_reset_rejected', createdAt: fbServerTimestamp(), read: false
+    });
+    showToast('❌ Request বাতিল করা হয়েছে');
+    loadPassResetRequests();
+  } catch(e) {}
+}
+
+// ===== USER SEARCH =====
+let allAdminUsers = [];
+function filterAdminUsers(q) {
+  const list = document.getElementById('adminUserList');
+  const filtered = q ? allAdminUsers.filter(u =>
+    (u.name||'').toLowerCase().includes(q.toLowerCase()) ||
+    (u.email||'').toLowerCase().includes(q.toLowerCase()) ||
+    (u.phone||'').toLowerCase().includes(q)
+  ) : allAdminUsers;
+  renderAdminUsers(filtered, list);
+}
+function renderAdminUsers(users, list) {
+  if (!users.length) { list.innerHTML = '<div class="admin-empty">কেউ নেই</div>'; return; }
+  list.innerHTML = users.map(u => `
+    <div class="admin-proof-card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700">${u.name||'?'}</div>
+          <div style="font-size:12px;color:var(--muted)">${u.email||u.phone||''} · Refer: ${u.referCount||0}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:var(--accent);font-weight:700">${fmtDollar((u.balance||0)/1000)}</div>
+          <div style="font-size:11px;color:var(--muted)">Balance</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button onclick="adminEditBalance('${u.id}','${u.name}')" style="font-size:11px;padding:5px 10px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;color:var(--accent);cursor:pointer">💰 Balance</button>
+        <button onclick="adminResetUserPass('${u.id}','${u.name}')" style="font-size:11px;padding:5px 10px;background:rgba(123,47,255,0.1);border:1px solid rgba(123,47,255,0.3);border-radius:8px;color:#a78bfa;cursor:pointer">🔑 Password</button>
+        <button onclick="adminDeleteUser('${u.id}','${u.name}')" style="font-size:11px;padding:5px 10px;background:rgba(255,82,82,0.1);border:1px solid rgba(255,82,82,0.3);border-radius:8px;color:var(--red);cursor:pointer">🗑️ Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+async function adminEditBalance(userId, userName) {
+  const amt = prompt(`${userName} এর balance পরিবর্তন করুন
+বর্তমান balance দেখতে Users তালিকা দেখুন
+
+নতুন amount ($) দিন:`);
+  if (!amt) return;
+  const val = Math.round(parseFloat(amt)*1000);
+  if (isNaN(val)) { showToast('সঠিক amount দিন'); return; }
+  try {
+    await fbUpdateDoc(fbDoc(db,'users',userId), {balance: val});
+    showToast('✅ Balance আপডেট হয়েছে!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে'); }
+}
+
+async function adminResetUserPass(userId, userName) {
+  const newPass = prompt(`${userName} এর নতুন পাসওয়ার্ড দিন:`);
+  if (!newPass || newPass.length < 4) return;
+  try {
+    await fbUpdateDoc(fbDoc(db,'users',userId), {password: newPass});
+    showToast('✅ পাসওয়ার্ড রিসেট হয়েছে!');
+  } catch(e) { showToast('❌ সমস্যা হয়েছে'); }
+}
+
+async function adminDeleteUser(userId, userName) {
+  if (!confirm(`"${userName}" কে ডিলিট করবেন? এটা undo করা যাবে না!`)) return;
+  try {
+    await fbDeleteDoc(fbDoc(db,'users',userId));
+    showToast('✅ User ডিলিট হয়েছে!');
+    loadAdminData();
+  } catch(e) { showToast('❌ সমস্যা হয়েছে'); }
+}
+
+// ===== ADMIN ADD TASK =====
+function adminAddTask() {
+  const name = prompt('নতুন Task এর নাম:');
+  if (!name) return;
+  const link = prompt('Task এর Link:');
+  CUSTOM_TASKS.push({name, link: link||''});
+  saveTaskConfig();
+  loadAdminData();
+  showToast('✅ Task যোগ হয়েছে!');
+}
+
+function showAdminLogin(){showScreen('adminScreen');document.getElementById('adminLoginDiv').style.display='block';document.getElementById('adminDashboard').style.display='none';loadAdminSettings();}
 
 async function adminLogin(){
   const pass=document.getElementById('adminPass').value;
@@ -1450,12 +1772,8 @@ async function loadAdminData(){
       });
     }
 
-    const uList=document.getElementById('adminUserList');uList.innerHTML='';
-    users.forEach(u=>{
-      const tc=u.taskCounts||{};
-      const total=Object.values(tc).reduce((a,b)=>a+b,0);
-      uList.innerHTML+=`<div class="admin-card"><span class="ac-amount">${fmtDollar(u.balance/1000)}</span><div class="ac-name">${u.name}</div><div class="ac-detail">📞 ${u.phone||u.email}<br>💰 ${fmtDollar(u.totalEarned/1000)} | 💸 ${fmtDollar(u.withdrawn/1000)}<br>✅ ${total}বার টাস্ক | 👥 ${u.referCount||0} রেফার<br>📅 ${new Date(u.joinDate).toLocaleDateString('bn-BD')}</div></div>`;
-    });
+    allAdminUsers = users;
+    renderAdminUsers(users, document.getElementById('adminUserList'));
   }catch(e){showToast('ডেটা লোড সমস্যা!');}
 }
 
@@ -1469,6 +1787,7 @@ function renderAdminTasks() {
         <div class="ati-head">
           <div class="ati-num">${i+1}</div>
           <div class="ati-label">টাস্ক ${i+1}</div>
+          <button onclick="adminDeleteTask(${i})" style="margin-left:auto;background:rgba(255,82,82,0.15);border:1px solid rgba(255,82,82,0.3);color:var(--red);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer">🗑️</button>
         </div>
         <div class="ati-fields">
           <input class="ati-input" id="tname_${i}" placeholder="টাস্কের নাম" value="${t.name||''}">
@@ -1484,7 +1803,17 @@ async function saveOneTask(i) {
   const link = document.getElementById(`tlink_${i}`).value.trim();
   CUSTOM_TASKS[i] = { ...CUSTOM_TASKS[i], name, link };
   await saveTaskConfig();
+  showToast('✅ Task সেভ হয়েছে!');
   renderTaskPage();
+}
+
+async function adminDeleteTask(i) {
+  if (!confirm(`"${CUSTOM_TASKS[i].name}" ডিলিট করবেন?`)) return;
+  CUSTOM_TASKS.splice(i, 1);
+  await saveTaskConfig();
+  renderAdminTasks();
+  renderTaskPage();
+  showToast('🗑️ Task ডিলিট হয়েছে!');
 }
 
 // ===== NAVIGATION =====
@@ -1581,32 +1910,29 @@ function hideForgotForm() {
 }
 async function doForgotPassword() {
   const err = document.getElementById('forgotError');
-  if (!forgotVerified) {
-    // Step 1: verify name + phone/email
-    const name = document.getElementById('forgotName').value.trim();
-    const contact = document.getElementById('forgotEmail').value.trim();
-    if (!name||!contact){showErr(err,'সব তথ্য পূরণ করুন!');return;}
-    try {
-      const snap = await fbGetDocs(fbCollection(db,'users'));
-      let found = null;
-      snap.forEach(d=>{const u=d.data();if(u.name===name&&(u.email===contact||u.phone===contact))found={id:d.id,...u};});
-      if(!found){showErr(err,'নাম বা Phone/Email মিলছে না!');return;}
-      forgotVerified=true; forgotUserId=found.id;
-      err.style.display='none';
-      document.getElementById('forgotNewPassDiv').style.display='block';
-      document.getElementById('forgotBtn').textContent='পাসওয়ার্ড পরিবর্তন করুন →';
-    } catch(e){showErr(err,'সমস্যা হয়েছে!');}
-  } else {
-    // Step 2: set new password
-    const newPass = document.getElementById('forgotNewPass').value;
-    if(!newPass||newPass.length<6){showErr(err,'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর!');return;}
-    try {
-      await fbUpdateDoc(fbDoc(db,'users',forgotUserId),{password:newPass});
-      err.style.display='none';
-      showToast('✅ পাসওয়ার্ড পরিবর্তন হয়েছে! লগইন করুন।');
-      hideForgotForm();
-    } catch(e){showErr(err,'সমস্যা হয়েছে!');}
-  }
+  const name = document.getElementById('forgotName').value.trim();
+  const contact = document.getElementById('forgotEmail').value.trim();
+  if (!name||!contact){showErr(err,'সব তথ্য পূরণ করুন!');return;}
+  try {
+    // User verify করো
+    const snap = await fbGetDocs(fbCollection(db,'users'));
+    let found = null;
+    snap.forEach(d=>{const u=d.data();if(u.name===name&&(u.email===contact||u.phone===contact))found={id:d.id,...u};});
+    if(!found){showErr(err,'নাম বা Phone/Email মিলছে না!');return;}
+    // Admin কে request পাঠাও
+    await fbAddDoc(fbCollection(db,'passResetRequests'),{
+      userId: found.id, userName: name, contact,
+      status: 'pending', createdAt: fbServerTimestamp()
+    });
+    err.style.display='none';
+    document.getElementById('forgotForm').innerHTML = `
+      <div style="text-align:center;padding:20px">
+        <div style="font-size:48px;margin-bottom:12px">📨</div>
+        <div style="font-weight:800;margin-bottom:8px">Request পাঠানো হয়েছে!</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">Admin আপনার request দেখবেন এবং নতুন পাসওয়ার্ড পাঠাবেন। Notification এ জানানো হবে।</div>
+        <button onclick="hideForgotForm()" style="margin-top:16px;background:var(--accent);color:#000;border:none;border-radius:10px;padding:10px 24px;font-weight:700;cursor:pointer">← লগইনে ফিরুন</button>
+      </div>`;
+  } catch(e){showErr(err,'সমস্যা হয়েছে! আবার চেষ্টা করুন।');}
 }
 
 // ===== EARNBD SECRET TAP (Admin) =====
@@ -1690,7 +2016,7 @@ setInterval(async ()=>{
       if (n.userId===state.currentUser.id && !n.read) unread.push(n);
     });
     for (const n of unread) {
-      showNotifPopup(n.message, n.type==='proof_approved'||n.type==='withdraw_success'||n.type==='proof_auto_approved' ? 'success' : n.type==='proof_rejected'||n.type==='withdraw_rejected' ? 'error' : 'info');
+      showNotifPopup(n.message, n.type==='proof_approved'||n.type==='withdraw_ccess'||n.type==='pf_auto_approved' ? 'success' : n.type==='proof_rejected'||n.type==='withdraw_rejected' ? 'error' : 'info');
       await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
       if (state.currentUser) { const us=await fbGetDoc(fbDoc(db,'users',state.currentUser.id)); if(us.exists()){state.currentUser={id:state.currentUser.id,...us.data()};refreshUI();} }
     }
@@ -1700,6 +2026,6 @@ setInterval(async ()=>{
 // Auto approve proofs every 10 minutes
 setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000);
 // Also check once on login
-</script>
-</body>
-        </html>
+ }    </script>
+ </body>
+ </html>
