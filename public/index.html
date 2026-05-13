@@ -21,6 +21,7 @@
   window._db=db; window._doc=doc; window._setDoc=setDoc; window._getDoc=getDoc;
   window._updateDoc=updateDoc; window._collection=collection; window._addDoc=addDoc;
   window._serverTimestamp=serverTimestamp; window._getDocs=getDocs; window._deleteDoc=deleteDoc;
+  window._firebaseReady = true;
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -832,7 +833,8 @@ let adDone = { 1: false, 2: false };
 let proofState = { taskIndex: null, taskName: '', taskLink: '', images: [] };
 
 // ===== FIREBASE =====
-window.addEventListener('firebase-ready', async () => {
+// Firebase ready handler with fallback polling
+async function onFirebaseReady() {
   db=window._db; fbDoc=window._doc; fbSetDoc=window._setDoc; fbGetDoc=window._getDoc;
   fbUpdateDoc=window._updateDoc; fbCollection=window._collection; fbAddDoc=window._addDoc;
   fbServerTimestamp=window._serverTimestamp; fbGetDocs=window._getDocs; fbDeleteDoc=window._deleteDoc;
@@ -857,7 +859,28 @@ window.addEventListener('firebase-ready', async () => {
   }
   // নতুন user — sub screen দেখাও
   showScreen('subScreen');
-});
+}
+
+// Firebase ready - with polling fallback for Telegram WebApp
+function startApp() {
+  if (window._db) {
+    onFirebaseReady();
+  } else {
+    let attempts = 0;
+    const poll = setInterval(() => {
+      attempts++;
+      if (window._db) {
+        clearInterval(poll);
+        onFirebaseReady();
+      } else if (attempts > 100) {
+        clearInterval(poll);
+        document.getElementById('loadingScreen').innerHTML = '<div style="color:red;padding:20px;text-align:center">সংযোগ সমস্যা! পুনরায় চেষ্টা করুন।</div>';
+      }
+    }, 100);
+  }
+}
+window.addEventListener('firebase-ready', startApp);
+window.addEventListener('load', () => { setTimeout(startApp, 500); });
 
 // ===== TASK CONFIG =====
 async function loadTaskConfig() {
@@ -1450,22 +1473,6 @@ async function doWithdraw(){
 }
 
 // ===== ADMIN =====
-
-// ===============================
-// PART 2 এর কোড part2.html থেকে
-// নিচের সব কোড part2.html এ আছে
-// ===============================
-<!-- 
-  ====================================
-  EARNBD - PART 2 (Admin + Settings JS)
-  ====================================
-  এই ফাইলের সব কোড part1.html এর
-  </script> এর আগে paste করুন
-  ====================================
--->
-<script>
-// PART 2 START — paste করুন part1.html এ </script> এর আগে
-
 // ===== ADMIN SETTINGS =====
 let ADMIN_SETTINGS = {
   dollarRate: 110, minWithdraw: 0.80, referBonus: 0.010,
@@ -1490,8 +1497,7 @@ async function saveAdminSettings() {
       taskBonus: parseFloat(document.getElementById('sTaskBonus').value)||0.010,
       taskLimit: parseInt(document.getElementById('sTaskLimit').value)||3,
       cooldown: parseInt(document.getElementById('sCooldown').value)||60,
-      tgChannel: document.getElementById('sTgChannel').value||ADMIN_SETTINGS.tgChannel,
-      tgSupport: document.getElementById('sTgSupport').value||ADMIN_SETTINGS.tgSupport,
+      tgChannel: document.getElementById('sTgChannel').value||ADMIN_SETTINGS.tgChannel,tgSupport: document.getElementById('sTgSupport').value||ADMIN_SETTINGS.tgSupport,
       notice: document.getElementById('sNotice').value||'',
     };
     const newPass = document.getElementById('sAdminPass').value;
@@ -2016,7 +2022,7 @@ setInterval(async ()=>{
       if (n.userId===state.currentUser.id && !n.read) unread.push(n);
     });
     for (const n of unread) {
-      showNotifPopup(n.message, n.type==='proof_approved'||n.type==='withdraw_ccess'||n.type==='pf_auto_approved' ? 'success' : n.type==='proof_rejected'||n.type==='withdraw_rejected' ? 'error' : 'info');
+      showNotifPopup(n.message, n.type==='proof_approved'||n.type==='withdraw_success'||n.type==='proof_auto_approved' ? 'success' : n.type==='proof_rejected'||n.type==='withdraw_rejected' ? 'error' : 'info');
       await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
       if (state.currentUser) { const us=await fbGetDoc(fbDoc(db,'users',state.currentUser.id)); if(us.exists()){state.currentUser={id:state.currentUser.id,...us.data()};refreshUI();} }
     }
@@ -2026,6 +2032,6 @@ setInterval(async ()=>{
 // Auto approve proofs every 10 minutes
 setInterval(()=>{ if(state.currentUser) checkAutoApproveProofs(); }, 10*60*1000);
 // Also check once on login
- }    </script>
- </body>
- </html>
+</script>
+</body>
+</html>
