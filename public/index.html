@@ -25,6 +25,23 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ===== LAYOUT STABILITY FIXES ===== */
+/* Prevent font-loading layout shift */
+html { font-display: swap; }
+/* Reserve space for dynamic content to prevent CLS */
+img { display:block; max-width:100%; height:auto; }
+/* Stable will-change for animated elements only */
+.spinner, .chart-bar-fill { will-change: transform; }
+/* Prevent scrollbar from causing layout shift */
+html { overflow-y: scroll; scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+/* Stable avatar containers */
+.avatar, .lb-avatar, .profile-avatar { overflow:hidden; flex-shrink:0; }
+/* Prevent text from shifting during data load */
+.s-val, .bal-amount, .bd-amount { font-variant-numeric: tabular-nums; }
+/* Contain paint for cards to prevent reflow cascade */
+.stat-card, .task-item, .admin-card, .proof-admin-card { contain: layout style; }
+
 :root {
   --bg:#060d1f; --bg2:#0b1530; --card:#0f1e3a; --card2:#162447;
   --accent:#00d4ff; --accent2:#7b2fff; --gold:#ffd700;
@@ -110,10 +127,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .wc-title{font-size:16px;font-weight:700}
 .wc-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 10px;text-align:center;position:relative;overflow:hidden}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 10px;text-align:center;position:relative;overflow:hidden;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,0.03),transparent);pointer-events:none}
-.stat-card .s-icon{font-size:22px;margin-bottom:6px}
-.stat-card .s-val{font-family:var(--font-en);font-size:20px;font-weight:800;color:var(--accent);line-height:1}
+.stat-card .s-icon{font-size:22px;margin-bottom:6px;line-height:1;flex-shrink:0}
+.stat-card .s-val{font-family:var(--font-en);font-size:20px;font-weight:800;color:var(--accent);line-height:1;min-height:24px}
 .stat-card .s-lab{font-size:10px;color:var(--muted);margin-top:4px;font-weight:700;letter-spacing:0.5px}
 .sec-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-family:var(--font-en)}
 .sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -201,13 +218,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .task-page-header h2{font-size:18px;font-weight:800;margin-bottom:4px}
 .task-page-header p{font-size:12px;color:var(--muted)}
 .task-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.task-item{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:15px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.task-item{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:15px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;min-height:72px}
 .task-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:0 3px 3px 0}
 .task-item-num{width:36px;height:36px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(123,47,255,0.1));border:1px solid rgba(0,212,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-en);font-size:15px;font-weight:800;color:var(--accent);flex-shrink:0}
-.task-item-info{flex:1}
-.task-item-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.task-item-info{flex:1;min-width:0}
+.task-item-name{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task-item-sub{font-size:11px;color:var(--muted)}
-.task-item-btn{padding:8px 16px;border-radius:10px;border:none;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;flex-shrink:0}
+.task-item-btn{padding:8px 16px;border-radius:10px;border:none;font-family:var(--font-bn);font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;flex-shrink:0;min-width:72px;text-align:center;transition:opacity 0.2s}
 .task-item-btn.unavailable{background:var(--bg2);color:var(--muted);cursor:not-allowed;border:1px solid var(--border)}
 
 /* WALLET PAGE */
@@ -534,7 +551,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="form-group"><label data-i18n="full_name">Full Name</label><input type="text" id="regName" data-i18n-ph="full_name_ph"></div>
       <div class="form-group"><label data-i18n="mobile_gmail">Mobile / Gmail</label><input type="text" id="regEmail" placeholder="01XXXXXXXXX or @gmail.com"></div>
       <div class="form-group"><label data-i18n="password">Password</label><input type="password" id="regPass" data-i18n-ph="reg_pass_ph"></div>
-      <div class="form-group"><label data-i18n="refer_code">Refer Code (Optional)</label><input type="text" id="regRefer" data-i18n-ph="refer_code_ph"></div>
+      <!-- Refer code is now tracked automatically via referral link URL param -->
+      <input type="hidden" id="regRefer">
       <p class="error-msg" id="regError"></p>
       <button class="btn-primary" onclick="doRegister()" data-i18n="create_acc">Create Account →</button>
     </div>
@@ -578,15 +596,35 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
         <div class="s-val" id="sDone">0</div>
         <div class="s-lab">TASKS DONE</div>
       </div>
-      <div class="stat-card">
-        <div class="s-icon">👥</div>
-        <div class="s-val" id="sRefer">0</div>
-        <div class="s-lab">REFERS</div>
+      <div class="stat-card" style="border-color:rgba(255,215,0,0.25);background:linear-gradient(135deg,rgba(255,215,0,0.06),var(--card))">
+        <div class="s-icon">⏳</div>
+        <div class="s-val" style="color:var(--gold)" id="sTaskPendingToday">0</div>
+        <div class="s-lab">PENDING TODAY</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(0,230,118,0.25);background:linear-gradient(135deg,rgba(0,230,118,0.06),var(--card))">
+        <div class="s-icon">🎉</div>
+        <div class="s-val" style="color:var(--green)" id="sTaskApprovedToday">0</div>
+        <div class="s-lab">APPROVED TODAY</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,82,82,0.25);background:linear-gradient(135deg,rgba(255,82,82,0.06),var(--card))">
+        <div class="s-icon">❌</div>
+        <div class="s-val" style="color:var(--red)" id="sTaskRejectedToday">0</div>
+        <div class="s-lab">REJECTED TODAY</div>
       </div>
       <div class="stat-card">
         <div class="s-icon">💸</div>
         <div class="s-val" id="sWithdraw">$0.000</div>
-        <div class="s-lab">WITHDRAWN</div>
+        <div class="s-lab">TOTAL WITHDRAW</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,215,0,0.25);background:linear-gradient(135deg,rgba(255,215,0,0.06),var(--card))">
+        <div class="s-icon">🕐</div>
+        <div class="s-val" style="color:var(--gold)" id="sWithdrawPending">0</div>
+        <div class="s-lab">WITHDRAW PENDING</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-icon">👥</div>
+        <div class="s-val" id="sRefer">0</div>
+        <div class="s-lab">TOTAL REFERS</div>
       </div>
       <div class="stat-card" style="border-color:rgba(0,230,118,0.25);background:linear-gradient(135deg,rgba(0,230,118,0.06),var(--card))">
         <div class="s-icon">💰</div>
@@ -630,8 +668,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="rh-icon">🎁</div>
       <h3 data-i18n="invite_friends">Invite Friends</h3>
       <p><span data-i18n="refer_desc">For each successful referral you get</span> <strong style="color:var(--accent)" id="referBonusDisplay">$0.010</strong> <span data-i18n="bonus">bonus!</span></p>
-      <div class="refer-code-box" id="referCode">EBD-XXXX</div>
-      <button class="btn-copy" onclick="copyRefer()" data-i18n="copy_code">📋 Copy Code</button>
+      <!-- Referral Link Box -->
+      <div style="background:var(--bg2);border:1.5px dashed var(--accent);border-radius:12px;padding:12px 14px;font-family:var(--font-en);font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;word-break:break-all;text-align:left;line-height:1.6" id="referLinkBox">Loading...</div>
+      <button class="btn-copy" onclick="copyReferLink()" data-i18n="copy_link">🔗 Copy Link</button>
     </div>
     <div class="refer-stats">
       <div class="refer-stat"><div class="rv" id="rCount">0</div><div class="rl">TOTAL REFERS</div></div>
@@ -1074,6 +1113,7 @@ const I18N = {
     invite_friends: 'Invite Friends',
     refer_desc: 'For each successful referral you get', bonus: 'bonus!',
     copy_code: '📋 Copy Code',
+    copy_link: '🔗 Copy Link',
     payment_method: 'Payment Method', amount_label: 'Amount (Min',
     withdraw_btn: 'Withdraw →', min_w: 'Min Withdraw:',
     processing: 'Processing:', proc_time: '1–24 hours',
@@ -1124,6 +1164,7 @@ const I18N = {
     invite_friends: 'বন্ধুদের আমন্ত্রণ জানান',
     refer_desc: 'প্রতিটি সফল রেফারের জন্য আপনি পাবেন', bonus: 'বোনাস!',
     copy_code: '📋 কোড কপি করুন',
+    copy_link: '🔗 লিঙ্ক কপি করুন',
     payment_method: 'পেমেন্ট পদ্ধতি', amount_label: 'পরিমাণ (সর্বনিম্ন',
     withdraw_btn: 'উইথড্র করুন →', min_w: 'সর্বনিম্ন উইথড্র:',
     processing: 'প্রক্রিয়াকরণ:', proc_time: '১-২৪ ঘণ্টা',
@@ -1350,14 +1391,20 @@ async function doRegister() {
   const name=document.getElementById('regName').value.trim();
   const email=document.getElementById('regEmail').value.trim();
   const pass=document.getElementById('regPass').value;
-  const refer=document.getElementById('regRefer').value.trim();
+  // Auto-detect referrer from URL param (?ref=userId) or hidden input
+  const refer=document.getElementById('regRefer').value.trim() || getRefFromUrl();
   const err=document.getElementById('regError');
   if(!name||!email||!pass){showErr(err, state.lang==='bn'?'সব তথ্য পূরণ করুন!':'Fill all fields!');return;}
   if(pass.length<6){showErr(err, state.lang==='bn'?'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর!':'Password min 6 chars!');return;}
   try {
     const snap=await fbGetDocs(fbCollection(db,'users'));
-    let exists=false,referrer=null;
-    snap.forEach(d=>{const u=d.data();if(u.email===email||u.phone===email)exists=true;if(refer&&u.referCode===refer)referrer={id:d.id,...u};});
+    let exists=false, referrer=null;
+    snap.forEach(d=>{
+      const u=d.data();
+      if(u.email===email||u.phone===email) exists=true;
+      // Match by user ID (link-based referral) or legacy referCode
+      if(refer && (d.id===refer || u.referCode===refer)) referrer={id:d.id,...u};
+    });
     if(exists){showErr(err, state.lang==='bn'?'এই ইমেইল/নম্বর দিয়ে আগেই অ্যাকাউন্ট আছে!':'Account already exists!');return;}
     const isEmail=email.includes('@');
     const code='EBD-'+Math.random().toString(36).substr(2,4).toUpperCase();
@@ -1367,9 +1414,10 @@ async function doRegister() {
       username: '', profilePic: '',
       balance:0, totalEarned:0, withdrawn:0,
       referCode:code, referCount:0, referEarned:0,
+      referredBy: referrer ? referrer.id : '',
       taskCounts:{}, dailyEarnings:{},
       subVerified:true, joinDate:new Date().toISOString(),
-      lang: 'en' // default English
+      lang: 'en'
     };
     await fbSetDoc(fbDoc(db,'users',id),user);
     if(referrer){
@@ -1483,7 +1531,7 @@ async function setNewPassword() {
 }
 
 // ===== REFRESH UI =====
-function refreshUI() {
+async function refreshUI() {
   const u=state.currentUser;
   const bal=u.balance/1000;
   const totalEarned=(u.totalEarned||0)/1000;
@@ -1504,7 +1552,14 @@ function refreshUI() {
   document.getElementById('sRefer').textContent=u.referCount||0;
   document.getElementById('sWithdraw').textContent=fmtDollar((u.withdrawn||0)/1000);
   document.getElementById('sTotalEarn').textContent=fmtDollar(totalEarned);
-  document.getElementById('referCode').textContent=u.referCode;
+
+  // Update referral link display
+  const linkBox = document.getElementById('referLinkBox');
+  if (linkBox) linkBox.textContent = getReferralLink(u.id);
+
+  // Load today's task stats & withdraw pending asynchronously
+  loadTodayStats();
+
   document.getElementById('rCount').textContent=u.referCount||0;
   document.getElementById('rEarned').textContent=fmtDollar((u.referEarned||0)/1000);
   document.getElementById('wBalance').textContent=bal.toFixed(3);
@@ -1522,6 +1577,42 @@ function refreshUI() {
   applyI18n();
   updateSettingsUI();
   render7DayChart();
+}
+
+// ===== LOAD TODAY'S TASK STATS (pending/approved/rejected today + withdraw pending) =====
+async function loadTodayStats() {
+  if (!state.currentUser || !db) return;
+  const uid = state.currentUser.id;
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const todayStartSec = Math.floor(todayStart.getTime() / 1000);
+  try {
+    const proofSnap = await fbGetDocs(fbCollection(db,'proofs'));
+    let pendingToday=0, approvedToday=0, rejectedToday=0;
+    proofSnap.forEach(d => {
+      const p = d.data();
+      if (p.userId !== uid) return;
+      const createdSec = p.createdAt?.seconds || 0;
+      const isToday = createdSec >= todayStartSec;
+      if (p.status === 'pending' && isToday) pendingToday++;
+    });
+    const notifSnap = await fbGetDocs(fbCollection(db,'notifications'));
+    notifSnap.forEach(d => {
+      const n = d.data();
+      if (n.userId !== uid) return;
+      const createdSec = n.createdAt?.seconds || 0;
+      if (createdSec < todayStartSec) return;
+      if (n.type === 'proof_approved') approvedToday++;
+      if (n.type === 'proof_rejected') rejectedToday++;
+    });
+    document.getElementById('sTaskPendingToday').textContent = pendingToday;
+    document.getElementById('sTaskApprovedToday').textContent = approvedToday;
+    document.getElementById('sTaskRejectedToday').textContent = rejectedToday;
+
+    const wSnap = await fbGetDocs(fbCollection(db,'withdrawals'));
+    let wPending = 0;
+    wSnap.forEach(d => { const w=d.data(); if(w.userId===uid && w.status==='pending') wPending++; });
+    document.getElementById('sWithdrawPending').textContent = wPending;
+  } catch(e) {}
 }
 
 // ===== PROFILE =====
@@ -1558,6 +1649,7 @@ async function saveProfile() {
     showToast(state.lang==='bn'?'✅ প্রোফাইল আপডেট হয়েছে!':'✅ Profile updated!');
   } catch(e) { showToast('❌ Error'); }
 }
+
 // ===== 7-DAY EARNINGS CHART =====
 function render7DayChart() {
   const u=state.currentUser; const de=u.dailyEarnings||{};
@@ -1583,8 +1675,81 @@ function render7DayChart() {
   });
 }
 
+// ===== TASK COOLDOWN SYSTEM =====
+const TASK_COOLDOWN_MS = 60 * 60 * 1000;
+const TASK_MAX_PER_WINDOW = 3;
+
+function getCooldownKey(userId, taskIndex) {
+  return `ebd_cd_${userId}_${taskIndex}`;
+}
+
+function getTaskCooldown(taskIndex) {
+  const uid = state.currentUser?.id;
+  if (!uid) return { count:0, locked:false, remainingMs:0 };
+  const key = getCooldownKey(uid, taskIndex);
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return { count:0, locked:false, remainingMs:0 };
+    const data = JSON.parse(raw);
+    const elapsed = Date.now() - data.firstTime;
+    if (elapsed >= TASK_COOLDOWN_MS) {
+      localStorage.removeItem(key);
+      return { count:0, locked:false, remainingMs:0 };
+    }
+    const locked = data.count >= TASK_MAX_PER_WINDOW;
+    const remainingMs = TASK_COOLDOWN_MS - elapsed;
+    return { count: data.count, locked, remainingMs };
+  } catch(e) { return { count:0, locked:false, remainingMs:0 }; }
+}
+
+function recordTaskAttempt(taskIndex) {
+  const uid = state.currentUser?.id;
+  if (!uid) return;
+  const key = getCooldownKey(uid, taskIndex);
+  try {
+    const raw = localStorage.getItem(key);
+    let data = raw ? JSON.parse(raw) : null;
+    const now = Date.now();
+    if (!data || (now - data.firstTime) >= TASK_COOLDOWN_MS) {
+      data = { count: 1, firstTime: now };
+    } else {
+      data.count++;
+    }
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function formatCountdown(ms) {
+  const totalSec = Math.ceil(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+const _cdTimers = {};
+
+function startCountdownDisplay(taskIndex, remainingMs) {
+  if (_cdTimers[taskIndex]) clearInterval(_cdTimers[taskIndex]);
+  const btnEl = document.getElementById(`taskBtn_${taskIndex}`);
+  if (!btnEl) return;
+  let remaining = remainingMs;
+  const update = () => {
+    remaining -= 1000;
+    if (remaining <= 0) {
+      clearInterval(_cdTimers[taskIndex]);
+      delete _cdTimers[taskIndex];
+      renderTaskPage();
+      return;
+    }
+    if (btnEl) btnEl.textContent = `⏳ ${formatCountdown(remaining)}`;
+  };
+  btnEl.textContent = `⏳ ${formatCountdown(remaining)}`;
+  _cdTimers[taskIndex] = setInterval(update, 1000);
+}
+
 // ===== TASK PAGE =====
 async function renderTaskPage() {
+  Object.keys(_cdTimers).forEach(k => { clearInterval(_cdTimers[k]); delete _cdTimers[k]; });
   const grid=document.getElementById('taskGrid');
   if(!grid) return;
   grid.innerHTML=`<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">${t('loading')}</div>`;
@@ -1595,29 +1760,57 @@ async function renderTaskPage() {
   } catch(e) {}
   grid.innerHTML='';
   CUSTOM_TASKS.forEach((task,i)=>{
-    const hasLink=task.link&&task.link.trim()!=='';
-    const isPending=pendingTasks[i]===true;
+    const hasLink = task.link && task.link.trim() !== '';
+    const isPending = pendingTasks[i] === true;
+    const cd = hasLink ? getTaskCooldown(i) : { locked:false, remainingMs:0 };
+    const isLocked = cd.locked;
     let btnHtml='';
-    if(!hasLink) btnHtml=`<button class="task-item-btn unavailable" disabled>Not Available</button>`;
-    else if(isPending) btnHtml=`<button class="task-item-btn" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:default" disabled>⏳ Pending</button>`;
-    else btnHtml=`<button class="task-item-btn" onclick="openTaskWithProof(${i},'${task.link}','${task.name.replace(/'/g,"\\'")}')">Start</button>`;
-    grid.innerHTML+=`
+    let badgeHtml='';
+    if (!hasLink) {
+      btnHtml = `<button class="task-item-btn unavailable" disabled>Not Available</button>`;
+    } else if (isPending) {
+      btnHtml = `<button class="task-item-btn" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:default;font-size:11px" disabled>⏳ Pending</button>`;
+      badgeHtml = '<span class="task-pending-badge">⏳ Pending</span>';
+    } else if (isLocked) {
+      btnHtml = `<button class="task-item-btn" id="taskBtn_${i}" style="background:rgba(255,82,82,0.1);color:var(--red);border:1px solid rgba(255,82,82,0.3);cursor:not-allowed;font-size:11px;min-width:80px" disabled>⏳ ${formatCountdown(cd.remainingMs)}</button>`;
+    } else {
+      btnHtml = `<button class="task-item-btn" id="taskBtn_${i}" onclick="openTaskWithProof(${i},'${task.link}','${task.name.replace(/'/g,"\\'")}')">Start</button>`;
+    }
+    const subText = !hasLink
+      ? (state.lang==='bn'?'শীঘ্রই আসছে...':'Coming soon...')
+      : isPending
+        ? (state.lang==='bn'?'অ্যাডমিন যাচাই করছেন...':'Admin verifying...')
+        : isLocked
+          ? (state.lang==='bn'?'কুলডাউন চলছে':'Cooldown active')
+          : (state.lang==='bn'?'ট্যাপ করুন এবং সম্পন্ন করুন':'Tap and complete');
+    const attemptBadge = (hasLink && cd.count > 0 && !isPending)
+      ? `<span style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">${cd.count}/${TASK_MAX_PER_WINDOW} used</span>`
+      : '';
+    grid.innerHTML += `
       <div class="task-item">
         <div class="task-item-num">${i+1}</div>
         <div class="task-item-info">
           <div class="task-item-name">${task.name}</div>
-          <div class="task-item-sub">${hasLink?(isPending?(state.lang==='bn'?'অ্যাডমিন যাচাই করছেন...':'Admin verifying...'):(state.lang==='bn'?'ট্যাপ করুন এবং সম্পন্ন করুন':'Tap and complete')):(state.lang==='bn'?'শীঘ্রই আসছে...':'Coming soon...')}</div>
-          ${isPending?'<span class="task-pending-badge">⏳ Pending</span>':''}
+          <div class="task-item-sub">${subText}</div>
+          ${badgeHtml}${attemptBadge}
         </div>
         ${btnHtml}
       </div>`;
   });
+  CUSTOM_TASKS.forEach((task, i) => {
+    const hasLink = task.link && task.link.trim() !== '';
+    if (!hasLink) return;
+    const cd = getTaskCooldown(i);
+    if (cd.locked) startCountdownDisplay(i, cd.remainingMs);
+  });
 }
 
-function openTaskWithProof(taskIndex,link,taskName){
+function openTaskWithProof(taskIndex, link, taskName){
+  recordTaskAttempt(taskIndex);
   if(window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
   else window.open(link,'_blank');
-  setTimeout(()=>openProofModal(taskIndex,taskName),800);
+  setTimeout(()=>openProofModal(taskIndex,taskName), 800);
+  setTimeout(()=>renderTaskPage(), 900);
 }
 
 // ===== PROOF MODAL =====
@@ -1944,36 +2137,18 @@ async function checkNotifications(){
     const unread=[];snap.forEach(d=>{const n={id:d.id,...d.data()};if(n.userId===state.currentUser.id&&!n.read)unread.push(n);});
     for(const n of unread){
       const type=n.type?.includes('approved')||n.type?.includes('success')?'success':n.type?.includes('rejected')?'error':'info';
-      const titles={proof_approved:'🎉 Task Approved!',proof_rejected:'❌ Task Rejected',withdraw_success:'✅ Payment Sent!',withdraw_rejected:'❌ Payment Rejected',auto_approved:'⏰ Auto Approved!'};
+      const titles={proof_approved:'🎉 Task Approved!',proof_rejected:'❌ Task Rejected',withdraw_success:'✅ Payment Sent!',withdraw_rejected:'❌ Payment Rejected'};
       showNotif(type,titles[n.type]||'Notification',n.message);
       await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
-      if(n.type==='proof_approved'||n.type==='auto_approved'){const snap2=await fbGetDoc(fbDoc(db,'users',state.currentUser.id));if(snap2.exists()){state.currentUser={id:state.currentUser.id,...snap2.data()};refreshUI();}}
+      if(n.type==='proof_approved'){const snap2=await fbGetDoc(fbDoc(db,'users',state.currentUser.id));if(snap2.exists()){state.currentUser={id:state.currentUser.id,...snap2.data()};refreshUI();}}
       await new Promise(r=>setTimeout(r,1000));
     }
   }catch(e){}
 }
 
-// ===== 24HR AUTO APPROVE =====
-async function checkAutoApprove(){
-  if(!db)return;
-  try{
-    const snap=await fbGetDocs(fbCollection(db,'proofs'));const now=Date.now();
-    for(const d of snap.docs){
-      const p={id:d.id,...d.data()};if(p.status!=='pending')continue;
-      const created=p.createdAt?.seconds?p.createdAt.seconds*1000:0;if(!created)continue;
-      const hoursElapsed=(now-created)/(1000*60*60);
-      if(hoursElapsed>=24){
-        const userSnap=await fbGetDoc(fbDoc(db,'users',p.userId));
-        if(userSnap.exists()){
-          const ud=userSnap.data();const dk=todayKey();const de=ud.dailyEarnings||{};de[dk]=(de[dk]||0)+SYS.taskReward;
-          const tc=ud.taskCounts||{};tc[`task_${p.taskIndex}`]=(tc[`task_${p.taskIndex}`]||0)+1;
-          await fbUpdateDoc(fbDoc(db,'users',p.userId),{balance:(ud.balance||0)+SYS.taskReward,totalEarned:(ud.totalEarned||0)+SYS.taskReward,dailyEarnings:de,taskCounts:tc});
-        }
-        await fbAddDoc(fbCollection(db,'notifications'),{userId:p.userId,message:`"${p.taskName}" task auto-approved after 24h. $${(SYS.taskReward/1000).toFixed(3)} added! 🎉`,type:'auto_approved',createdAt:fbServerTimestamp(),read:false});
-        await fbDeleteDoc(fbDoc(db,'proofs',p.id));
-      }
-    }
-  }catch(e){}
+// ===== AUTO APPROVE REMOVED =====
+async function checkAutoApprove() {
+  // Disabled — all approvals are manual via admin panel.
 }
 
 // ===== SUPPORT DRAWER =====
@@ -1996,9 +2171,38 @@ function goPage(page,btn){
   if(page==='task')renderTaskPage();
 }
 
-function copyRefer(){
-  navigator.clipboard?.writeText(`EarnBD Refer Code: ${state.currentUser?.referCode}\nJoin: https://t.me/earnbd992_bot`);
-  showToast(state.lang==='bn'?'📋 রেফার কোড কপি হয়েছে!':'📋 Refer code copied!');
+// ===== REFERRAL LINK SYSTEM =====
+function getReferralBase() {
+  const base = window.location.origin + window.location.pathname;
+  return base.replace(/\/+$/, '');
+}
+
+function getReferralLink(userId) {
+  return `${getReferralBase()}?ref=${userId}`;
+}
+
+function copyReferLink() {
+  const u = state.currentUser;
+  if (!u) return;
+  const link = getReferralLink(u.id);
+  navigator.clipboard?.writeText(link).then(() => {
+    showToast(state.lang === 'bn' ? '🔗 রেফার লিঙ্ক কপি হয়েছে!' : '🔗 Referral link copied!');
+  }).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = link; el.style.position = 'fixed'; el.style.opacity = '0';
+    document.body.appendChild(el); el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast(state.lang === 'bn' ? '🔗 রেফার লিঙ্ক কপি হয়েছে!' : '🔗 Referral link copied!');
+  });
+}
+
+// ===== DETECT REFERRAL FROM URL =====
+function getRefFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || '';
+  } catch(e) { return ''; }
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
@@ -2007,6 +2211,14 @@ function makeStars(){const c=document.getElementById('stars');for(let i=0;i<50;i
 
 if(window.Telegram?.WebApp){window.Telegram.WebApp.expand();window.Telegram.WebApp.ready();}
 makeStars();
+
+(function detectRef(){
+  const ref = getRefFromUrl();
+  if (ref) {
+    const el = document.getElementById('regRefer');
+    if (el) el.value = ref;
+  }
+})();
 
 setInterval(()=>{if(state.currentUser)checkNotifications();},30000);
 setInterval(()=>{if(db)checkAutoApprove();},5*60*1000);
