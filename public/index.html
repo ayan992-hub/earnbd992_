@@ -2186,11 +2186,11 @@ async function loadAdminData(){
         } else {
           const gridClass = imgs.length===1?'single':imgs.length===2?'two':'';
           // Show up to 6 thumbs; if more, last thumb shows overlay count
-          const show = imgs.slice(0,6);
+          const show = imgs;
           let thumbs='';
           show.forEach((src,idx)=>{
-            const isLast = idx===5 && imgs.length>6;
-            const extra = imgs.length - 6;
+            const isLast = false;
+            const extra = 0;
             // Escape src for onclick attribute (replace backticks/quotes)
             const safeIdx = idx;
             if(isLast){
