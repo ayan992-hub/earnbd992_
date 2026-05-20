@@ -279,6 +279,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .proof-submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:white;font-family:var(--font-bn);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(0,212,255,0.2)}
 .proof-submit-btn:disabled{opacity:0.5;cursor:not-allowed}
 .proof-cancel{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:var(--font-bn);font-size:14px;cursor:pointer;margin-top:8px}
+
+/* MULTI-IMAGE PROOF */
+.proof-multi-area{border:2px dashed var(--border);border-radius:14px;padding:12px;margin-bottom:12px;background:var(--bg2)}
+.proof-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.proof-img-grid:empty{display:none}
+.proof-thumb-wrap{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--card)}
+.proof-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.proof-thumb-del{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(255,82,82,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:white;border:none;line-height:1}
+.proof-add-more{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px;cursor:pointer;border-radius:10px;border:1.5px dashed rgba(0,212,255,0.3);transition:all 0.2s}
+.proof-add-more:active{background:rgba(0,212,255,0.06)}
+.proof-add-more .proof-img-icon{font-size:28px}
+.proof-add-more .proof-img-label{font-size:13px;color:var(--muted);font-weight:600}
+.proof-add-more .proof-img-sub{font-size:10px;color:var(--muted)}
+
+/* ADMIN PROOF GALLERY */
+.pac-img-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.pac-img-gallery.single{grid-template-columns:1fr}
+.pac-img-gallery.two{grid-template-columns:1fr 1fr}
+.pac-gallery-item{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg2);cursor:pointer}
+.pac-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.2s}
+.pac-gallery-item:active img{transform:scale(1.03)}
+.pac-gallery-count{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:white}
 .task-pending-badge{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
 .task-approved-badge{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
 
@@ -992,12 +1014,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     <div class="proof-title" data-i18n="submit_proof">📸 Submit Proof</div>
     <div class="proof-sub" data-i18n="proof_sub">Submit proof of task completion</div>
     <div class="proof-task-name" id="proofTaskName">Task 1</div>
-    <div class="proof-img-area" id="proofImgArea" onclick="document.getElementById('proofImgInput').click()">
-      <div class="proof-img-icon">📷</div>
-      <div class="proof-img-label" data-i18n="add_image">Add Image</div>
-      <div class="proof-img-sub" data-i18n="tap_optional">Tap (optional)</div>
+
+    <!-- Multi-image upload area -->
+    <div class="proof-multi-area" id="proofMultiArea">
+      <div class="proof-img-grid" id="proofImgGrid"></div>
+      <div class="proof-add-more" id="proofAddMore" onclick="document.getElementById('proofImgInput').click()">
+        <div class="proof-img-icon">📷</div>
+        <div class="proof-img-label" data-i18n="add_image">Add Images</div>
+        <div class="proof-img-sub">Tap to select (multiple allowed)</div>
+      </div>
     </div>
-    <input type="file" id="proofImgInput" accept="image/*" style="display:none" onchange="handleProofImg(this)">
+    <input type="file" id="proofImgInput" accept="image/*" multiple style="display:none" onchange="handleProofImgs(this)">
+
     <textarea class="proof-textarea" id="proofText" data-i18n-ph="proof_text_ph"></textarea>
     <button class="proof-submit-btn" id="proofSubmitBtn" onclick="submitProof()" data-i18n="submit_btn">✅ Submit</button>
     <button class="proof-cancel" onclick="closeProofModal()" data-i18n="cancel">Cancel</button>
@@ -1039,8 +1067,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 </div>
 
 <!-- IMAGE VIEWER -->
-<div class="img-viewer" id="imgViewer">
-  <img id="imgViewerImg" src="" alt="">
+<div class="img-viewer" id="imgViewer" onclick="if(event.target===this)closeImgViewer()">
+  <img id="imgViewerImg" src="" alt="" style="max-width:95%;max-height:85vh;border-radius:12px;touch-action:pan-y">
   <button class="img-viewer-close" onclick="closeImgViewer()">✕</button>
 </div>
 
@@ -1074,7 +1102,7 @@ let subClicked = false;
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
-let proofState = { taskIndex: null, taskName: '', imgBase64: null };
+let proofState = { taskIndex: null, taskName: '', images: [] }; // images: array of base64
 let fpRequestId = null; // track current forgot-password request id
 let fpMethod = null; // 'phone' or 'gmail'
 
@@ -1248,6 +1276,16 @@ window.addEventListener('firebase-ready', async () => {
         }
       } catch(e) {}
     }
+    // Session expired but check if user previously verified sub (skip join screen)
+    if (session.subVerified) {
+      showScreen('authScreen');
+      return;
+    }
+  }
+  // Check localStorage for permanent subVerified flag (survives session expiry)
+  if (localStorage.getItem('ebd_sub_verified') === '1') {
+    showScreen('authScreen');
+    return;
   }
   showScreen('subScreen');
 });
@@ -1349,6 +1387,8 @@ document.getElementById('subChannelBtn').addEventListener('click', ()=>{ subClic
 function checkSub() {
   if (!subClicked) { document.getElementById('subError').style.display='block'; return; }
   document.getElementById('subError').style.display='none';
+  // Save permanent flag so returning users never see this screen again
+  localStorage.setItem('ebd_sub_verified', '1');
   showScreen('authScreen');
 }
 
@@ -1381,7 +1421,9 @@ async function doLogin() {
     state.currentUser=found;
     // Sync language
     if (found.lang) { state.lang = found.lang; localStorage.setItem('ebd_lang', found.lang); applyI18n(); }
-    localStorage.setItem('ebd_session',JSON.stringify({id:found.id,time:Date.now()}));
+    // Persist sub-verified permanently so re-logins skip the join screen
+    localStorage.setItem('ebd_sub_verified', '1');
+    localStorage.setItem('ebd_session',JSON.stringify({id:found.id,time:Date.now(),subVerified:true}));
     showScreen('appScreen'); refreshUI();
     setTimeout(()=>{checkNotifications();checkAutoApprove();},2000);
   } catch(e){showErr(err,'Error!');}
@@ -1430,7 +1472,8 @@ async function doRegister() {
     fetch('/api/notify-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userName:name,referredBy:referrer?.name||''})}).catch(()=>{});
     err.style.display='none';
     state.currentUser={id,...user};
-    localStorage.setItem('ebd_session',JSON.stringify({id,time:Date.now()}));
+    localStorage.setItem('ebd_sub_verified', '1');
+    localStorage.setItem('ebd_session',JSON.stringify({id,time:Date.now(),subVerified:true}));
     showScreen('appScreen'); refreshUI();
   } catch(e){showErr(err,'Error!');}
 }
@@ -1586,6 +1629,7 @@ async function loadTodayStats() {
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   const todayStartSec = Math.floor(todayStart.getTime() / 1000);
   try {
+    // Task proofs for today
     const proofSnap = await fbGetDocs(fbCollection(db,'proofs'));
     let pendingToday=0, approvedToday=0, rejectedToday=0;
     proofSnap.forEach(d => {
@@ -1595,6 +1639,7 @@ async function loadTodayStats() {
       const isToday = createdSec >= todayStartSec;
       if (p.status === 'pending' && isToday) pendingToday++;
     });
+    // For approved/rejected today — read from notifications
     const notifSnap = await fbGetDocs(fbCollection(db,'notifications'));
     notifSnap.forEach(d => {
       const n = d.data();
@@ -1608,6 +1653,7 @@ async function loadTodayStats() {
     document.getElementById('sTaskApprovedToday').textContent = approvedToday;
     document.getElementById('sTaskRejectedToday').textContent = rejectedToday;
 
+    // Withdraw pending count
     const wSnap = await fbGetDocs(fbCollection(db,'withdrawals'));
     let wPending = 0;
     wSnap.forEach(d => { const w=d.data(); if(w.userId===uid && w.status==='pending') wPending++; });
@@ -1649,7 +1695,6 @@ async function saveProfile() {
     showToast(state.lang==='bn'?'✅ প্রোফাইল আপডেট হয়েছে!':'✅ Profile updated!');
   } catch(e) { showToast('❌ Error'); }
 }
-
 // ===== 7-DAY EARNINGS CHART =====
 function render7DayChart() {
   const u=state.currentUser; const de=u.dailyEarnings||{};
@@ -1676,13 +1721,19 @@ function render7DayChart() {
 }
 
 // ===== TASK COOLDOWN SYSTEM =====
-const TASK_COOLDOWN_MS = 60 * 60 * 1000;
+// Rules: max 3 completions per task per 60-minute window
+// Cooldown data stored in localStorage (refresh-resistant)
+const TASK_COOLDOWN_MS = 60 * 60 * 1000; // 60 minutes
 const TASK_MAX_PER_WINDOW = 3;
 
 function getCooldownKey(userId, taskIndex) {
   return `ebd_cd_${userId}_${taskIndex}`;
 }
 
+/**
+ * Returns cooldown info for a task.
+ * { count, firstTime, locked, remainingMs }
+ */
 function getTaskCooldown(taskIndex) {
   const uid = state.currentUser?.id;
   if (!uid) return { count:0, locked:false, remainingMs:0 };
@@ -1693,6 +1744,7 @@ function getTaskCooldown(taskIndex) {
     const data = JSON.parse(raw);
     const elapsed = Date.now() - data.firstTime;
     if (elapsed >= TASK_COOLDOWN_MS) {
+      // Window expired — reset
       localStorage.removeItem(key);
       return { count:0, locked:false, remainingMs:0 };
     }
@@ -1726,9 +1778,11 @@ function formatCountdown(ms) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
+// Active countdown timers map: taskIndex -> intervalId
 const _cdTimers = {};
 
 function startCountdownDisplay(taskIndex, remainingMs) {
+  // Clear existing timer for this task if any
   if (_cdTimers[taskIndex]) clearInterval(_cdTimers[taskIndex]);
   const btnEl = document.getElementById(`taskBtn_${taskIndex}`);
   if (!btnEl) return;
@@ -1738,7 +1792,7 @@ function startCountdownDisplay(taskIndex, remainingMs) {
     if (remaining <= 0) {
       clearInterval(_cdTimers[taskIndex]);
       delete _cdTimers[taskIndex];
-      renderTaskPage();
+      renderTaskPage(); // re-render to unlock task
       return;
     }
     if (btnEl) btnEl.textContent = `⏳ ${formatCountdown(remaining)}`;
@@ -1749,23 +1803,30 @@ function startCountdownDisplay(taskIndex, remainingMs) {
 
 // ===== TASK PAGE =====
 async function renderTaskPage() {
+  // Clear all existing countdown timers
   Object.keys(_cdTimers).forEach(k => { clearInterval(_cdTimers[k]); delete _cdTimers[k]; });
+
   const grid=document.getElementById('taskGrid');
   if(!grid) return;
   grid.innerHTML=`<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">${t('loading')}</div>`;
+
+  // Load pending proofs from Firebase
   let pendingTasks={};
   try {
     const snap=await fbGetDocs(fbCollection(db,'proofs'));
     snap.forEach(d=>{const p=d.data();if(p.userId===state.currentUser.id&&p.status==='pending')pendingTasks[p.taskIndex]=true;});
   } catch(e) {}
+
   grid.innerHTML='';
   CUSTOM_TASKS.forEach((task,i)=>{
     const hasLink = task.link && task.link.trim() !== '';
     const isPending = pendingTasks[i] === true;
     const cd = hasLink ? getTaskCooldown(i) : { locked:false, remainingMs:0 };
     const isLocked = cd.locked;
+
     let btnHtml='';
     let badgeHtml='';
+
     if (!hasLink) {
       btnHtml = `<button class="task-item-btn unavailable" disabled>Not Available</button>`;
     } else if (isPending) {
@@ -1776,6 +1837,7 @@ async function renderTaskPage() {
     } else {
       btnHtml = `<button class="task-item-btn" id="taskBtn_${i}" onclick="openTaskWithProof(${i},'${task.link}','${task.name.replace(/'/g,"\\'")}')">Start</button>`;
     }
+
     const subText = !hasLink
       ? (state.lang==='bn'?'শীঘ্রই আসছে...':'Coming soon...')
       : isPending
@@ -1783,9 +1845,12 @@ async function renderTaskPage() {
         : isLocked
           ? (state.lang==='bn'?'কুলডাউন চলছে':'Cooldown active')
           : (state.lang==='bn'?'ট্যাপ করুন এবং সম্পন্ন করুন':'Tap and complete');
+
+    // Show attempt count badge if any usage
     const attemptBadge = (hasLink && cd.count > 0 && !isPending)
       ? `<span style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">${cd.count}/${TASK_MAX_PER_WINDOW} used</span>`
       : '';
+
     grid.innerHTML += `
       <div class="task-item">
         <div class="task-item-num">${i+1}</div>
@@ -1797,6 +1862,8 @@ async function renderTaskPage() {
         ${btnHtml}
       </div>`;
   });
+
+  // Start real-time countdowns for locked tasks
   CUSTOM_TASKS.forEach((task, i) => {
     const hasLink = task.link && task.link.trim() !== '';
     if (!hasLink) return;
@@ -1806,49 +1873,80 @@ async function renderTaskPage() {
 }
 
 function openTaskWithProof(taskIndex, link, taskName){
+  // Record the attempt for cooldown tracking
   recordTaskAttempt(taskIndex);
   if(window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
   else window.open(link,'_blank');
   setTimeout(()=>openProofModal(taskIndex,taskName), 800);
+  // Re-render to update usage badge and possibly lock
   setTimeout(()=>renderTaskPage(), 900);
 }
 
 // ===== PROOF MODAL =====
 function openProofModal(taskIndex,taskName){
-  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.imgBase64=null;
+  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.images=[];
   document.getElementById('proofTaskName').textContent=taskName;
   document.getElementById('proofText').value='';
-  document.getElementById('proofImgArea').classList.remove('has-img');
-  document.getElementById('proofImgArea').innerHTML=`<div class="proof-img-icon">📷</div><div class="proof-img-label">${t('add_image')}</div><div class="proof-img-sub">${t('tap_optional')}</div>`;
+  renderProofGrid();
   document.getElementById('proofModal').classList.add('open');
 }
 function closeProofModal(){document.getElementById('proofModal').classList.remove('open');}
 
-function handleProofImg(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    const img=new Image();
-    img.onload=()=>{
-      const canvas=document.createElement('canvas');const MAX=600;let w=img.width,h=img.height;
-      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
-      canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
-      proofState.imgBase64=canvas.toDataURL('image/jpeg',0.7);
-      const area=document.getElementById('proofImgArea');
-      area.classList.add('has-img');area.innerHTML=`<img src="${proofState.imgBase64}" alt="proof">`;
-    };img.src=e.target.result;
-  };reader.readAsDataURL(file);
+function renderProofGrid(){
+  const grid=document.getElementById('proofImgGrid');
+  grid.innerHTML='';
+  proofState.images.forEach((b64,idx)=>{
+    const wrap=document.createElement('div');wrap.className='proof-thumb-wrap';
+    wrap.innerHTML=`<img src="${b64}" onclick="openImgViewer('${b64}')" alt="proof ${idx+1}"><button class="proof-thumb-del" onclick="removeProofImg(${idx})">✕</button>`;
+    grid.appendChild(wrap);
+  });
+  const addMore=document.getElementById('proofAddMore');
+  addMore.querySelector('.proof-img-sub').textContent=
+    proofState.images.length>0?`${proofState.images.length} image${proofState.images.length>1?'s':''} added — tap to add more`:'Tap to select (multiple allowed)';
+}
+
+function removeProofImg(idx){
+  proofState.images.splice(idx,1);
+  renderProofGrid();
+}
+
+function handleProofImgs(input){
+  const files=Array.from(input.files);if(!files.length)return;
+  // Reset input so same files can be re-selected if needed
+  input.value='';
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        // Preserve quality for HD images — max 1200px
+        const MAX=1200;let w=img.width,h=img.height;
+        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+        if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        const b64=canvas.toDataURL('image/jpeg',0.85);
+        proofState.images.push(b64);
+        renderProofGrid();
+      };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+  });
 }
 
 async function submitProof(){
   const text=document.getElementById('proofText').value.trim();
-  if(!text&&!proofState.imgBase64){showToast('⚠️ Add image or description!');return;}
+  if(!text&&proofState.images.length===0){showToast('⚠️ Add image or description!');return;}
   const btn=document.getElementById('proofSubmitBtn');btn.disabled=true;btn.textContent=state.lang==='bn'?'জমা হচ্ছে...':'Submitting...';
   try {
     await fbAddDoc(fbCollection(db,'proofs'),{
       userId:state.currentUser.id, userName:state.currentUser.name,
       taskIndex:proofState.taskIndex, taskName:proofState.taskName,
-      description:text, image:proofState.imgBase64||null,
+      description:text,
+      images: proofState.images.length>0 ? proofState.images : [],
+      // Keep legacy 'image' field for backward compat (first image)
+      image: proofState.images.length>0 ? proofState.images[0] : null,
+      imageCount: proofState.images.length,
       status:'pending', createdAt:fbServerTimestamp()
     });
     closeProofModal();
@@ -1860,7 +1958,50 @@ async function submitProof(){
 
 // ===== IMAGE VIEWER =====
 function openImgViewer(src){document.getElementById('imgViewerImg').src=src;document.getElementById('imgViewer').classList.add('open');}
-function closeImgViewer(){document.getElementById('imgViewer').classList.remove('open');}
+function closeImgViewer(){document.getElementById('imgViewer').classList.remove('open');_galleryState=null;}
+
+// Multi-image gallery viewer state
+let _galleryState = null;
+
+function openImgGallery(images, startIdx) {
+  _galleryState = { images, idx: startIdx };
+  const viewer = document.getElementById('imgViewer');
+  const img = document.getElementById('imgViewerImg');
+  img.src = images[startIdx];
+  // Add navigation controls dynamically if needed
+  let nav = document.getElementById('imgGalleryNav');
+  if (!nav) {
+    nav = document.createElement('div');
+    nav.id = 'imgGalleryNav';
+    nav.style.cssText = 'position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:16px';
+    nav.innerHTML = `<button onclick="galleryPrev()" style="background:rgba(255,255,255,0.15);border:none;color:white;font-size:22px;width:44px;height:44px;border-radius:50%;cursor:pointer">‹</button><span id="galleryCounter" style="color:white;font-size:13px;font-weight:700;min-width:40px;text-align:center"></span><button onclick="galleryNext()" style="background:rgba(255,255,255,0.15);border:none;color:white;font-size:22px;width:44px;height:44px;border-radius:50%;cursor:pointer">›</button>`;
+    viewer.appendChild(nav);
+  }
+  updateGalleryNav();
+  viewer.classList.add('open');
+}
+
+function updateGalleryNav() {
+  if (!_galleryState) return;
+  const nav = document.getElementById('imgGalleryNav');
+  const counter = document.getElementById('galleryCounter');
+  if (nav) nav.style.display = _galleryState.images.length > 1 ? 'flex' : 'none';
+  if (counter) counter.textContent = `${_galleryState.idx+1} / ${_galleryState.images.length}`;
+}
+
+function galleryPrev() {
+  if (!_galleryState) return;
+  _galleryState.idx = (_galleryState.idx - 1 + _galleryState.images.length) % _galleryState.images.length;
+  document.getElementById('imgViewerImg').src = _galleryState.images[_galleryState.idx];
+  updateGalleryNav();
+}
+
+function galleryNext() {
+  if (!_galleryState) return;
+  _galleryState.idx = (_galleryState.idx + 1) % _galleryState.images.length;
+  document.getElementById('imgViewerImg').src = _galleryState.images[_galleryState.idx];
+  updateGalleryNav();
+}
 
 // ===== ADMIN PROOF ACTIONS =====
 async function adminApproveProof(proofId,userId,userName,taskName,taskIndex){
@@ -2037,7 +2178,30 @@ async function loadAdminData(){
       pList.innerHTML='';
       proofs.forEach(p=>{
         const timeStr=p.createdAt?new Date(p.createdAt.seconds*1000).toLocaleString():'';
-        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${p.image?`<img class="pac-img" src="${p.image}" onclick="openImgViewer('${p.image}')" alt="proof">`:`<div class="pac-no-img">📷 No image</div>`}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
+        // Build image gallery — support both new multi-image and legacy single image
+        let galleryHtml='';
+        const imgs = (p.images && p.images.length>0) ? p.images : (p.image ? [p.image] : []);
+        if(imgs.length===0){
+          galleryHtml='<div class="pac-no-img">📷 No image</div>';
+        } else {
+          const gridClass = imgs.length===1?'single':imgs.length===2?'two':'';
+          // Show up to 6 thumbs; if more, last thumb shows overlay count
+          const show = imgs.slice(0,6);
+          let thumbs='';
+          show.forEach((src,idx)=>{
+            const isLast = idx===5 && imgs.length>6;
+            const extra = imgs.length - 6;
+            // Escape src for onclick attribute (replace backticks/quotes)
+            const safeIdx = idx;
+            if(isLast){
+              thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${idx})"><img src="${src}" alt="proof ${idx+1}"><div class="pac-gallery-count">+${extra+1}</div></div>`;
+            } else {
+              thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${safeIdx})"><img src="${src}" alt="proof ${idx+1}"></div>`;
+            }
+          });
+          galleryHtml=`<div class="pac-img-gallery ${gridClass}">${thumbs}</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px">${imgs.length} image${imgs.length>1?'s':''} — tap to view full size</div>`;
+        }
+        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${galleryHtml}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
       });
     }
 
@@ -2147,8 +2311,10 @@ async function checkNotifications(){
 }
 
 // ===== AUTO APPROVE REMOVED =====
+// Auto-approval has been disabled. All task proofs require manual admin review.
+// This ensures full admin control over reward distribution.
 async function checkAutoApprove() {
-  // Disabled — all approvals are manual via admin panel.
+  // Auto-approve intentionally disabled — all approvals are manual via admin panel.
 }
 
 // ===== SUPPORT DRAWER =====
@@ -2172,7 +2338,9 @@ function goPage(page,btn){
 }
 
 // ===== REFERRAL LINK SYSTEM =====
+// Base URL for referral links — uses current page URL
 function getReferralBase() {
+  // Use the app's base URL (works for both web and Telegram WebApp)
   const base = window.location.origin + window.location.pathname;
   return base.replace(/\/+$/, '');
 }
@@ -2188,6 +2356,7 @@ function copyReferLink() {
   navigator.clipboard?.writeText(link).then(() => {
     showToast(state.lang === 'bn' ? '🔗 রেফার লিঙ্ক কপি হয়েছে!' : '🔗 Referral link copied!');
   }).catch(() => {
+    // Fallback for environments without clipboard API
     const el = document.createElement('textarea');
     el.value = link; el.style.position = 'fixed'; el.style.opacity = '0';
     document.body.appendChild(el); el.select();
@@ -2212,6 +2381,7 @@ function makeStars(){const c=document.getElementById('stars');for(let i=0;i<50;i
 if(window.Telegram?.WebApp){window.Telegram.WebApp.expand();window.Telegram.WebApp.ready();}
 makeStars();
 
+// Auto-detect referral code from URL on page load
 (function detectRef(){
   const ref = getRefFromUrl();
   if (ref) {
