@@ -25,22 +25,27 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ===== LAYOUT STABILITY FIXES ===== */
-/* Prevent font-loading layout shift */
+/* ===== PERFORMANCE & LAYOUT STABILITY ===== */
 html { font-display: swap; }
-/* Reserve space for dynamic content to prevent CLS */
 img { display:block; max-width:100%; height:auto; }
-/* Stable will-change for animated elements only */
-.spinner, .chart-bar-fill { will-change: transform; }
-/* Prevent scrollbar from causing layout shift */
+/* GPU-accelerated elements */
+.spinner, .chart-bar-fill, .screen, .proof-modal, .ad-fullscreen { will-change: transform; }
+/* Hide scrollbar */
 html { overflow-y: scroll; scrollbar-width: none; }
 html::-webkit-scrollbar { display: none; }
-/* Stable avatar containers */
 .avatar, .lb-avatar, .profile-avatar { overflow:hidden; flex-shrink:0; }
-/* Prevent text from shifting during data load */
 .s-val, .bal-amount, .bd-amount { font-variant-numeric: tabular-nums; }
-/* Contain paint for cards to prevent reflow cascade */
+/* Contain paint — prevents reflow cascade */
 .stat-card, .task-item, .admin-card, .proof-admin-card { contain: layout style; }
+/* Fast transitions everywhere */
+* { transition-duration: 0.15s; }
+.spinner { transition: none; }
+/* Instant tap feedback */
+button, .task-btn, .nav-btn, .task-item-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+/* Faster screen switches */
+.screen { transform: translateZ(0); backface-visibility: hidden; }
+/* Reduce paint on scroll */
+.app-header, .bottom-nav { transform: translateZ(0); }
 
 :root {
   --bg:#060d1f; --bg2:#0b1530; --card:#0f1e3a; --card2:#162447;
@@ -1596,11 +1601,20 @@ async function refreshUI() {
   document.getElementById('sWithdraw').textContent=fmtDollar((u.withdrawn||0)/1000);
   document.getElementById('sTotalEarn').textContent=fmtDollar(totalEarned);
 
+  // Show cached stats instantly so cards never feel slow
+  const _sc = JSON.parse(localStorage.getItem('ebd_stats_'+(u.id||''))||'null');
+  if (_sc) {
+    document.getElementById('sTaskPendingToday').textContent = _sc.p ?? 0;
+    document.getElementById('sTaskApprovedToday').textContent = _sc.a ?? 0;
+    document.getElementById('sTaskRejectedToday').textContent = _sc.r ?? 0;
+    document.getElementById('sWithdrawPending').textContent = _sc.w ?? 0;
+  }
+
   // Update referral link display
   const linkBox = document.getElementById('referLinkBox');
   if (linkBox) linkBox.textContent = getReferralLink(u.id);
 
-  // Load today's task stats & withdraw pending asynchronously
+  // Refresh Firebase stats in background (non-blocking)
   loadTodayStats();
 
   document.getElementById('rCount').textContent=u.referCount||0;
@@ -1658,6 +1672,9 @@ async function loadTodayStats() {
     let wPending = 0;
     wSnap.forEach(d => { const w=d.data(); if(w.userId===uid && w.status==='pending') wPending++; });
     document.getElementById('sWithdrawPending').textContent = wPending;
+
+    // Cache for instant display next time
+    localStorage.setItem('ebd_stats_'+uid, JSON.stringify({p:pendingToday,a:approvedToday,r:rejectedToday,w:wPending}));
   } catch(e) {}
 }
 
@@ -1742,15 +1759,21 @@ function getTaskCooldown(taskIndex) {
     const raw = localStorage.getItem(key);
     if (!raw) return { count:0, locked:false, remainingMs:0 };
     const data = JSON.parse(raw);
-    const elapsed = Date.now() - data.firstTime;
+    // Only start countdown AFTER all 3 attempts are done
+    // lockTime is set when 3rd attempt is recorded
+    if (data.count < TASK_MAX_PER_WINDOW) {
+      // Not yet locked — still has attempts left
+      return { count: data.count, locked:false, remainingMs:0 };
+    }
+    // 3 attempts used — check if cooldown expired
+    const lockTime = data.lockTime || data.firstTime;
+    const elapsed = Date.now() - lockTime;
     if (elapsed >= TASK_COOLDOWN_MS) {
-      // Window expired — reset
       localStorage.removeItem(key);
       return { count:0, locked:false, remainingMs:0 };
     }
-    const locked = data.count >= TASK_MAX_PER_WINDOW;
     const remainingMs = TASK_COOLDOWN_MS - elapsed;
-    return { count: data.count, locked, remainingMs };
+    return { count: data.count, locked:true, remainingMs };
   } catch(e) { return { count:0, locked:false, remainingMs:0 }; }
 }
 
@@ -1762,10 +1785,17 @@ function recordTaskAttempt(taskIndex) {
     const raw = localStorage.getItem(key);
     let data = raw ? JSON.parse(raw) : null;
     const now = Date.now();
-    if (!data || (now - data.firstTime) >= TASK_COOLDOWN_MS) {
+    if (!data) {
       data = { count: 1, firstTime: now };
+    } else if (data.count >= TASK_MAX_PER_WINDOW) {
+      // Already locked, do nothing
+      return;
     } else {
       data.count++;
+      // If this is the 3rd attempt, set lockTime NOW
+      if (data.count >= TASK_MAX_PER_WINDOW) {
+        data.lockTime = now;
+      }
     }
     localStorage.setItem(key, JSON.stringify(data));
   } catch(e) {}
@@ -1912,25 +1942,29 @@ function removeProofImg(idx){
 
 function handleProofImgs(input){
   const files=Array.from(input.files);if(!files.length)return;
-  // Reset input so same files can be re-selected if needed
-  input.value='';
+  input.value=''; // allow re-select same file
+  let loaded=0;
   files.forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=(e)=>{
-      const img=new Image();
-      img.onload=()=>{
-        const canvas=document.createElement('canvas');
-        // Preserve quality for HD images — max 1200px
-        const MAX=1200;let w=img.width,h=img.height;
-        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
-        if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
-        canvas.width=w;canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        const b64=canvas.toDataURL('image/jpeg',0.85);
-        proofState.images.push(b64);
-        renderProofGrid();
-      };img.src=e.target.result;
-    };reader.readAsDataURL(file);
+    // Use createImageBitmap for much faster decoding (hardware accelerated)
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      const canvas=document.createElement('canvas');
+      const MAX=1200;let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.imageSmoothingEnabled=true;
+      ctx.imageSmoothingQuality='high';
+      ctx.drawImage(img,0,0,w,h);
+      const b64=canvas.toDataURL('image/jpeg',0.82);
+      proofState.images.push(b64);
+      loaded++;
+      renderProofGrid();
+    };
+    img.src=url;
   });
 }
 
@@ -2185,19 +2219,10 @@ async function loadAdminData(){
           galleryHtml='<div class="pac-no-img">📷 No image</div>';
         } else {
           const gridClass = imgs.length===1?'single':imgs.length===2?'two':'';
-          // Show up to 6 thumbs; if more, last thumb shows overlay count
-          const show = imgs;
+          // Show ALL images — unlimited
           let thumbs='';
-          show.forEach((src,idx)=>{
-            const isLast = false;
-            const extra = 0;
-            // Escape src for onclick attribute (replace backticks/quotes)
-            const safeIdx = idx;
-            if(isLast){
-              thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${idx})"><img src="${src}" alt="proof ${idx+1}"><div class="pac-gallery-count">+${extra+1}</div></div>`;
-            } else {
-              thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${safeIdx})"><img src="${src}" alt="proof ${idx+1}"></div>`;
-            }
+          imgs.forEach((src,idx)=>{
+            thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${idx})"><img src="${src}" alt="proof ${idx+1}"></div>`;
           });
           galleryHtml=`<div class="pac-img-gallery ${gridClass}">${thumbs}</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px">${imgs.length} image${imgs.length>1?'s':''} — tap to view full size</div>`;
         }
