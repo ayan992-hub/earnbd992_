@@ -25,27 +25,22 @@
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ===== PERFORMANCE & LAYOUT STABILITY ===== */
+/* ===== LAYOUT STABILITY FIXES ===== */
+/* Prevent font-loading layout shift */
 html { font-display: swap; }
+/* Reserve space for dynamic content to prevent CLS */
 img { display:block; max-width:100%; height:auto; }
-/* GPU-accelerated elements */
-.spinner, .chart-bar-fill, .screen, .proof-modal, .ad-fullscreen { will-change: transform; }
-/* Hide scrollbar */
+/* Stable will-change for animated elements only */
+.spinner, .chart-bar-fill { will-change: transform; }
+/* Prevent scrollbar from causing layout shift */
 html { overflow-y: scroll; scrollbar-width: none; }
 html::-webkit-scrollbar { display: none; }
+/* Stable avatar containers */
 .avatar, .lb-avatar, .profile-avatar { overflow:hidden; flex-shrink:0; }
+/* Prevent text from shifting during data load */
 .s-val, .bal-amount, .bd-amount { font-variant-numeric: tabular-nums; }
-/* Contain paint — prevents reflow cascade */
+/* Contain paint for cards to prevent reflow cascade */
 .stat-card, .task-item, .admin-card, .proof-admin-card { contain: layout style; }
-/* Fast transitions everywhere */
-* { transition-duration: 0.15s; }
-.spinner { transition: none; }
-/* Instant tap feedback */
-button, .task-btn, .nav-btn, .task-item-btn { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-/* Faster screen switches */
-.screen { transform: translateZ(0); backface-visibility: hidden; }
-/* Reduce paint on scroll */
-.app-header, .bottom-nav { transform: translateZ(0); }
 
 :root {
   --bg:#060d1f; --bg2:#0b1530; --card:#0f1e3a; --card2:#162447;
@@ -54,9 +49,11 @@ button, .task-btn, .nav-btn, .task-item-btn { -webkit-tap-highlight-color: trans
   --border:#1a2d4e; --font-bn:'Baloo Da 2',sans-serif; --font-en:'Nunito',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-height:100vh;overflow-x:hidden;height:100%}
+html{height:100%}
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.active{display:flex}
+#appScreen.active{height:100vh;height:100dvh;min-height:unset}
 
 #loadingScreen{align-items:center;justify-content:center;gap:16px;background:var(--bg)}
 .spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
@@ -115,8 +112,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .fp-option-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.07)}
 
 /* APP */
-#appScreen{padding-bottom:70px}
-.app-header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+#appScreen{padding-bottom:0;display:flex;flex-direction:column;height:100vh;height:100dvh}
+.app-header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);flex-shrink:0}
 .header-left{display:flex;align-items:center;gap:10px;cursor:pointer}
 .avatar{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:white;flex-shrink:0;overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
@@ -125,7 +122,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .balance-pill{background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(123,47,255,0.1));border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:7px 14px;display:flex;align-items:center;gap:6px}
 .bal-amount{font-family:var(--font-en);font-size:18px;font-weight:800;color:var(--accent);line-height:1}
 .bal-unit{font-size:10px;color:var(--muted);font-family:var(--font-en)}
-.page{display:none;padding:14px 14px 0}
+.pages-wrap{flex:1;overflow-y:auto;position:relative}
+.page{display:none;padding:14px 14px 20px}
 .page.active{display:block}
 .welcome-card{background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(123,47,255,0.1));border:1px solid rgba(0,212,255,0.12);border-radius:18px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
 .wc-icon{font-size:36px}
@@ -284,28 +282,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .proof-submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;color:white;font-family:var(--font-bn);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(0,212,255,0.2)}
 .proof-submit-btn:disabled{opacity:0.5;cursor:not-allowed}
 .proof-cancel{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:var(--font-bn);font-size:14px;cursor:pointer;margin-top:8px}
-
-/* MULTI-IMAGE PROOF */
-.proof-multi-area{border:2px dashed var(--border);border-radius:14px;padding:12px;margin-bottom:12px;background:var(--bg2)}
-.proof-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
-.proof-img-grid:empty{display:none}
-.proof-thumb-wrap{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--card)}
-.proof-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
-.proof-thumb-del{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(255,82,82,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:white;border:none;line-height:1}
-.proof-add-more{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px;cursor:pointer;border-radius:10px;border:1.5px dashed rgba(0,212,255,0.3);transition:all 0.2s}
-.proof-add-more:active{background:rgba(0,212,255,0.06)}
-.proof-add-more .proof-img-icon{font-size:28px}
-.proof-add-more .proof-img-label{font-size:13px;color:var(--muted);font-weight:600}
-.proof-add-more .proof-img-sub{font-size:10px;color:var(--muted)}
-
-/* ADMIN PROOF GALLERY */
-.pac-img-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
-.pac-img-gallery.single{grid-template-columns:1fr}
-.pac-img-gallery.two{grid-template-columns:1fr 1fr}
-.pac-gallery-item{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg2);cursor:pointer}
-.pac-gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.2s}
-.pac-gallery-item:active img{transform:scale(1.03)}
-.pac-gallery-count{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:white}
 .task-pending-badge{background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
 .task-approved-badge{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:4px}
 
@@ -327,21 +303,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .img-viewer img{max-width:95%;max-height:90vh;border-radius:12px}
 .img-viewer-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
 
-/* NOTIFICATION POPUP */
-.notif-popup{position:fixed;top:70px;left:12px;right:12px;z-index:999;animation:slideDown 0.4s cubic-bezier(0.34,1.2,0.64,1);display:none}
-.notif-popup.show{display:block}
-@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.notif-inner{border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-.notif-inner.success{background:linear-gradient(135deg,rgba(0,230,118,0.15),rgba(0,160,64,0.1));border:1px solid rgba(0,230,118,0.4)}
-.notif-inner.error{background:linear-gradient(135deg,rgba(255,82,82,0.15),rgba(183,28,28,0.1));border:1px solid rgba(255,82,82,0.4)}
-.notif-inner.info{background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(123,47,255,0.1));border:1px solid rgba(0,212,255,0.4)}
-.notif-icon{font-size:26px;flex-shrink:0}
+/* NOTIFICATION POPUP — small toast at bottom */
+.notif-popup{position:fixed;bottom:80px;left:12px;right:12px;z-index:1000;pointer-events:none;display:flex;justify-content:center;opacity:0;transform:translateY(10px);transition:all 0.3s ease}
+.notif-popup.show{opacity:1;transform:translateY(0)}
+.notif-inner{border-radius:12px;padding:10px 16px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.4);max-width:320px;width:auto}
+.notif-inner.success{background:rgba(0,20,10,0.95);border:1px solid rgba(0,230,118,0.4)}
+.notif-inner.error{background:rgba(20,0,0,0.95);border:1px solid rgba(255,82,82,0.4)}
+.notif-inner.info{background:rgba(6,13,31,0.97);border:1px solid rgba(0,212,255,0.35)}
+.notif-icon{font-size:18px;flex-shrink:0}
 .notif-text{flex:1}
-.notif-title{font-size:14px;font-weight:800;margin-bottom:2px}
-.notif-msg{font-size:12px;opacity:0.8;line-height:1.4}
+.notif-title{font-size:13px;font-weight:800;margin-bottom:0}
+.notif-msg{font-size:11px;opacity:0.75;line-height:1.3}
 
 /* NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,21,48,0.97);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(20px)}
+.bottom-nav{background:rgba(11,21,48,0.97);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);backdrop-filter:blur(20px);flex-shrink:0}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 10px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.25s;position:relative;gap:3px}
 .nav-btn.active{color:var(--accent)}
 .nav-btn.active .nav-icon-wrap{background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(123,47,255,0.1));border-color:rgba(0,212,255,0.3)}
@@ -360,6 +335,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .support-sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
 .earnbd-hidden-btn{display:block;text-align:center;color:var(--border);font-size:11px;font-family:var(--font-en);padding:8px;margin-top:10px;cursor:pointer;user-select:none}
+#noticePageOverlay.open{display:flex}
 
 /* AD FULLSCREEN */
 .ad-fullscreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column}
@@ -441,6 +417,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .setting-hint{font-size:11px;color:var(--muted);margin-top:6px}
 .add-task-btn{width:100%;padding:13px;border:2px dashed rgba(0,212,255,0.3);background:rgba(0,212,255,0.04);border-radius:12px;color:var(--accent);font-family:var(--font-bn);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:all 0.2s}
 .add-task-btn:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.5)}
+.admin-nav-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:var(--font-bn);font-size:13px;font-weight:700;color:var(--text);transition:all 0.2s;font-size:24px}
+.admin-nav-card div{font-size:12px;color:var(--muted);font-weight:700;text-align:center}
+.admin-nav-card:active{transform:scale(0.96);background:var(--card2)}
 
 /* Password Reset Requests in Admin */
 .fp-req-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px}
@@ -608,6 +587,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     </div>
   </div>
 
+  <div class="pages-wrap">
   <!-- HOME PAGE -->
   <div class="page active" id="homePage">
     <div class="welcome-card">
@@ -791,6 +771,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     </div>
   </div>
 
+  </div><!-- end pages-wrap -->
+
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="goPage('home',this)">
       <div class="nav-icon-wrap"><span class="ni">🏠</span></div>
@@ -815,69 +797,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
   </nav>
 </div>
 
-<!-- AD 1 FULLSCREEN -->
-<div class="ad-fullscreen" id="ad1Screen">
-  <div class="ad-topbar">
-    <div class="ad-topbar-title">📺 Ad 1</div>
-    <div class="ad-circle-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle class="c-bg" cx="26" cy="26" r="21"/>
-        <circle class="c-fill" id="ad1Circle" cx="26" cy="26" r="21"/>
-      </svg>
-      <div class="c-num" id="ad1Sec">30</div>
-    </div>
-  </div>
-  <div class="ad-iframe-wrap">
-    <iframe id="ad1Frame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay"></iframe>
-    <div class="ad-blocked-msg" id="ad1Blocked">
-      <div class="ad-blocked-icon">📺</div>
-      <div class="ad-blocked-title">Ad Loading...</div>
-      <div class="ad-blocked-sub">If ad doesn't show, tap the button below. Timer is running!</div>
-      <button class="ad-open-btn" onclick="openAdExternal(1)">🔗 Open Ad</button>
-    </div>
-  </div>
-  <div class="ad-bottombar">
-    <div class="ad-progress-row">
-      <div class="ad-progress-bar"><div class="ad-progress-fill" id="ad1Fill" style="width:100%"></div></div>
-      <div class="ad-progress-text" id="ad1ProgressText">30s</div>
-    </div>
-    <div class="ad-note">⏳ Timer running — stay on this page</div>
-    <button class="btn-ad-claim" id="ad1Claim" onclick="claimAd(1)">🎉 $0.010 Claim!</button>
-    <button class="btn-ad-cancel" onclick="cancelAd(1)">Cancel</button>
-  </div>
-</div>
-
-<!-- AD 2 FULLSCREEN -->
-<div class="ad-fullscreen" id="ad2Screen">
-  <div class="ad-topbar">
-    <div class="ad-topbar-title">📺 Ad 2</div>
-    <div class="ad-circle-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle class="c-bg" cx="26" cy="26" r="21"/>
-        <circle class="c-fill" id="ad2Circle" cx="26" cy="26" r="21"/>
-      </svg>
-      <div class="c-num" id="ad2Sec">30</div>
-    </div>
-  </div>
-  <div class="ad-iframe-wrap">
-    <iframe id="ad2Frame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" allow="autoplay"></iframe>
-    <div class="ad-blocked-msg" id="ad2Blocked">
-      <div class="ad-blocked-icon">📺</div>
-      <div class="ad-blocked-title">Ad Loading...</div>
-      <div class="ad-blocked-sub">If ad doesn't show, tap the button below. Timer is running!</div>
-      <button class="ad-open-btn" onclick="openAdExternal(2)">🔗 Open Ad</button>
-    </div>
-  </div>
-  <div class="ad-bottombar">
-    <div class="ad-progress-row">
-      <div class="ad-progress-bar"><div class="ad-progress-fill" id="ad2Fill" style="width:100%"></div></div>
-      <div class="ad-progress-text" id="ad2ProgressText">30s</div>
-    </div>
-    <div class="ad-note">⏳ Timer running — stay on this page</div>
-    <button class="btn-ad-claim" id="ad2Claim" onclick="claimAd(2)">🎉 $0.010 Claim!</button>
-    <button class="btn-ad-cancel" onclick="cancelAd(2)">Cancel</button>
-  </div>
-</div>
+<!-- AD SYSTEM REMOVED -->
 
 <!-- ===== ADMIN PANEL — TABBED ===== -->
 <div class="screen" id="adminScreen">
@@ -893,6 +813,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <button class="admin-tab-btn" onclick="switchAdminTab('tasks')">📋 Tasks</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('withdraws')">💸 Withdraws</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('users')">👥 Users</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('notices')">📢 Notices</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('settings')">⚙️ Settings</button>
       <button class="admin-tab-btn" onclick="switchAdminTab('fpreqs')">🔑 Password Reqs</button>
     </div>
@@ -918,6 +839,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
       <div class="admin-stat"><div class="as-icon">🆕</div><div class="as-val" id="aToday">0</div><div class="as-lab">Today New</div></div>
     </div>
     <button class="refresh-btn" onclick="loadAdminData()">🔄 Refresh</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+      <button class="admin-nav-card" onclick="switchAdminTab('users')">👥<div>User Management</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('tasks')">📋<div>Task Management</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('proofs')">📸<div>Proof Management</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('withdraws')">💸<div>Withdraw Management</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('settings')">⚙️<div>Settings</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('fpreqs')">🔑<div>Password Reqs</div></button>
+      <button class="admin-nav-card" onclick="switchAdminTab('notices')" style="grid-column:span 2">📢<div>Notice Management</div></button>
+    </div>
   </div>
 
   <!-- PROOFS TAB -->
@@ -933,6 +863,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     <button class="add-task-btn" onclick="addNewTask()">＋ Add New Task</button>
     <button class="refresh-btn" onclick="renderAdminTasks()">🔄 Refresh</button>
     <div id="adminTaskList"></div>
+  </div>
+
+  <!-- NOTICES TAB -->
+  <div class="admin-tab-content" id="tab-notices" style="display:none">
+    <div class="admin-sec-title">📢 Notice Management</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--accent)">📝 Add New Notice</div>
+      <div class="form-group" style="margin-bottom:10px"><label style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:6px">Title</label><input type="text" id="noticeTitle" placeholder="Notice title" style="width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:var(--font-bn);font-size:14px;outline:none"></div>
+      <div class="form-group" style="margin-bottom:10px"><label style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:6px">Description</label><textarea id="noticeDesc" placeholder="Notice description..." style="width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:var(--font-bn);font-size:14px;outline:none;resize:none;height:90px"></textarea></div>
+      <button class="refresh-btn" onclick="adminAddNotice()" style="width:100%;justify-content:center;margin-bottom:0">📢 Publish Notice</button>
+    </div>
+    <div class="admin-sec-title">All Notices</div>
+    <div id="adminNoticeList"></div>
   </div>
 
   <!-- WITHDRAWS TAB -->
@@ -1019,18 +962,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     <div class="proof-title" data-i18n="submit_proof">📸 Submit Proof</div>
     <div class="proof-sub" data-i18n="proof_sub">Submit proof of task completion</div>
     <div class="proof-task-name" id="proofTaskName">Task 1</div>
-
-    <!-- Multi-image upload area -->
-    <div class="proof-multi-area" id="proofMultiArea">
-      <div class="proof-img-grid" id="proofImgGrid"></div>
-      <div class="proof-add-more" id="proofAddMore" onclick="document.getElementById('proofImgInput').click()">
-        <div class="proof-img-icon">📷</div>
-        <div class="proof-img-label" data-i18n="add_image">Add Images</div>
-        <div class="proof-img-sub">Tap to select (multiple allowed)</div>
-      </div>
+    <div class="proof-img-area" id="proofImgArea" onclick="document.getElementById('proofImgInput').click()">
+      <div class="proof-img-icon">📷</div>
+      <div class="proof-img-label" data-i18n="add_image">Add Image</div>
+      <div class="proof-img-sub" data-i18n="tap_optional">Tap (optional)</div>
     </div>
-    <input type="file" id="proofImgInput" accept="image/*" multiple style="display:none" onchange="handleProofImgs(this)">
-
+    <input type="file" id="proofImgInput" accept="image/*" multiple style="display:none" onchange="handleProofImg(this)">
     <textarea class="proof-textarea" id="proofText" data-i18n-ph="proof_text_ph"></textarea>
     <button class="proof-submit-btn" id="proofSubmitBtn" onclick="submitProof()" data-i18n="submit_btn">✅ Submit</button>
     <button class="proof-cancel" onclick="closeProofModal()" data-i18n="cancel">Cancel</button>
@@ -1042,6 +979,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
   <div class="support-sheet">
     <div class="support-sheet-handle"></div>
     <div class="sec-title">HELP & SUPPORT</div>
+    <div class="support-link" onclick="openNoticePage()" style="cursor:pointer">
+      <div class="sl-icon" style="background:rgba(0,212,255,0.1)">📢</div>
+      <div><div class="sl-title">Notice</div><div class="sl-desc">View announcements</div></div>
+      <div class="sl-arrow">›</div>
+    </div>
     <a class="support-link" href="https://t.me/Ownerearnbd" target="_blank">
       <div class="sl-icon" style="background:rgba(0,136,204,0.15)">💬</div>
       <div><div class="sl-title">Telegram Support</div><div class="sl-desc">@Ownerearnbd</div></div>
@@ -1072,9 +1014,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 </div>
 
 <!-- IMAGE VIEWER -->
-<div class="img-viewer" id="imgViewer" onclick="if(event.target===this)closeImgViewer()">
-  <img id="imgViewerImg" src="" alt="" style="max-width:95%;max-height:85vh;border-radius:12px;touch-action:pan-y">
+<div class="img-viewer" id="imgViewer">
+  <img id="imgViewerImg" src="" alt="">
   <button class="img-viewer-close" onclick="closeImgViewer()">✕</button>
+</div>
+
+<!-- NOTICE PAGE OVERLAY -->
+<div id="noticePageOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column">
+  <div style="background:var(--card);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+    <button onclick="closeNoticePage()" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text);font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer">← Back</button>
+    <div style="font-size:16px;font-weight:800">📢 Notice Board</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:14px" id="noticePageList"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1091,23 +1042,13 @@ let SYS = {
 };
 
 const SESSION_DAYS = 5;
-const AD_SECS = 30;
-const CIRCUMFERENCE = 2 * Math.PI * 21;
-
-const AD_LINKS = {
-  1: 'https://rustydrawer.com/t7gsgvpj?key=f22abad2d980eea18471bddc274468ac',
-  2: 'https://rustydrawer.com/t7gsgvpj?key=f22abad2d980eea18471bddc274468ac'
-};
 
 let CUSTOM_TASKS = Array.from({length:10},(_,i)=>({id:`task${i+1}`,name:`Task ${i+1}`,link:''}));
 
 let state = { currentUser: null, wMethod: 'bkash', lang: 'en' };
 let db, fbDoc, fbSetDoc, fbGetDoc, fbUpdateDoc, fbCollection, fbAddDoc, fbServerTimestamp, fbGetDocs, fbDeleteDoc;
 let subClicked = false;
-let adTimers = { 1: null, 2: null };
-let adRem = { 1: AD_SECS, 2: AD_SECS };
-let adDone = { 1: false, 2: false };
-let proofState = { taskIndex: null, taskName: '', images: [] }; // images: array of base64
+let proofState = { taskIndex: null, taskName: '', imgBase64: null, images: [] };
 let fpRequestId = null; // track current forgot-password request id
 let fpMethod = null; // 'phone' or 'gmail'
 
@@ -1275,20 +1216,15 @@ window.addEventListener('firebase-ready', async () => {
           if (state.currentUser.subVerified) {
             showScreen('appScreen');
             refreshUI();
-            setTimeout(()=>{checkNotifications();checkAutoApprove();},2000);
+            setTimeout(()=>{checkNotifications();},2000);
             return;
           }
         }
       } catch(e) {}
     }
-    // Session expired but check if user previously verified sub (skip join screen)
-    if (session.subVerified) {
-      showScreen('authScreen');
-      return;
-    }
   }
-  // Check localStorage for permanent subVerified flag (survives session expiry)
-  if (localStorage.getItem('ebd_sub_verified') === '1') {
+  // If user has already verified sub before (stored in localStorage), skip sub screen and go to auth
+  if (localStorage.getItem('ebd_sub_done') === '1') {
     showScreen('authScreen');
     return;
   }
@@ -1392,8 +1328,7 @@ document.getElementById('subChannelBtn').addEventListener('click', ()=>{ subClic
 function checkSub() {
   if (!subClicked) { document.getElementById('subError').style.display='block'; return; }
   document.getElementById('subError').style.display='none';
-  // Save permanent flag so returning users never see this screen again
-  localStorage.setItem('ebd_sub_verified', '1');
+  localStorage.setItem('ebd_sub_done','1');
   showScreen('authScreen');
 }
 
@@ -1421,16 +1356,16 @@ async function doLogin() {
     let found=null;
     snap.forEach(d=>{const u=d.data();if((u.email===em||u.phone===em)&&u.password===pw)found={id:d.id,...u};});
     if(!found){showErr(err, state.lang==='bn'?'ভুল ইমেইল বা পাসওয়ার্ড!':'Wrong email or password!');return;}
+    if(found.banned){showErr(err, state.lang==='bn'?'আপনার অ্যাকাউন্ট ব্যান করা হয়েছে।':'Your account has been banned. Contact support.');return;}
     if(!found.subVerified){await fbUpdateDoc(fbDoc(db,'users',found.id),{subVerified:true});found.subVerified=true;}
     err.style.display='none';
     state.currentUser=found;
     // Sync language
     if (found.lang) { state.lang = found.lang; localStorage.setItem('ebd_lang', found.lang); applyI18n(); }
-    // Persist sub-verified permanently so re-logins skip the join screen
-    localStorage.setItem('ebd_sub_verified', '1');
-    localStorage.setItem('ebd_session',JSON.stringify({id:found.id,time:Date.now(),subVerified:true}));
+    localStorage.setItem('ebd_session',JSON.stringify({id:found.id,time:Date.now()}));
+    localStorage.setItem('ebd_sub_done','1');
     showScreen('appScreen'); refreshUI();
-    setTimeout(()=>{checkNotifications();checkAutoApprove();},2000);
+    setTimeout(()=>{checkNotifications();},2000);
   } catch(e){showErr(err,'Error!');}
 }
 
@@ -1477,8 +1412,8 @@ async function doRegister() {
     fetch('/api/notify-register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userName:name,referredBy:referrer?.name||''})}).catch(()=>{});
     err.style.display='none';
     state.currentUser={id,...user};
-    localStorage.setItem('ebd_sub_verified', '1');
-    localStorage.setItem('ebd_session',JSON.stringify({id,time:Date.now(),subVerified:true}));
+    localStorage.setItem('ebd_session',JSON.stringify({id,time:Date.now()}));
+    localStorage.setItem('ebd_sub_done','1');
     showScreen('appScreen'); refreshUI();
   } catch(e){showErr(err,'Error!');}
 }
@@ -1601,20 +1536,11 @@ async function refreshUI() {
   document.getElementById('sWithdraw').textContent=fmtDollar((u.withdrawn||0)/1000);
   document.getElementById('sTotalEarn').textContent=fmtDollar(totalEarned);
 
-  // Show cached stats instantly so cards never feel slow
-  const _sc = JSON.parse(localStorage.getItem('ebd_stats_'+(u.id||''))||'null');
-  if (_sc) {
-    document.getElementById('sTaskPendingToday').textContent = _sc.p ?? 0;
-    document.getElementById('sTaskApprovedToday').textContent = _sc.a ?? 0;
-    document.getElementById('sTaskRejectedToday').textContent = _sc.r ?? 0;
-    document.getElementById('sWithdrawPending').textContent = _sc.w ?? 0;
-  }
-
   // Update referral link display
   const linkBox = document.getElementById('referLinkBox');
   if (linkBox) linkBox.textContent = getReferralLink(u.id);
 
-  // Refresh Firebase stats in background (non-blocking)
+  // Load today's task stats & withdraw pending asynchronously
   loadTodayStats();
 
   document.getElementById('rCount').textContent=u.referCount||0;
@@ -1672,9 +1598,6 @@ async function loadTodayStats() {
     let wPending = 0;
     wSnap.forEach(d => { const w=d.data(); if(w.userId===uid && w.status==='pending') wPending++; });
     document.getElementById('sWithdrawPending').textContent = wPending;
-
-    // Cache for instant display next time
-    localStorage.setItem('ebd_stats_'+uid, JSON.stringify({p:pendingToday,a:approvedToday,r:rejectedToday,w:wPending}));
   } catch(e) {}
 }
 
@@ -1759,21 +1682,15 @@ function getTaskCooldown(taskIndex) {
     const raw = localStorage.getItem(key);
     if (!raw) return { count:0, locked:false, remainingMs:0 };
     const data = JSON.parse(raw);
-    // Only start countdown AFTER all 3 attempts are done
-    // lockTime is set when 3rd attempt is recorded
-    if (data.count < TASK_MAX_PER_WINDOW) {
-      // Not yet locked — still has attempts left
-      return { count: data.count, locked:false, remainingMs:0 };
-    }
-    // 3 attempts used — check if cooldown expired
-    const lockTime = data.lockTime || data.firstTime;
-    const elapsed = Date.now() - lockTime;
+    const elapsed = Date.now() - data.firstTime;
     if (elapsed >= TASK_COOLDOWN_MS) {
+      // Window expired — reset
       localStorage.removeItem(key);
       return { count:0, locked:false, remainingMs:0 };
     }
+    const locked = data.count >= TASK_MAX_PER_WINDOW;
     const remainingMs = TASK_COOLDOWN_MS - elapsed;
-    return { count: data.count, locked:true, remainingMs };
+    return { count: data.count, locked, remainingMs };
   } catch(e) { return { count:0, locked:false, remainingMs:0 }; }
 }
 
@@ -1785,17 +1702,10 @@ function recordTaskAttempt(taskIndex) {
     const raw = localStorage.getItem(key);
     let data = raw ? JSON.parse(raw) : null;
     const now = Date.now();
-    if (!data) {
+    if (!data || (now - data.firstTime) >= TASK_COOLDOWN_MS) {
       data = { count: 1, firstTime: now };
-    } else if (data.count >= TASK_MAX_PER_WINDOW) {
-      // Already locked, do nothing
-      return;
     } else {
       data.count++;
-      // If this is the 3rd attempt, set lockTime NOW
-      if (data.count >= TASK_MAX_PER_WINDOW) {
-        data.lockTime = now;
-      }
     }
     localStorage.setItem(key, JSON.stringify(data));
   } catch(e) {}
@@ -1840,28 +1750,20 @@ async function renderTaskPage() {
   if(!grid) return;
   grid.innerHTML=`<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">${t('loading')}</div>`;
 
-  // Load pending proofs from Firebase
-  let pendingTasks={};
-  try {
-    const snap=await fbGetDocs(fbCollection(db,'proofs'));
-    snap.forEach(d=>{const p=d.data();if(p.userId===state.currentUser.id&&p.status==='pending')pendingTasks[p.taskIndex]=true;});
-  } catch(e) {}
-
   grid.innerHTML='';
   CUSTOM_TASKS.forEach((task,i)=>{
     const hasLink = task.link && task.link.trim() !== '';
-    const isPending = pendingTasks[i] === true;
-    const cd = hasLink ? getTaskCooldown(i) : { locked:false, remainingMs:0 };
+    const cd = hasLink ? getTaskCooldown(i) : { count:0, locked:false, remainingMs:0 };
     const isLocked = cd.locked;
+
+    // isPending only blocks if locked by cooldown (3 completions done)
+    // We do NOT use Firebase pending state to block task buttons
 
     let btnHtml='';
     let badgeHtml='';
 
     if (!hasLink) {
       btnHtml = `<button class="task-item-btn unavailable" disabled>Not Available</button>`;
-    } else if (isPending) {
-      btnHtml = `<button class="task-item-btn" style="background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);cursor:default;font-size:11px" disabled>⏳ Pending</button>`;
-      badgeHtml = '<span class="task-pending-badge">⏳ Pending</span>';
     } else if (isLocked) {
       btnHtml = `<button class="task-item-btn" id="taskBtn_${i}" style="background:rgba(255,82,82,0.1);color:var(--red);border:1px solid rgba(255,82,82,0.3);cursor:not-allowed;font-size:11px;min-width:80px" disabled>⏳ ${formatCountdown(cd.remainingMs)}</button>`;
     } else {
@@ -1870,14 +1772,12 @@ async function renderTaskPage() {
 
     const subText = !hasLink
       ? (state.lang==='bn'?'শীঘ্রই আসছে...':'Coming soon...')
-      : isPending
-        ? (state.lang==='bn'?'অ্যাডমিন যাচাই করছেন...':'Admin verifying...')
-        : isLocked
-          ? (state.lang==='bn'?'কুলডাউন চলছে':'Cooldown active')
-          : (state.lang==='bn'?'ট্যাপ করুন এবং সম্পন্ন করুন':'Tap and complete');
+      : isLocked
+        ? (state.lang==='bn'?'কুলডাউন চলছে':'Cooldown active')
+        : (state.lang==='bn'?'ট্যাপ করুন এবং সম্পন্ন করুন':'Tap and complete');
 
     // Show attempt count badge if any usage
-    const attemptBadge = (hasLink && cd.count > 0 && !isPending)
+    const attemptBadge = (hasLink && cd.count > 0 && !isLocked)
       ? `<span style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">${cd.count}/${TASK_MAX_PER_WINDOW} used</span>`
       : '';
 
@@ -1914,73 +1814,45 @@ function openTaskWithProof(taskIndex, link, taskName){
 
 // ===== PROOF MODAL =====
 function openProofModal(taskIndex,taskName){
-  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.images=[];
+  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.imgBase64=null; proofState.images=[];
   document.getElementById('proofTaskName').textContent=taskName;
   document.getElementById('proofText').value='';
-  renderProofGrid();
+  document.getElementById('proofImgArea').classList.remove('has-img');
+  document.getElementById('proofImgArea').innerHTML=`<div class="proof-img-icon">📷</div><div class="proof-img-label">${t('add_image')}</div><div class="proof-img-sub">${t('tap_optional')}</div>`;
   document.getElementById('proofModal').classList.add('open');
 }
 function closeProofModal(){document.getElementById('proofModal').classList.remove('open');}
 
-function renderProofGrid(){
-  const grid=document.getElementById('proofImgGrid');
-  grid.innerHTML='';
-  proofState.images.forEach((b64,idx)=>{
-    const wrap=document.createElement('div');wrap.className='proof-thumb-wrap';
-    wrap.innerHTML=`<img src="${b64}" onclick="openImgViewer('${b64}')" alt="proof ${idx+1}"><button class="proof-thumb-del" onclick="removeProofImg(${idx})">✕</button>`;
-    grid.appendChild(wrap);
-  });
-  const addMore=document.getElementById('proofAddMore');
-  addMore.querySelector('.proof-img-sub').textContent=
-    proofState.images.length>0?`${proofState.images.length} image${proofState.images.length>1?'s':''} added — tap to add more`:'Tap to select (multiple allowed)';
-}
-
-function removeProofImg(idx){
-  proofState.images.splice(idx,1);
-  renderProofGrid();
-}
-
-function handleProofImgs(input){
+function handleProofImg(input){
   const files=Array.from(input.files);if(!files.length)return;
-  input.value=''; // allow re-select same file
-  let loaded=0;
+  if(!proofState.images)proofState.images=[];
+  let processed=0;
   files.forEach(file=>{
-    // Use createImageBitmap for much faster decoding (hardware accelerated)
-    const url=URL.createObjectURL(file);
-    const img=new Image();
-    img.onload=()=>{
-      URL.revokeObjectURL(url);
-      const canvas=document.createElement('canvas');
-      const MAX=1200;let w=img.width,h=img.height;
-      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
-      if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
-      canvas.width=w;canvas.height=h;
-      const ctx=canvas.getContext('2d');
-      ctx.imageSmoothingEnabled=true;
-      ctx.imageSmoothingQuality='high';
-      ctx.drawImage(img,0,0,w,h);
-      const b64=canvas.toDataURL('image/jpeg',0.82);
-      proofState.images.push(b64);
-      loaded++;
-      renderProofGrid();
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      proofState.images.push(e.target.result);
+      processed++;
+      if(processed===files.length){
+        proofState.imgBase64=proofState.images[0];
+        const area=document.getElementById('proofImgArea');
+        area.classList.add('has-img');
+        area.innerHTML=proofState.images.map(src=>`<img src="${src}" alt="proof" style="width:100%;border-radius:8px;margin-bottom:6px;display:block">`).join('')+`<div style="font-size:11px;color:var(--accent);padding:4px 0;font-weight:700">${proofState.images.length} image(s) selected</div>`;
+      }
     };
-    img.src=url;
+    reader.readAsDataURL(file);
   });
 }
 
 async function submitProof(){
   const text=document.getElementById('proofText').value.trim();
-  if(!text&&proofState.images.length===0){showToast('⚠️ Add image or description!');return;}
+  const imgs=proofState.images||[];
+  if(!text&&!imgs.length){showToast('⚠️ Add image or description!');return;}
   const btn=document.getElementById('proofSubmitBtn');btn.disabled=true;btn.textContent=state.lang==='bn'?'জমা হচ্ছে...':'Submitting...';
   try {
     await fbAddDoc(fbCollection(db,'proofs'),{
       userId:state.currentUser.id, userName:state.currentUser.name,
       taskIndex:proofState.taskIndex, taskName:proofState.taskName,
-      description:text,
-      images: proofState.images.length>0 ? proofState.images : [],
-      // Keep legacy 'image' field for backward compat (first image)
-      image: proofState.images.length>0 ? proofState.images[0] : null,
-      imageCount: proofState.images.length,
+      description:text, image:imgs[0]||null, images:imgs,
       status:'pending', createdAt:fbServerTimestamp()
     });
     closeProofModal();
@@ -1992,50 +1864,7 @@ async function submitProof(){
 
 // ===== IMAGE VIEWER =====
 function openImgViewer(src){document.getElementById('imgViewerImg').src=src;document.getElementById('imgViewer').classList.add('open');}
-function closeImgViewer(){document.getElementById('imgViewer').classList.remove('open');_galleryState=null;}
-
-// Multi-image gallery viewer state
-let _galleryState = null;
-
-function openImgGallery(images, startIdx) {
-  _galleryState = { images, idx: startIdx };
-  const viewer = document.getElementById('imgViewer');
-  const img = document.getElementById('imgViewerImg');
-  img.src = images[startIdx];
-  // Add navigation controls dynamically if needed
-  let nav = document.getElementById('imgGalleryNav');
-  if (!nav) {
-    nav = document.createElement('div');
-    nav.id = 'imgGalleryNav';
-    nav.style.cssText = 'position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:16px';
-    nav.innerHTML = `<button onclick="galleryPrev()" style="background:rgba(255,255,255,0.15);border:none;color:white;font-size:22px;width:44px;height:44px;border-radius:50%;cursor:pointer">‹</button><span id="galleryCounter" style="color:white;font-size:13px;font-weight:700;min-width:40px;text-align:center"></span><button onclick="galleryNext()" style="background:rgba(255,255,255,0.15);border:none;color:white;font-size:22px;width:44px;height:44px;border-radius:50%;cursor:pointer">›</button>`;
-    viewer.appendChild(nav);
-  }
-  updateGalleryNav();
-  viewer.classList.add('open');
-}
-
-function updateGalleryNav() {
-  if (!_galleryState) return;
-  const nav = document.getElementById('imgGalleryNav');
-  const counter = document.getElementById('galleryCounter');
-  if (nav) nav.style.display = _galleryState.images.length > 1 ? 'flex' : 'none';
-  if (counter) counter.textContent = `${_galleryState.idx+1} / ${_galleryState.images.length}`;
-}
-
-function galleryPrev() {
-  if (!_galleryState) return;
-  _galleryState.idx = (_galleryState.idx - 1 + _galleryState.images.length) % _galleryState.images.length;
-  document.getElementById('imgViewerImg').src = _galleryState.images[_galleryState.idx];
-  updateGalleryNav();
-}
-
-function galleryNext() {
-  if (!_galleryState) return;
-  _galleryState.idx = (_galleryState.idx + 1) % _galleryState.images.length;
-  document.getElementById('imgViewerImg').src = _galleryState.images[_galleryState.idx];
-  updateGalleryNav();
-}
+function closeImgViewer(){document.getElementById('imgViewer').classList.remove('open');}
 
 // ===== ADMIN PROOF ACTIONS =====
 async function adminApproveProof(proofId,userId,userName,taskName,taskIndex){
@@ -2061,29 +1890,7 @@ async function adminRejectProof(proofId,userId,taskName){
   } catch(e){showToast('❌ Error!');}
 }
 
-// ===== AD SYSTEM =====
-function startAd(num){
-  adRem[num]=AD_SECS;adDone[num]=false;clearInterval(adTimers[num]);updateAdUI(num);
-  document.getElementById(`ad${num}Claim`).classList.remove('show');
-  document.getElementById(`ad${num}Blocked`).classList.remove('show');
-  document.getElementById(`ad${num}Screen`).classList.add('open');
-  const iframe=document.getElementById(`ad${num}Frame`);iframe.src=AD_LINKS[num];
-  iframe.onerror=()=>document.getElementById(`ad${num}Blocked`).classList.add('show');
-  setTimeout(()=>{try{if(!iframe.contentDocument&&!iframe.contentWindow?.document)document.getElementById(`ad${num}Blocked`).classList.add('show');}catch(e){document.getElementById(`ad${num}Blocked`).classList.remove('show');}},3000);
-  adTimers[num]=setInterval(()=>{adRem[num]--;updateAdUI(num);if(adRem[num]<=0){clearInterval(adTimers[num]);adDone[num]=true;document.getElementById(`ad${num}Claim`).classList.add('show');document.getElementById(`ad${num}ProgressText`).textContent='✅ Done!';}},1000);
-}
-function updateAdUI(num){const rem=adRem[num];const pct=rem/AD_SECS;document.getElementById(`ad${num}Sec`).textContent=rem;document.getElementById(`ad${num}Circle`).style.strokeDashoffset=CIRCUMFERENCE*(1-pct);document.getElementById(`ad${num}Fill`).style.width=(pct*100)+'%';document.getElementById(`ad${num}ProgressText`).textContent=rem+'s';}
-function openAdExternal(num){if(window.Telegram?.WebApp)window.Telegram.WebApp.openLink(AD_LINKS[num]);else window.open(AD_LINKS[num],'_blank');}
-
-async function claimAd(num){
-  if(!adDone[num]){showToast('⚠️ Not complete yet!');return;}
-  const u=state.currentUser; u.balance+=SYS.taskReward; u.totalEarned+=SYS.taskReward;
-  if(!u.taskCounts)u.taskCounts={};u.taskCounts[`ad${num}`]=(u.taskCounts[`ad${num}`]||0)+1;
-  if(!u.dailyEarnings)u.dailyEarnings={};const dk=todayKey();u.dailyEarnings[dk]=(u.dailyEarnings[dk]||0)+SYS.taskReward;
-  try{await fbUpdateDoc(fbDoc(db,'users',u.id),{balance:u.balance,totalEarned:u.totalEarned,taskCounts:u.taskCounts,dailyEarnings:u.dailyEarnings});closeAd(num,true);refreshUI();showToast(`🎉 $${(SYS.taskReward/1000).toFixed(3)} added!`);}catch(e){u.balance-=SYS.taskReward;u.totalEarned-=SYS.taskReward;showToast('❌ Error!');}
-}
-function cancelAd(num){if(!adDone[num])showToast('⚠️ Cancelled!');closeAd(num,false);}
-function closeAd(num,claimed){clearInterval(adTimers[num]);adRem[num]=AD_SECS;adDone[num]=false;document.getElementById(`ad${num}Frame`).src='about:blank';document.getElementById(`ad${num}Screen`).classList.remove('open');}
+// ===== AD SYSTEM REMOVED =====
 
 // ===== LEADERBOARD =====
 async function renderLeaderboard(){
@@ -2163,7 +1970,7 @@ async function adminLogin(){
 
 function switchAdminTab(tab){
   document.querySelectorAll('.admin-tab-btn').forEach((btn,i)=>{
-    const tabs=['dashboard','proofs','tasks','withdraws','users','settings','fpreqs'];
+    const tabs=['dashboard','proofs','tasks','withdraws','users','notices','settings','fpreqs'];
     btn.classList.toggle('active',tabs[i]===tab);
   });
   document.querySelectorAll('.admin-tab-content').forEach(c=>c.style.display='none');
@@ -2172,6 +1979,7 @@ function switchAdminTab(tab){
   if(tab==='tasks')renderAdminTasks();
   if(tab==='fpreqs')loadFpRequests();
   if(tab==='settings')loadSettingsTab();
+  if(tab==='notices')loadAdminNotices();
 }
 
 async function adminApproveWithdraw(wId,userId,amount){
@@ -2212,21 +2020,9 @@ async function loadAdminData(){
       pList.innerHTML='';
       proofs.forEach(p=>{
         const timeStr=p.createdAt?new Date(p.createdAt.seconds*1000).toLocaleString():'';
-        // Build image gallery — support both new multi-image and legacy single image
-        let galleryHtml='';
-        const imgs = (p.images && p.images.length>0) ? p.images : (p.image ? [p.image] : []);
-        if(imgs.length===0){
-          galleryHtml='<div class="pac-no-img">📷 No image</div>';
-        } else {
-          const gridClass = imgs.length===1?'single':imgs.length===2?'two':'';
-          // Show ALL images — unlimited
-          let thumbs='';
-          imgs.forEach((src,idx)=>{
-            thumbs+=`<div class="pac-gallery-item" onclick="openImgGallery(${JSON.stringify(imgs)},${idx})"><img src="${src}" alt="proof ${idx+1}"></div>`;
-          });
-          galleryHtml=`<div class="pac-img-gallery ${gridClass}">${thumbs}</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px">${imgs.length} image${imgs.length>1?'s':''} — tap to view full size</div>`;
-        }
-        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${galleryHtml}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
+        const allImgs=(p.images&&p.images.length)?p.images:(p.image?[p.image]:[]);
+        const imgsHtml=allImgs.length?allImgs.map(src=>`<img class="pac-img" src="${src}" onclick="openImgViewer('${src}')" alt="proof">`).join(''):`<div class="pac-no-img">📷 No image</div>`;
+        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${imgsHtml}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
       });
     }
 
@@ -2248,7 +2044,11 @@ async function loadAdminData(){
     users.forEach(u=>{
       const tc=u.taskCounts||{};const total=Object.values(tc).reduce((a,b)=>a+b,0);
       const avatarHtml=u.profilePic?`<img src="${u.profilePic}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;float:right;margin-left:8px" alt="">` :'';
-      uList.innerHTML+=`<div class="admin-card">${avatarHtml}<span class="ac-amount">${fmtDollar(u.balance/1000)}</span><div class="ac-name">${u.name}${u.username?' (@'+u.username+')':''}</div><div class="ac-detail">📞 ${u.phone||u.email}<br>💰 ${fmtDollar(u.totalEarned/1000)} | 💸 ${fmtDollar(u.withdrawn/1000)}<br>✅ ${total} tasks | 👥 ${u.referCount||0} refers<br>📅 ${new Date(u.joinDate).toLocaleDateString()}</div></div>`;
+      const isBanned=u.banned===true;
+      const banBtn=isBanned
+        ?`<button class="btn-approve" style="margin-top:6px" onclick="adminUnbanUser('${u.id}')">✅ Unban</button>`
+        :`<button class="btn-reject" style="margin-top:6px" onclick="adminBanUser('${u.id}')">🚫 Ban</button>`;
+      uList.innerHTML+=`<div class="admin-card">${avatarHtml}<span class="ac-amount">${fmtDollar(u.balance/1000)}</span><div class="ac-name">${u.name}${u.username?' (@'+u.username+')':''} ${isBanned?'<span style="color:var(--red);font-size:11px;font-weight:700">[BANNED]</span>':''}</div><div class="ac-detail">📞 ${u.phone||u.email}<br>💰 ${fmtDollar(u.totalEarned/1000)} | 💸 ${fmtDollar(u.withdrawn/1000)}<br>✅ ${total} tasks | 👥 ${u.referCount||0} refers<br>📅 ${new Date(u.joinDate).toLocaleDateString()}</div><div style="display:flex;gap:8px">${banBtn}</div></div>`;
     });
   }catch(e){showToast('Data load error!');}
 }
@@ -2284,7 +2084,80 @@ async function deleteTask(i){
   showToast('🗑️ Task deleted!');
 }
 
-// ===== FORGOT PASSWORD REQUESTS (Admin) =====
+// ===== BAN / UNBAN =====
+async function adminBanUser(userId){
+  if(!confirm('Ban this user?'))return;
+  try{
+    await fbUpdateDoc(fbDoc(db,'users',userId),{banned:true});
+    showToast('🚫 User banned!');loadAdminData();
+  }catch(e){showToast('❌ Error!');}
+}
+async function adminUnbanUser(userId){
+  try{
+    await fbUpdateDoc(fbDoc(db,'users',userId),{banned:false});
+    showToast('✅ User unbanned!');loadAdminData();
+  }catch(e){showToast('❌ Error!');}
+}
+
+// ===== NOTICE SYSTEM =====
+async function adminAddNotice(){
+  const title=document.getElementById('noticeTitle').value.trim();
+  const desc=document.getElementById('noticeDesc').value.trim();
+  if(!title||!desc){showToast('⚠️ Enter title and description!');return;}
+  try{
+    await fbAddDoc(fbCollection(db,'notices'),{title,description:desc,createdAt:fbServerTimestamp()});
+    document.getElementById('noticeTitle').value='';
+    document.getElementById('noticeDesc').value='';
+    showToast('✅ Notice published!');
+    loadAdminNotices();
+  }catch(e){showToast('❌ Error!');}
+}
+
+async function loadAdminNotices(){
+  const list=document.getElementById('adminNoticeList');
+  if(!list)return;
+  list.innerHTML='<div class="admin-empty">Loading...</div>';
+  try{
+    const snap=await fbGetDocs(fbCollection(db,'notices'));
+    const notices=[];snap.forEach(d=>notices.push({id:d.id,...d.data()}));
+    notices.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    if(!notices.length){list.innerHTML='<div class="admin-empty">No notices</div>';return;}
+    list.innerHTML='';
+    notices.forEach(n=>{
+      const dateStr=n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleDateString():'';
+      list.innerHTML+=`<div class="admin-card"><div class="ac-name">${n.title}</div><div class="ac-detail" style="margin-top:4px">${n.description}</div><div style="font-size:11px;color:var(--muted);margin-top:6px">📅 ${dateStr}</div><div style="margin-top:8px"><button class="btn-reject" onclick="adminDeleteNotice('${n.id}')">🗑️ Delete</button></div></div>`;
+    });
+  }catch(e){list.innerHTML='<div class="admin-empty">Load error</div>';}
+}
+
+async function adminDeleteNotice(id){
+  if(!confirm('Delete this notice?'))return;
+  try{await fbDeleteDoc(fbDoc(db,'notices',id));showToast('🗑️ Notice deleted!');loadAdminNotices();}catch(e){showToast('❌ Error!');}
+}
+
+async function loadUserNotices(){
+  const list=document.getElementById('noticePageList');
+  if(!list)return;
+  list.innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">Loading...</div>';
+  try{
+    const snap=await fbGetDocs(fbCollection(db,'notices'));
+    const notices=[];snap.forEach(d=>notices.push({id:d.id,...d.data()}));
+    notices.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    if(!notices.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px;font-size:13px">📭 No notices yet</div>';return;}
+    list.innerHTML='';
+    notices.forEach(n=>{
+      const dateStr=n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleDateString():'';
+      list.innerHTML+=`<div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:0 3px 3px 0"></div><div style="font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)">${n.title}</div><div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px">${n.description}</div><div style="font-size:11px;color:var(--accent);font-weight:700">📅 ${dateStr}</div></div>`;
+    });
+  }catch(e){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px;font-size:13px">Load error</div>';}
+}
+
+function openNoticePage(){
+  document.getElementById('supportDrawer').classList.remove('open');
+  document.getElementById('noticePageOverlay').classList.add('open');
+  loadUserNotices();
+}
+function closeNoticePage(){document.getElementById('noticePageOverlay').classList.remove('open');}
 async function loadFpRequests(){
   const list=document.getElementById('adminFpList');
   if(!list)return;list.innerHTML='<div class="admin-empty">Loading...</div>';
@@ -2313,10 +2186,10 @@ async function rejectFpRequest(id){
 let notifTimer=null;
 function showNotif(type,title,msg){
   const popup=document.getElementById('notifPopup');const inner=document.getElementById('notifInner');
-  document.getElementById('notifIcon').textContent={success:'🎉',error:'❌',info:'🔔'}[type]||'🔔';
+  document.getElementById('notifIcon').textContent={success:'✅',error:'❌',info:'🔔'}[type]||'🔔';
   document.getElementById('notifTitle').textContent=title;document.getElementById('notifMsg').textContent=msg;
   inner.className='notif-inner '+type;popup.classList.add('show');
-  clearTimeout(notifTimer);notifTimer=setTimeout(()=>popup.classList.remove('show'),4000);
+  clearTimeout(notifTimer);notifTimer=setTimeout(()=>popup.classList.remove('show'),3500);
 }
 
 async function checkNotifications(){
@@ -2326,7 +2199,7 @@ async function checkNotifications(){
     const unread=[];snap.forEach(d=>{const n={id:d.id,...d.data()};if(n.userId===state.currentUser.id&&!n.read)unread.push(n);});
     for(const n of unread){
       const type=n.type?.includes('approved')||n.type?.includes('success')?'success':n.type?.includes('rejected')?'error':'info';
-      const titles={proof_approved:'🎉 Task Approved!',proof_rejected:'❌ Task Rejected',withdraw_success:'✅ Payment Sent!',withdraw_rejected:'❌ Payment Rejected'};
+      const titles={proof_approved:'Task Approved',proof_rejected:'Task Rejected',withdraw_success:'Withdraw Approved',withdraw_rejected:'Withdraw Rejected'};
       showNotif(type,titles[n.type]||'Notification',n.message);
       await fbUpdateDoc(fbDoc(db,'notifications',n.id),{read:true});
       if(n.type==='proof_approved'){const snap2=await fbGetDoc(fbDoc(db,'users',state.currentUser.id));if(snap2.exists()){state.currentUser={id:state.currentUser.id,...snap2.data()};refreshUI();}}
@@ -2416,7 +2289,6 @@ makeStars();
 })();
 
 setInterval(()=>{if(state.currentUser)checkNotifications();},30000);
-setInterval(()=>{if(db)checkAutoApprove();},5*60*1000);
 </script>
 </body>
 </html>
