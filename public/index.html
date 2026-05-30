@@ -292,6 +292,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
 .pac-desc{background:var(--bg2);border-radius:10px;padding:10px;font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.6}
 .pac-img{width:100%;border-radius:10px;margin-bottom:10px;cursor:pointer;display:block}
 .pac-no-img{background:var(--bg2);border-radius:10px;padding:10px;font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px}
+/* Image grid for proof thumbnails */
+.proof-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.proof-thumb{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);transition:opacity 0.2s}
+.proof-thumb:active{opacity:0.7}
+.proof-img-add-btn{aspect-ratio:1;border:2px dashed rgba(0,212,255,0.35);background:rgba(0,212,255,0.04);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:var(--accent);gap:4px}
+.proof-img-add-label{font-size:10px;font-weight:700;color:var(--muted)}
 .pac-actions{display:flex;gap:8px}
 .pac-approve{flex:1;background:linear-gradient(135deg,var(--green),#00a040);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
 .pac-reject{flex:1;background:linear-gradient(135deg,var(--red),#b71c1c);border:none;border-radius:10px;padding:10px;color:white;font-family:var(--font-bn);font-size:13px;font-weight:700;cursor:pointer}
@@ -992,12 +998,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-bn);min-heigh
     <div class="proof-title" data-i18n="submit_proof">📸 Submit Proof</div>
     <div class="proof-sub" data-i18n="proof_sub">Submit proof of task completion</div>
     <div class="proof-task-name" id="proofTaskName">Task 1</div>
-    <div class="proof-img-area" id="proofImgArea" onclick="document.getElementById('proofImgInput').click()">
-      <div class="proof-img-icon">📷</div>
-      <div class="proof-img-label" data-i18n="add_image">Add Image</div>
-      <div class="proof-img-sub" data-i18n="tap_optional">Tap (optional)</div>
-    </div>
-    <input type="file" id="proofImgInput" accept="image/*" style="display:none" onchange="handleProofImg(this)">
+    <div id="proofImgGrid" class="proof-img-grid"></div>
+    <input type="file" id="proofImgInput" accept="image/*" multiple style="display:none" onchange="handleProofImg(this)">
     <textarea class="proof-textarea" id="proofText" data-i18n-ph="proof_text_ph"></textarea>
     <button class="proof-submit-btn" id="proofSubmitBtn" onclick="submitProof()" data-i18n="submit_btn">✅ Submit</button>
     <button class="proof-cancel" onclick="closeProofModal()" data-i18n="cancel">Cancel</button>
@@ -1074,7 +1076,7 @@ let subClicked = false;
 let adTimers = { 1: null, 2: null };
 let adRem = { 1: AD_SECS, 2: AD_SECS };
 let adDone = { 1: false, 2: false };
-let proofState = { taskIndex: null, taskName: '', imgBase64: null };
+let proofState = { taskIndex: null, taskName: '', images: [] };
 let fpRequestId = null; // track current forgot-password request id
 let fpMethod = null; // 'phone' or 'gmail'
 
@@ -1820,55 +1822,77 @@ async function renderTaskPage() {
 }
 
 function openTaskWithProof(taskIndex, link, taskName){
-  // Record the attempt for cooldown tracking
-  recordTaskAttempt(taskIndex);
+  // DO NOT record attempt here — only record on actual Submit
   if(window.Telegram?.WebApp) window.Telegram.WebApp.openLink(link);
   else window.open(link,'_blank');
   setTimeout(()=>openProofModal(taskIndex,taskName), 800);
-  // Re-render to update usage badge and possibly lock
-  setTimeout(()=>renderTaskPage(), 900);
 }
 
 // ===== PROOF MODAL =====
 function openProofModal(taskIndex,taskName){
-  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.imgBase64=null;
+  proofState.taskIndex=taskIndex; proofState.taskName=taskName; proofState.images=[];
   document.getElementById('proofTaskName').textContent=taskName;
   document.getElementById('proofText').value='';
-  document.getElementById('proofImgArea').classList.remove('has-img');
-  document.getElementById('proofImgArea').innerHTML=`<div class="proof-img-icon">📷</div><div class="proof-img-label">${t('add_image')}</div><div class="proof-img-sub">${t('tap_optional')}</div>`;
+  renderProofImgGrid();
   document.getElementById('proofModal').classList.add('open');
 }
 function closeProofModal(){document.getElementById('proofModal').classList.remove('open');}
 
+function renderProofImgGrid(){
+  const grid=document.getElementById('proofImgGrid');
+  grid.innerHTML='';
+  proofState.images.forEach((src,i)=>{
+    const img=document.createElement('img');
+    img.className='proof-thumb';
+    img.src=src;
+    img.onclick=()=>openImgViewer(src);
+    // long press to remove
+    img.oncontextmenu=(e)=>{e.preventDefault();proofState.images.splice(i,1);renderProofImgGrid();};
+    grid.appendChild(img);
+  });
+  // Add button always visible
+  const addBtn=document.createElement('div');
+  addBtn.className='proof-img-add-btn';
+  addBtn.innerHTML='📷<span class="proof-img-add-label">Add Photo</span>';
+  addBtn.onclick=()=>document.getElementById('proofImgInput').click();
+  grid.appendChild(addBtn);
+}
+
 function handleProofImg(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    const img=new Image();
-    img.onload=()=>{
-      const canvas=document.createElement('canvas');const MAX=600;let w=img.width,h=img.height;
-      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
-      canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
-      proofState.imgBase64=canvas.toDataURL('image/jpeg',0.7);
-      const area=document.getElementById('proofImgArea');
-      area.classList.add('has-img');area.innerHTML=`<img src="${proofState.imgBase64}" alt="proof">`;
-    };img.src=e.target.result;
-  };reader.readAsDataURL(file);
+  const files=Array.from(input.files);
+  if(!files.length)return;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');const MAX=600;let w=img.width,h=img.height;
+        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+        canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
+        proofState.images.push(canvas.toDataURL('image/jpeg',0.7));
+        renderProofImgGrid();
+      };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+  });
+  input.value='';
 }
 
 async function submitProof(){
   const text=document.getElementById('proofText').value.trim();
-  if(!text&&!proofState.imgBase64){showToast('⚠️ Add image or description!');return;}
+  if(!text&&proofState.images.length===0){showToast('⚠️ Add image or description!');return;}
   const btn=document.getElementById('proofSubmitBtn');btn.disabled=true;btn.textContent=state.lang==='bn'?'জমা হচ্ছে...':'Submitting...';
   try {
     await fbAddDoc(fbCollection(db,'proofs'),{
       userId:state.currentUser.id, userName:state.currentUser.name,
       taskIndex:proofState.taskIndex, taskName:proofState.taskName,
-      description:text, image:proofState.imgBase64||null,
+      description:text, images:proofState.images,
+      // keep legacy image field for compatibility
+      image:proofState.images[0]||null,
       status:'pending', createdAt:fbServerTimestamp()
     });
+    // ✅ Record attempt ONLY on successful submit
+    recordTaskAttempt(proofState.taskIndex);
     closeProofModal();
-    // Check how many attempts done — if all 3 used, show cooldown msg; else allow next
     const cd = getTaskCooldown(proofState.taskIndex);
     if(cd.locked){
       showToast(state.lang==='bn'?'✅ ৩টা টাস্ক সম্পন্ন! ৬০ মিনিট অপেক্ষা করুন।':'✅ 3 tasks done! Wait 60 minutes.');
@@ -2059,7 +2083,11 @@ async function loadAdminData(){
       pList.innerHTML='';
       proofs.forEach(p=>{
         const timeStr=p.createdAt?new Date(p.createdAt.seconds*1000).toLocaleString():'';
-        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${p.image?`<img class="pac-img" src="${p.image}" onclick="openImgViewer('${p.image}')" alt="proof">`:`<div class="pac-no-img">📷 No image</div>`}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
+        const imgsArr = p.images && p.images.length ? p.images : (p.image ? [p.image] : []);
+        const imgGridHtml = imgsArr.length
+          ? `<div class="proof-img-grid" style="margin-bottom:10px">${imgsArr.map(src=>`<img class="proof-thumb" src="${src}" onclick="openImgViewer('${src}')" alt="proof">`).join('')}</div>`
+          : `<div class="pac-no-img">📷 No image</div>`;
+        pList.innerHTML+=`<div class="proof-admin-card"><div class="pac-header"><div class="pac-avatar">${(p.userName||'?')[0].toUpperCase()}</div><div><div class="pac-name">${p.userName}</div><div class="pac-task">📋 ${p.taskName}</div></div><div class="pac-time">${timeStr}</div></div>${p.description?`<div class="pac-desc">💬 ${p.description}</div>`:''}${imgGridHtml}<div class="pac-actions"><button class="pac-approve" onclick="adminApproveProof('${p.id}','${p.userId}','${p.userName}','${p.taskName}',${p.taskIndex||0})">✅ Approve +$${(SYS.taskReward/1000).toFixed(3)}</button><button class="pac-reject" onclick="adminRejectProof('${p.id}','${p.userId}','${p.taskName}')">❌ Reject</button></div></div>`;
       });
     }
 
